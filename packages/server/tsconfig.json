@@ -1,0 +1,11 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    // "outDir": "./dist", // Vite handles this
+  },
+  "references": [
+    { "path": "../shared" }
+  ],
+  "include": ["src"],
+  "exclude": ["node_modules", "dist", "src/__tests__"]
+} 

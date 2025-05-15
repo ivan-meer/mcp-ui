@@ -1,0 +1,35 @@
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
+import dts from 'vite-plugin-dts';
+import path from 'path';
+
+export default defineConfig({
+  plugins: [
+    react(),
+    dts({
+      insertTypesEntry: true,
+    }),
+  ],
+  build: {
+    lib: {
+      entry: path.resolve(__dirname, 'src/index.ts'),
+      name: 'McpUiClient',
+      formats: ['es', 'umd'],
+      fileName: (format) => `index.${format === 'es' ? 'mjs' : format === 'umd' ? 'js' : format + '.js'}`,
+    },
+    rollupOptions: {
+      external: ['react', 'react/jsx-runtime', '@mcp-ui/shared', /@modelcontextprotocol\/sdk(\/.*)?/],
+      output: {
+        globals: {
+          react: 'React',
+          'react/jsx-runtime': 'jsxRuntime',
+          '@mcp-ui/shared': 'McpUiShared',
+          '@modelcontextprotocol/sdk': 'ModelContextProtocolSDK'
+        },
+      },
+    },
+    sourcemap: true,
+  },
+  // Vitest specific config can go here if not using a separate vitest.config.ts for the package
+  // test: { ... }
+}); 

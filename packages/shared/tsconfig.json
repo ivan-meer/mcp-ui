@@ -1,0 +1,11 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    // "outDir": "./dist", // Vite handles this
+    // No need to specify "composite": true here if it's in base and this is a leaf for tsc purposes
+    // "declaration": true, // dts plugin handles this
+    // "declarationMap": true // dts plugin handles this
+  },
+  "include": ["src"],
+  "exclude": ["node_modules", "dist", "src/__tests__"]
+} 
