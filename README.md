@@ -4,14 +4,14 @@
 
 ## Core Concept: Interactive HTML Resources
 
-The primary goal of this SDK is to facilitate the creation and rendering of `InteractiveHtmlResourceBlock` objects. These blocks are designed to be part of an MCP response, allowing a model or tool to send structured HTML content to a client for display.
+The primary goal of this SDK is to facilitate the creation and rendering of `HtmlResourceBlock` objects. These blocks are designed to be part of an MCP response, allowing a model or tool to send structured HTML content to a client for display.
 
-### The `InteractiveHtmlResourceBlock`
+### The `HtmlResourceBlock`
 
 This is the fundamental object exchanged. It has the following structure (simplified):
 
 ```typescript
-interface InteractiveHtmlResourceBlock {
+interface HtmlResourceBlock {
   type: "resource";
   resource: {
     uri: string;        // Primary identifier. e.g., "ui://my-component/1" or "ui-app://my-app/instance-1"
@@ -34,18 +34,19 @@ interface InteractiveHtmlResourceBlock {
 
 ## Packages
 
-*   **`@mcp-ui/shared`**: Contains shared types (like `InteractiveHtmlResourceBlock`), enums, and simple utility functions. It's built with Vite.
-*   **`@mcp-ui/client`**: Provides React components and hooks for the client-side. The primary component is `<HtmlResource />` which can render an `InteractiveHtmlResourceBlock`. Built with Vite.
-*   **`@mcp-ui/server`**: Includes helper functions for server-side tools to easily construct `InteractiveHtmlResourceBlock` objects. Built with Vite.
+
+*   **`@mcp-ui/client`**: Provides React components and hooks for the client-side. The primary component is `<HtmlResource />` which can render an `HtmlResourceBlock`.
+*   **`@mcp-ui/server`**: Includes helper functions for server-side tools to easily construct `HtmlResourceBlock` objects.
+*   **`@mcp-ui/shared`**: Contains shared types (like `HtmlResourceBlock`), enums, and simple utility functions.
 *   **`apps/docs`**: The VitePress documentation website.
 
 ## Getting Started
 
 1.  **Clone the repository.**
 2.  **Install dependencies from the monorepo root:**
-    ```bash
+   ```bash
     pnpm install
-    ```
+   ```
 
 ## Available Scripts (from Root)
 
@@ -68,13 +69,13 @@ interface InteractiveHtmlResourceBlock {
 
 ### Server-Side (`@mcp-ui/server`)
 
-Use `createInteractiveResource` to construct the resource block.
+Use `createHtmlResource` to construct the resource block.
 
 ```typescript
-import { createInteractiveResource } from '@mcp-ui/server';
+import { createHtmlResource } from '@mcp-ui/server';
 
 // Example 1: Direct HTML content, delivered as text
-const directHtmlResource = createInteractiveResource({
+const directHtmlResource = createHtmlResource({
   uri: 'ui://my-unique-component/instance1',
   content: { type: 'directHtml', htmlString: '<p>Hello from direct HTML!</p>' },
   delivery: 'text',
@@ -83,7 +84,7 @@ const directHtmlResource = createInteractiveResource({
 
 // Example 2: External App URL, delivered as Base64 blob
 const appUrl = 'https://example.com/my-interactive-app';
-const externalAppResource = createInteractiveResource({
+const externalAppResource = createHtmlResource({
   uri: 'ui-app://my-app-identifier/session123',
   content: { type: 'externalUrl', iframeUrl: appUrl },
   delivery: 'blob', // URL string will be Base64 encoded
@@ -101,7 +102,7 @@ import React from 'react';
 import { HtmlResource } from '@mcp-ui/client';
 
 // Dummy type for the example
-interface InteractiveHtmlResourceBlock {
+interface HtmlResourceBlock {
   type: "resource";
   resource: {
     uri: string;
@@ -111,7 +112,7 @@ interface InteractiveHtmlResourceBlock {
   }
 }
 
-const MyComponent: React.FC<{ mcpResource: InteractiveHtmlResourceBlock }> = ({ mcpResource }) => {
+const MyComponent: React.FC<{ mcpResource: HtmlResourceBlock }> = ({ mcpResource }) => {
   const handleAction = async (tool: string, params: Record<string, unknown>) => {
     console.log('Action from iframe:', tool, params);
     // Handle actions posted from the iframe content
@@ -130,7 +131,7 @@ const MyComponent: React.FC<{ mcpResource: InteractiveHtmlResourceBlock }> = ({ 
 };
 
 // Example of how you might receive and render a resource:
-// const resourceFromServer = { /* ... received InteractiveHtmlResourceBlock ... */ };
+// const resourceFromServer = { /* ... received HtmlResourceBlock ... */ };
 // <MyComponent mcpResource={resourceFromServer} />
 ```
 

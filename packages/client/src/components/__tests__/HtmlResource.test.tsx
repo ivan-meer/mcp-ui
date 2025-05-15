@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import { HtmlResource, RenderHtmlResourceProps } from '../HtmlResource';
+import { HtmlResource, RenderHtmlResourceProps } from '../HtmlResource.js';
 import { vi } from 'vitest';
 
 describe('HtmlResource component', () => {

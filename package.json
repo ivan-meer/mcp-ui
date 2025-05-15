@@ -14,18 +14,19 @@
     "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md}\"",
     "version:patch": "echo \"Versioning with Changesets, then run pnpm install\" && pnpm changeset version && pnpm install --lockfile-only",
     "publish-packages": "pnpm build && pnpm changeset publish",
-    "docs:dev": "pnpm --filter=\"@mcp-ui/docs\" dev",
-    "docs:build": "pnpm --filter=\"@mcp-ui/docs\" build",
-    "docs:preview": "pnpm --filter=\"@mcp-ui/docs\" preview"
+    "docs:dev": "vitepress dev docs/src",
+    "docs:build": "vitepress build docs",
+    "docs:preview": "vitepress preview docs"
   },
   "devDependencies": {
+    "@swc/core": "^1.4.0",
     "@testing-library/jest-dom": "^6.1.5",
     "@testing-library/react": "^14.1.2",
     "@types/jest": "^29.5.11",
-    "@types/node": "^20.10.4",
+    "@types/node": "^20.17.47",
     "@typescript-eslint/eslint-plugin": "^6.13.2",
     "@typescript-eslint/parser": "^6.13.2",
-    "@vitejs/plugin-react": "^4.2.1",
+    "@vitejs/plugin-react-swc": "^3.9.0",
     "c8": "^8.0.1",
     "eslint": "^8.55.0",
     "eslint-config-prettier": "^9.1.0",
@@ -41,8 +42,8 @@
     "typescript": "^5.3.3",
     "vite": "^5.0.6",
     "vite-plugin-dts": "^3.7.0",
-    "vitest": "^1.0.4",
-    "vitepress": "^1.0.0-rc.44"
+    "vitepress": "^1.0.0-rc.44",
+    "vitest": "^1.0.4"
   },
   "packageManager": "pnpm@8.10.2"
-} 
+}

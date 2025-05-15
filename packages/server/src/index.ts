@@ -2,9 +2,11 @@
      * Defines the structure of an interactive HTML resource block
      * that the server will send to the client.
      */
-import { PlaceholderEnum } from '@mcp-ui/shared';
 
-export interface InteractiveHtmlResourceBlock {
+// Import types first
+import { CreateHtmlResourceOptions } from './types.js';
+
+export interface HtmlResourceBlock {
     type: "resource";
     resource: {
         uri: string;        // Primary identifier. Starts with "ui://" or "ui-app://"
@@ -14,24 +16,7 @@ export interface InteractiveHtmlResourceBlock {
     }
 }
 
-/**
- * Defines the type of content being provided for an interactive resource.
- * - If `type` is "directHtml", `htmlString` is the HTML content provided directly.
- * - If `type` is "externalUrl", `iframeUrl` is the URL to be rendered in an iframe by the client.
- */
-export type ResourceContentPayload =
-    | { type: "directHtml"; htmlString: string }
-    | { type: "externalUrl"; iframeUrl: string };
 
-/**
- * Options for creating an interactive resource block.
- */
-export interface CreateInteractiveResourceOptions {
-    uri: string;          // REQUIRED. Must start with "ui://" if content.type is "directHtml",
-                          // or "ui-app://" if content.type is "externalUrl".
-    content: ResourceContentPayload; // REQUIRED. The actual content payload.
-    delivery: "text" | "blob"; // REQUIRED. How the content string (htmlString or iframeUrl) should be packaged.
-}
 
 /**
  * Robustly encodes a UTF-8 string to Base64.
@@ -61,12 +46,12 @@ function robustUtf8ToBase64(str: string): string {
 }
 
 /**
- * Creates an InteractiveHtmlResourceBlock.
+ * Creates an HtmlResourceBlock.
  * This is the object that should be included in the 'content' array of a toolResult.
  * @param options Configuration for the interactive resource.
- * @returns An InteractiveHtmlResourceBlock.
+ * @returns An HtmlResourceBlock.
  */
-export function createInteractiveResource(options: CreateInteractiveResourceOptions): InteractiveHtmlResourceBlock {
+export function createHtmlResource(options: CreateHtmlResourceOptions): HtmlResourceBlock {
     let actualContentString: string;
 
     if (options.content.type === "directHtml") {
@@ -91,7 +76,7 @@ export function createInteractiveResource(options: CreateInteractiveResourceOpti
         throw new Error(`MCP SDK: Invalid content.type specified: ${exhaustiveCheckContent}`);
     }
     
-    const resource: InteractiveHtmlResourceBlock["resource"] = {
+    const resource: HtmlResourceBlock["resource"] = {
         uri: options.uri,
         mimeType: "text/html",
     };
@@ -132,60 +117,4 @@ export function escapeAttribute(unsafe: string): string {
     return unsafe.replace(/"/g, "&quot;");
 }
 
- // namespace McpInteractiveUIServerSDK
-
-// Example Usage (for server-side tool developers):
-/*
-import { McpInteractiveUIServerSDK } from './mcp-interactive-ui-server-sdk';
-
-// Example 1: Delivering direct HTML content using 'ui://'
-const myHtml = `
-<div>
-<h1>Hello from MCP Interactive UI</h1>
-<p>This is HTML rendered directly.</p>
-<button onclick="window.parent.postMessage({tool: 'userAction', params: {action: 'buttonClicked', value: 'testBtn'}}, '*')">Click Me</button>
-</div>
-<script>
-// Any additional client-side script for the HTML.
-// Ensure postMessage targets window.parent and specifies targetOrigin.
-</script>
-`;
-
-const htmlResource = McpInteractiveUIServerSDK.createInteractiveResource({
-uri: "ui://my-unique-content-id/1", // Consumer defines the URI
-content: { type: "directHtml", htmlString: myHtml },
-delivery: "text" // or "blob"
-});
-
-// This htmlResource would then be part of a tool's result content.
-// e.g., return { content: [htmlResource] };
-
-
-// Example 2: Delivering an iframe URL using 'ui-app://'
-const iframeUrl = "https://www.example.com/interactive-app";
-
-const iframeResource = McpInteractiveUIServerSDK.createInteractiveResource({
-uri: "ui-app://my-external-app-id/1", // Consumer defines the URI
-content: { type: "externalUrl", iframeUrl: iframeUrl },
-delivery: "blob" // or "text". 'blob' will Base64 encode the URL string.
-});
-
-// This iframeResource would then be part of a tool's result content.
-
-
-// Example 3: Server wants client to fetch content (advanced, SDK no longer manages this part)
-// If a server wants the client to fetch content via 'resources/read', it would:
-// 1. Implement its own 'resources/read' handler for a specific URI (e.g., "ui://my-fetchable-content/data").
-// 2. Return a resource block like this (constructed manually or via a slimmed-down helper if they build one):
-const fetchableResource = {
-type: "resource",
-resource: {
-    uri: "ui://my-fetchable-content/data", // Client will call resources/read(this_uri)
-    mimeType: "text/html"
-    // text and blob are omitted
-}
-};
-// The client, upon seeing no text/blob, would issue a resources/read for the URI.
-// The server's MCP framework and resources/read implementation would handle serving the content.
-
-*/ 
+export type { CreateHtmlResourceOptions as CreateResourceOptions, ResourceContentPayload } from './types.js';
