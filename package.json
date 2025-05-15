@@ -1,6 +1,6 @@
 {
   "name": "mcp-ui",
-  "private": true,
+  "private": false,
   "scripts": {
     "preinstall": "npx only-allow pnpm",
     "dev": "pnpm --filter=\"./packages/*\" --parallel dev",
