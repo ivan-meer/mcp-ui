@@ -1,5 +1,5 @@
 {
-  "name": "mcp-ui-monorepo",
+  "name": "mcp-ui",
   "private": true,
   "scripts": {
     "preinstall": "npx only-allow pnpm",

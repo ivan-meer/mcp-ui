@@ -17,20 +17,20 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 18
-          cache: 'npm'
+          cache: 'pnpm'
           cache-dependency-path: '**/package-lock.json'
 
       - name: Install dependencies
-        run: npm install --workspaces --frozen-lockfile
+        run: pnpm install --workspaces --frozen-lockfile
 
       - name: Lint
-        run: npm run lint
+        run: pnpm run lint
 
       - name: Test
-        run: npm run test
+        run: pnpm run test
 
       - name: Build
-        run: npm run build
+        run: pnpm run build
 
   publish:
     needs: build_and_test
@@ -44,16 +44,16 @@ jobs:
         with:
           node-version: 18
           registry-url: 'https://registry.npmjs.org'
-          cache: 'npm'
+          cache: 'pnpm'
           cache-dependency-path: '**/package-lock.json'
 
       - name: Install dependencies
-        run: npm install --workspaces --frozen-lockfile
+        run: pnpm install --workspaces --frozen-lockfile
       
       - name: Build
-        run: npm run build # Build again just in case, or use artifacts
+        run: pnpm run build
 
       - name: Publish to NPM
-        run: npm run publish-packages
+        run: pnpm run publish-packages
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }} 
