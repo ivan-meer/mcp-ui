@@ -7,8 +7,6 @@ on:
   pull_request:
     branches:
       - main
-  release:
-    types: [published]
 
 jobs:
   build_lint_test:
@@ -50,33 +48,38 @@ jobs:
   publish:
     needs: build_lint_test
     runs-on: ubuntu-latest
-    if: github.event_name == 'release' && github.event.action == 'published'
+    # Run on pushes to the main branch. semantic-release will determine if a release is needed.
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     permissions:
-      contents: read
+      contents: write # Needed to push new version tags, commit changelog/package.json updates
+      issues: write   # Needed to create/comment on release-related issues (optional, but good practice)
       id-token: write # Required for publishing to NPM with OIDC
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          # Fetch all history for all tags and branches so semantic-release can analyze commits
+          fetch-depth: 0
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v2
         with:
-          version: 8
+          version: 9 # Match pnpm version from build_lint_test job or your package.json
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20.x
+          node-version: 18.x # Use a Node version compatible with semantic-release
           cache: 'pnpm'
-          registry-url: 'https://registry.npmjs.org'
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
       - name: Build all packages
-        run: pnpm --filter=\"./packages/*\" --filter=\"@mcp-ui/docs\" build
-
-      - name: Publish to NPM
-        run: pnpm publish --access public --no-git-checks
+        run: pnpm --filter=\"./packages/*\" build
+        
+      - name: Semantic Release
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Provided by Actions, used by @semantic-release/github and @semantic-release/git
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}     # Your NPM token, used by @semantic-release/npm
+        run: npx semantic-release
