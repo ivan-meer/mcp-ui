@@ -88,10 +88,6 @@ export function createHtmlResource(options: CreateHtmlResourceOptions): HtmlReso
         case "blob":
             resource.blob = robustUtf8ToBase64(actualContentString);
             break;
-        default:
-            // Should not happen with TypeScript, but good for robustness
-            const exhaustiveCheck: never = options.delivery;
-            throw new Error(`MCP SDK: Invalid delivery method specified: ${exhaustiveCheck}`);
     }
     
     return {

@@ -3,7 +3,7 @@ import type { Resource } from '@modelcontextprotocol/sdk/types.js';
 
 export interface RenderHtmlResourceProps {
   resource: Partial<Resource>;
-  onGenericMcpAction: (tool: string, params: Record<string, unknown>) => Promise<any>;
+  onGenericMcpAction: (tool: string, params: Record<string, unknown>) => Promise<unknown>;
 }
 
 export const HtmlResource: React.FC<RenderHtmlResourceProps> = ({
