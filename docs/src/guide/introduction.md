@@ -7,7 +7,6 @@ This SDK provides tools for building Model-Context Protocol (MCP) enabled applic
 ## What is MCP UI?
 
 MCP-UI is a TypeScript monorepo containing:
-- **`@mcp-ui/shared`**: Core utilities and types, including the definition of `HtmlResourceBlock`.
 - **`@mcp-ui/client`**: React components (like `<HtmlResource />`) and hooks for easy client-side rendering of interactive resources.
 - **`@mcp-ui/server`**: Helper functions (like `createHtmlResource`) for server-side logic to easily construct `HtmlResourceBlock` objects.
 
