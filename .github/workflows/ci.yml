@@ -40,9 +40,6 @@ jobs:
       - name: Test
         run: pnpm test
 
-      - name: Coverage
-        run: pnpm coverage
-
       - name: Build libraries (excluding docs)
         run: pnpm --filter=!@mcp-ui/docs build
 
