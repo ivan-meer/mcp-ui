@@ -31,7 +31,7 @@ export function User({ user }: { user: UserInfo }) {
 
   const handleNudge = () => {
     // @ts-expect-error - window is not typed correctly
-    if (memberInfo && window.parent) {
+    if (user.id && window.parent) {
       const message = {
         tool: 'nudge_team_member',
         params: {
