@@ -256,7 +256,7 @@ const CustomAvatarXAxisTick = (props: { x: number, y: number, payload: { value: 
               dominantBaseline="middle" // Ensure proper vertical alignment of text
               style={{ pointerEvents: 'none' }} // Ensure text doesn't interfere with mouse events on avatar
             >
-              Nudge
+              Show profile
             </text>
           </g>
         )}
