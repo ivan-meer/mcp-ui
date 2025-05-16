@@ -133,7 +133,7 @@ export function User({ user }: { user: UserInfo }) {
 
 const styles: Record<string, React.CSSProperties> = {
   card: {
-    maxWidth: 360,
+    maxWidth: 500,
     margin: 16,
     borderRadius: 8,
     background: '#fff',
@@ -145,8 +145,8 @@ const styles: Record<string, React.CSSProperties> = {
     display: 'flex',
     alignItems: 'center',
     padding: '16px',
-    background: 'linear-gradient(90deg, #1565C0, #1E88E5)',
-    color: '#fff',
+    background: '#E3F2FD',
+    color: '#1E88E5',
     gap: 12,
   },
   avatar: {
@@ -210,8 +210,8 @@ const styles: Record<string, React.CSSProperties> = {
     width: '100%',
     padding: '10px 0',
     border: 'none',
-    background: '#1976d2',
-    color: '#fff',
+    background: '#BBDEFB',
+    color: '#1565C0',
     fontSize: '1rem',
     fontWeight: 500,
     cursor: 'pointer',

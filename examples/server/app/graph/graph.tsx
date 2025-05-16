@@ -306,16 +306,16 @@ export function Graph() {
 
   return (
     <div style={{
-      padding: '20px 20px 15px 20px',
+      // padding: '20px 20px 15px 20px',
       fontFamily: "'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, 'Helvetica Neue', sans-serif",
       backgroundColor: '#F8F9FA',
-      borderRadius: '12px',
+      // borderRadius: '12px',
       boxShadow: '0 6px 18px rgba(0,0,0,0.08)',
       maxWidth: '520px',
       margin: 'auto',
       position: 'relative'
     }}>
-      <div style={{ width: '100%', height: isZoomed ? 270 : 280 }}>
+      <div style={{ width: '100%', height: 425 }}>
         <ResponsiveContainer width="100%" height="100%">
           <BarChart
             data={chartData as { date: string, toDo: number, inProgress: number, blocked: number }[]}
