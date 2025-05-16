@@ -1,8 +1,10 @@
 # Model Context Protocol UI SDK
 
-**mcp-ui** is a TypeScript SDK that adds UI capabilities on top of the Model-Context Protocol (MCP). It provides packages to create interactive HTML components in the server and to handle their rendering in the client.
+**mcp-ui** is a TypeScript SDK that adds UI capabilities to the [Model-Context Protocol](https://modelcontextprotocol.io/introduction) (MCP). It provides packages to create interactive HTML components on the server and handle their rendering on the client.
 
 The library will evolve as a playground to experiment with the many exciting ideas in the community.
+
+<video src="https://github.com/user-attachments/assets/51f7c712-8133-4d7c-86d3-fdca550b9767"></video>
 
 ## Goal
 
