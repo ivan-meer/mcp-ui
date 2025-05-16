@@ -1,3 +1,15 @@
+# [1.1.0](https://github.com/idosal/mcp-ui/compare/v1.0.7...v1.1.0) (2025-05-16)
+
+
+### Bug Fixes
+
+* update deps ([4091ef4](https://github.com/idosal/mcp-ui/commit/4091ef47da048fab3c4feb002f5287b2ff295744))
+
+
+### Features
+
+* change onGenericMcpAction to optional onUiAction ([1913b59](https://github.com/idosal/mcp-ui/commit/1913b5977c30811f9e67659949e2d961f2eda983))
+
 ## [1.0.7](https://github.com/idosal/mcp-ui/compare/v1.0.6...v1.0.7) (2025-05-16)
 
 
