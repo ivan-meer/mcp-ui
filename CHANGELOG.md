@@ -1,3 +1,10 @@
+## [1.0.3](https://github.com/idosal/mcp-ui/compare/v1.0.2...v1.0.3) (2025-05-16)
+
+
+### Bug Fixes
+
+* exports ([3a93a16](https://github.com/idosal/mcp-ui/commit/3a93a16e1b7438ba7b2ef49ca854479f755abcc6))
+
 ## [1.0.2](https://github.com/idosal/mcp-ui/compare/v1.0.1...v1.0.2) (2025-05-16)
 
 
