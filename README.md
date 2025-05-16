@@ -1,10 +1,12 @@
 # Model Context Protocol UI SDK
 
-**mcp-ui** is a TypeScript SDK for building applications that use the Model-Context Protocol (MCP) to deliver interactive HTML components. It provides packages for client-side handling, and server-side resource creation.
+**mcp-ui** is a TypeScript SDK that adds UI capabilities on top of the Model-Context Protocol (MCP). It provides packages to create interactive HTML components in the server and to handle their rendering in the client.
 
-## Core Concept: Interactive HTML Resources
+The library will evolve as a playground to experiment with the many exciting ideas in the community.
 
-The primary goal of this SDK is to facilitate the creation and rendering of `HtmlResource` objects. These blocks are designed to be part of an MCP response, allowing a model or tool to send structured HTML content to a client for display.
+## Goal
+
+The primary goal is to facilitate the creation and rendering of `HtmlResource` objects. These blocks are designed to be part of an MCP response, allowing a model or tool to send a structured HTML component or URL for a client for display.
 
 ### The `HtmlResource`
 
@@ -22,8 +24,6 @@ interface HtmlResourceBlock {
 }
 ```
 
-### Key Fields Explained:
-
 *   **`uri`**: A unique identifier for the resource.
     *   `ui://<unique-id>`: Indicates the resource content is self-contained HTML, intended to be rendered directly by the client (e.g., in an iframe sandbox with `srcDoc`). The `text` or `blob` field will contain the HTML string.
     *   `ui-app://<app-id>/<instance-id>`: Indicates the resource is an external application or a more complex UI that should be rendered within an iframe using a URL. The `text` or `blob` field will contain the URL for the iframe's `src` attribute.
@@ -34,11 +34,8 @@ interface HtmlResourceBlock {
 
 ## Packages
 
-
-*   **`@mcp-ui/client`**: Provides React components and hooks for the client-side. The primary component is `<HtmlResource />` which can render an `HtmlResourceBlock`.
-*   **`@mcp-ui/server`**: Includes helper functions for server-side tools to easily construct `HtmlResourceBlock` objects.
-*   **`@mcp-ui/shared`**: Contains shared types (like `HtmlResourceBlock`), enums, and simple utility functions.
-*   **`apps/docs`**: The VitePress documentation website.
+*   **`@mcp-ui/client`**: Provides React components and hooks for the client-side. The primary component is `<HtmlResource />`.
+*   **`@mcp-ui/server`**: Includes helper functions for server-side tools to easily construct `HtmlResource` objects.
 
 ## Getting Started
 
@@ -62,14 +59,14 @@ const directHtmlResource = createHtmlResource({
   content: { type: 'directHtml', htmlString: '<p>Hello from direct HTML!</p>' },
   delivery: 'text',
 });
-// This `directHtmlResource` can now be included in your MCP response.
+// This `directHtmlResource` can now be included in the tool response.
 
-// Example 2: External App URL, delivered as Base64 blob
+// Example 2: External App URL, delivered as text
 const appUrl = 'https://example.com/my-interactive-app';
 const externalAppResource = createHtmlResource({
   uri: 'ui-app://my-app-identifier/session123',
   content: { type: 'externalUrl', iframeUrl: appUrl },
-  delivery: 'blob', // URL string will be Base64 encoded
+  delivery: 'text',
 });
 ```
 
@@ -84,7 +81,7 @@ import React from 'react';
 import { HtmlResource } from '@mcp-ui/client';
 
 // Dummy type for the example
-interface HtmlResourceBlock {
+interface HtmlResource {
   type: "resource";
   resource: {
     uri: string;
@@ -94,7 +91,7 @@ interface HtmlResourceBlock {
   }
 }
 
-const MyComponent: React.FC<{ mcpResource: HtmlResourceBlock }> = ({ mcpResource }) => {
+const MyComponent: React.FC<{ mcpResource: HtmlResource }> = ({ mcpResource }) => {
   const handleAction = async (tool: string, params: Record<string, unknown>) => {
     console.log('Action from iframe:', tool, params);
     // Handle actions posted from the iframe content
@@ -115,6 +112,15 @@ const MyComponent: React.FC<{ mcpResource: HtmlResourceBlock }> = ({ mcpResource
 
 See the specific documentation for each package for more detailed API information and advanced usage.
 
-## Contributing
 
-[Details on how to contribute, coding standards, etc. can be added here.] 
+## 👥 Contributing
+
+Contributions, feedback, and ideas are more than welcome! Please review the [contribution](https://github.com/idosal/mco-ui/blob/main/.github/CONTRIBUTING.md) guidelines.
+
+## 📄 License
+
+This project is licensed under the [Apache License 2.0](LICENSE).
+
+## Disclaimer
+
+MCP UI is provided "as is" without warranty of any kind. Authors are not responsible for any damages or issues that may arise from its use.
