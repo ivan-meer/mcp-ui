@@ -17,7 +17,6 @@ interface UserInfo {
 }
 
 export function User({ user }: { user: UserInfo }) {
-  // --- mock data for the chart ---
   const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'];
   const taskCounts = [80, 140, 110, 170, 95, 155];
   const data = months.map((m, i) => ({ month: m, tasks: taskCounts[i] }));
@@ -134,7 +133,6 @@ export function User({ user }: { user: UserInfo }) {
 const styles: Record<string, React.CSSProperties> = {
   card: {
     maxWidth: 500,
-    margin: 16,
     borderRadius: 8,
     background: '#fff',
     boxShadow: '0 4px 12px rgba(0,0,0,0.08)',
