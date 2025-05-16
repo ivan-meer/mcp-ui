@@ -198,8 +198,8 @@ const CustomAvatarXAxisTick = (props: { x: number, y: number, payload: { value: 
       const message = {
         tool: 'nudge_team_member',
         data: {
-          teamMemberId: memberInfo.id,
-          teamMemberName: memberInfo.name,
+          id: memberInfo.id,
+          name: memberInfo.name,
         }
       };
       // @ts-expect-error - window is not typed correctly
@@ -238,20 +238,21 @@ const CustomAvatarXAxisTick = (props: { x: number, y: number, payload: { value: 
         {isHovered && (
           <g>
             <rect 
-              x={baseAvatarSize / 2 - 22} // Center the tooltip background
-              y={-18} // Position above the avatar
+              x={baseAvatarSize + 4} // Position 4px to the right of the avatar
+              y={(baseAvatarSize - 16) / 2} // Vertically center with the avatar
               width={44} // Width of the tooltip background
               height={16} // Height of the tooltip background
               rx={3} // Rounded corners for the background
               ry={3}
-              fill="rgba(0,0,0,0.75)" 
+              fill="rgb(50, 50, 50)" // Solid dark background
             />
             <text
-              x={baseAvatarSize / 2} // Center the text
-              y={-7} // Position above the avatar, vertically centered in the rect
+              x={baseAvatarSize + 4 + (44 / 2)} // Horizontally center text in the rect
+              y={baseAvatarSize / 2} // Vertically center text with the avatar
               fill="#FFFFFF"
               fontSize="10px"
               textAnchor="middle"
+              dominantBaseline="middle" // Ensure proper vertical alignment of text
               style={{ pointerEvents: 'none' }} // Ensure text doesn't interfere with mouse events on avatar
             >
               Nudge
