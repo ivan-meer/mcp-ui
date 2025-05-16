@@ -88,11 +88,14 @@ export const HtmlResource: React.FC<RenderHtmlResourceProps> = ({
 
   useEffect(() => {
     function handleMessage(event: MessageEvent) {
-      if (event.data && typeof event.data === 'object' && event.data.tool) {
-        onGenericMcpAction(event.data.tool, event.data.params || {})
-          .catch(err => {
-            console.error("Error from onGenericMcpAction in RenderHtmlResource:", err);
-          });
+      // Only process the message if it came from this specific iframe
+      if (iframeRef.current && event.source === iframeRef.current.contentWindow) {
+        if (event.data?.tool) {
+          onGenericMcpAction(event.data.tool, event.data.params || {})
+            .catch(err => {
+              console.error("Error from onGenericMcpAction in RenderHtmlResource:", err);
+            });
+        }
       }
     }
     window.addEventListener('message', handleMessage);
