@@ -8,7 +8,7 @@ The library will evolve as a playground to experiment with the many exciting ide
 
 The primary goal is to facilitate the creation and rendering of `HtmlResource` objects. These blocks are designed to be part of an MCP response, allowing a model or tool to send a structured HTML component or URL for a client for display.
 
-### The `HtmlResource`
+### `HtmlResource`
 
 This is the fundamental object exchanged. It has the following structure (simplified):
 

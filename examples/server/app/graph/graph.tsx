@@ -63,7 +63,7 @@ const sprintDataFull: SprintDayDataEntry[] = [
   { date: '5/13', alice: { remaining: 6, toDo: 1, inProgress: 2, blocked: 3 }, bob: { remaining: 9, toDo: 3, inProgress: 3, blocked: 3 }, charlie: { remaining: 11, toDo: 5, inProgress: 3, blocked: 3 } },
   { date: '5/14', alice: { remaining: 10, toDo: 4, inProgress: 3, blocked: 3 }, bob: { remaining: 9, toDo: 3, inProgress: 3, blocked: 3 }, charlie: { remaining: 12, toDo: 5, inProgress: 4, blocked: 3 } },
   { date: '5/15', alice: { remaining: 11, toDo: 4, inProgress: 4, blocked: 3 }, bob: { remaining: 10, toDo: 3, inProgress: 4, blocked: 3 }, charlie: { remaining: 13, toDo: 6, inProgress: 4, blocked: 3 } },
-  { date: '5/16', alice: { remaining: 12, toDo: 5, inProgress: 4, blocked: 3 }, bob: { remaining: 11, toDo: 4, inProgress: 4, blocked: 3 }, charlie: { remaining: 14, toDo: 6, inProgress: 5, blocked: 3 } },
+  { date: '5/16', alice: { remaining: 12, toDo: 5, inProgress: 4, blocked: 3 }, bob: { remaining: 18, toDo: 11, inProgress: 4, blocked: 3 }, charlie: { remaining: 14, toDo: 6, inProgress: 5, blocked: 3 } },
 ];
 
 // Process data for the full view (stacked by STATUS, grouped by date)
@@ -136,8 +136,21 @@ const RoundedBar = (props: { fill: string, x: number, y: number, width: number, 
 };
 
 // --- Custom Tooltip ---
-const CustomTooltip = ({ active, payload, label, }: { active: boolean, payload: { name: string, value: number }[], label: string, isZoomedView: boolean }) => {
-  if (active && payload && payload.length) {
+interface CustomTooltipProps {
+  active?: boolean;
+  payload?: Array<{
+    name: string; // Status name like "To Do", "In Progress", "Blocked"
+    value: number; // Count for that status
+    color?: string; // Bar segment color (e.g., from 'fill' prop of Bar)
+    dataKey?: typeof statusKeys[number]; // 'toDo', 'inProgress', 'blocked'
+    payload?: any; // The raw data item for the bar
+  }>;
+  label?: string; // Date in full view, teamMemberName in zoomed view
+  isZoomedView: boolean; // Manually passed prop
+}
+
+const CustomTooltip = ({ active, payload, label, isZoomedView }: CustomTooltipProps) => {
+  if (active && payload && payload.length && label) {
     const commonStyle = {
       backgroundColor: 'rgba(40, 40, 40, 0.92)',
       padding: '10px 14px',
@@ -147,10 +160,38 @@ const CustomTooltip = ({ active, payload, label, }: { active: boolean, payload: 
       fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
       fontSize: '13px',
       color: '#FFFFFF',
-      minWidth: '150px' // Adjusted min width for potentially more content
+      minWidth: '150px'
     };
 
-    const dayData = sprintDataFull.find(d => d.date === label);
+    if (isZoomedView) {
+      // Zoomed-in view: label is teamMemberName
+      // Payload contains { name: "Status Name", value: count, dataKey: "statusKey" } for that team member
+      const teamMemberName = label;
+
+      return (
+        <div style={commonStyle}>
+          <p style={{ margin: 0, fontWeight: '600', opacity: 0.85, fontSize: '0.9em', marginBottom: '6px' }}>
+            {teamMemberName}
+          </p>
+          <ul style={{ listStyleType: 'none', paddingLeft: 0, margin: 0, fontSize: '0.9em' }}>
+            {payload.map((entry, index) => {
+              const statusKey = entry.dataKey;
+              if (!statusKey || !statusMeta[statusKey]) return null; // Should not happen with current setup
+
+              const fontWeight = statusKey === 'blocked' ? 'bold' : '500';
+              return (
+                <li key={`item-${index}-${entry.name}`} style={{ marginBottom: '4px', display: 'flex', justifyContent: 'space-between' }}>
+                  <span style={{color: statusMeta[statusKey].color, fontWeight: fontWeight}}>{entry.name}:</span>
+                  <span style={{fontWeight: 'bold', marginLeft: '10px'}}>{entry.value}</span>
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+      );
+    } else {
+      // Original full view logic: label is date
+      const dayData = sprintDataFull.find(d => d.date === label);
       if (!dayData) return null;
 
       let totalDayToDo = 0;
@@ -182,6 +223,7 @@ const CustomTooltip = ({ active, payload, label, }: { active: boolean, payload: 
           </ul>
         </div>
       );
+    }
   }
   return null;
 };
@@ -239,16 +281,16 @@ const CustomAvatarXAxisTick = (props: { x: number, y: number, payload: { value: 
         {isHovered && (
           <g>
             <rect 
-              x={baseAvatarSize + 4} // Position 4px to the right of the avatar
+              x={baseAvatarSize + 8} // Position 8px to the right of the avatar (increased from 4px)
               y={(baseAvatarSize - 16) / 2} // Vertically center with the avatar
-              width={44} // Width of the tooltip background
+              width={70} // Width of the tooltip background (increased from 44px)
               height={16} // Height of the tooltip background
               rx={3} // Rounded corners for the background
               ry={3}
               fill="rgb(50, 50, 50)" // Solid dark background
             />
             <text
-              x={baseAvatarSize + 4 + (44 / 2)} // Horizontally center text in the rect
+              x={baseAvatarSize + 8 + (70 / 2)} // Horizontally center text in the rect (increased x offset and width)
               y={baseAvatarSize / 2} // Vertically center text with the avatar
               fill="#FFFFFF"
               fontSize="10px"
@@ -270,7 +312,6 @@ const CustomAvatarXAxisTick = (props: { x: number, y: number, payload: { value: 
 // --- Graph Component ---
 export function Graph() {
   const [zoomedDate, setZoomedDate] = useState<string | null>(null);
-  const [lastClickInfo, setLastClickInfo] = useState<{ time: number; date: string | null }>({ time: 0, date: null });
 
   const isZoomed = !!zoomedDate;
 
@@ -295,13 +336,7 @@ export function Graph() {
       return;
     }
     const clickedDate = clickEventData.activeLabel;
-    const currentTime = new Date().getTime();
-    if (currentTime - lastClickInfo.time < 350 && clickedDate === lastClickInfo.date) {
-      setZoomedDate(clickedDate);
-      setLastClickInfo({ time: 0, date: null });
-    } else {
-      setLastClickInfo({ time: currentTime, date: clickedDate });
-    }
+    setZoomedDate(clickedDate); // Directly set zoomedDate on single click
   };
 
   return (
@@ -358,8 +393,7 @@ export function Graph() {
               width={35}
               allowDecimals={false}
             />
-            {/* @ts-expect-error - CustomTooltip is not typed correctly */}
-            <Tooltip content={<CustomTooltip />} cursor={{fill: 'rgba(176, 190, 197, 0.08)'}}/>
+            <Tooltip content={<CustomTooltip isZoomedView={isZoomed} />} cursor={{fill: 'rgba(176, 190, 197, 0.08)'}}/>
             
             {isZoomed ? (
               // Zoomed View: Bars are statuses, stacked, NOW COLORED by mapped team member GRADIENTS

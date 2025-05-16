@@ -37,7 +37,7 @@ export class MyMCP extends McpAgent {
 			async () => {
 				const todayData = {
 					alice: { remaining: 12, toDo: 5, inProgress: 4, blocked: 3 },
-					bob: { remaining: 11, toDo: 4, inProgress: 4, blocked: 3 },
+					bob: { remaining: 18, toDo: 11, inProgress: 4, blocked: 3 },
 					charlie: { remaining: 14, toDo: 6, inProgress: 5, blocked: 3 }
 				};
 
