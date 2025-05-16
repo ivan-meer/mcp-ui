@@ -5,68 +5,70 @@
 
 **mcp-ui** is a TypeScript SDK that adds UI capabilities to the [Model-Context Protocol](https://modelcontextprotocol.io/introduction) (MCP). It provides packages to create interactive HTML components on the server and handle their rendering on the client.
 
-The library will evolve as a playground to experiment with the many exciting ideas in the community.
+This project is a playground for new ideas in the MCP community. Expect it to evolve rapidly!
 
 <video src="https://github.com/user-attachments/assets/51f7c712-8133-4d7c-86d3-fdca550b9767"></video>
 
 ## Goal
 
-The primary goal is to facilitate the creation and rendering of `HtmlResource` objects. These blocks are designed to be part of an MCP response, allowing a model or tool to send a structured HTML component or URL for a client for display.
+Make it simple to create and render HTML resource blocks. These are special objects you can send in an MCP response, letting your MCP server deliver a structured interactive web component for the host to display.
 
-### `HtmlResource`
+### `HtmlResource` at a Glance
 
-This is the fundamental object exchanged. It has the following structure (simplified):
+This is the main object exchanged between server and client:
 
 ```typescript
-interface HtmlResourceBlock {
+interface HtmlResource {
   type: "resource";
   resource: {
-    uri: string;        // Primary identifier. e.g., "ui://my-component/1" or "ui-app://my-app/instance-1"
-    mimeType: "text/html"; // Always text/html for this SDK's purpose
-    text?: string;      // HTML content or an iframe URL
-    blob?: string;      // Base64 encoded HTML content or iframe URL
+    uri: string;        // e.g., "ui://my-component/1" or "ui-app://my-app/instance-1"
+    mimeType: "text/html";
+    text?: string;      // HTML content OR external app URL
+    blob?: string;      // Base64 encoded HTML content or external app URL
   }
 }
 ```
 
-*   **`uri`**: A unique identifier for the resource.
-    *   `ui://<unique-id>`: Indicates the resource content is self-contained HTML, intended to be rendered directly by the client (e.g., in an iframe sandbox with `srcDoc`). The `text` or `blob` field will contain the HTML string.
-    *   `ui-app://<app-id>/<instance-id>`: Indicates the resource is an external application or a more complex UI that should be rendered within an iframe using a URL. The `text` or `blob` field will contain the URL for the iframe's `src` attribute.
-*   **`mimeType`**: For this SDK, it will always be `"text/html"`.
-*   **`text` vs. `blob`**: This defines how the content (HTML string or URL string) is delivered:
-    *   `text`: The content is provided as a direct string.
-    *   `blob`: The content is provided as a Base64 encoded string. This is useful for ensuring content integrity or for embedding larger HTML payloads without issues in JSON.
+- **`uri`**: Uniquely identifies the resource.
+  - `ui://...` means the content is self-contained HTML (rendered with `srcDoc` in an iframe).
+  - `ui-app://...` means the content is an external app or site (rendered with `src` in an iframe).
+- **`mimeType`**: Always `"text/html"` for this SDK.
+- **`text` vs. `blob`**: Use `text` for direct strings, or `blob` for Base64-encoded content (handy for larger payloads or to avoid JSON issues).
 
 ## Packages
 
-*   **`@mcp-ui/client`**: Provides React components and hooks for the client-side. The primary component is `<HtmlResource />`.
-*   **`@mcp-ui/server`**: Includes helper functions for server-side tools to easily construct `HtmlResource` objects.
+- **`@mcp-ui/client`**: React components for the client. The main export is `<HtmlResource />`—just drop it into your app to render MCP HTML resources.
+- **`@mcp-ui/server`**: Helpers for building `HtmlResource` objects on the server.
 
-## Getting Started
+## Quickstart
 
-1.  **Clone the repository.**
-2.  **Install dependencies from the monorepo root:**
+1. **Clone the repo:**
    ```bash
-    pnpm install
+   git clone https://github.com/idosal/mcp-ui.git
+   cd mcp-ui
    ```
+2. **Install dependencies:**
+   ```bash
+   pnpm install
+   ```
+
 ## How to Use
 
 ### Server-Side (`@mcp-ui/server`)
 
-Use `createHtmlResource` to construct the resource block.
+Use `createHtmlResource` to build a resource block:
 
 ```typescript
 import { createHtmlResource } from '@mcp-ui/server';
 
-// Example 1: Direct HTML content, delivered as text
+// Direct HTML content
 const directHtmlResource = createHtmlResource({
   uri: 'ui://my-unique-component/instance1',
   content: { type: 'directHtml', htmlString: '<p>Hello from direct HTML!</p>' },
   delivery: 'text',
 });
-// This `directHtmlResource` can now be included in the tool response.
 
-// Example 2: External App URL, delivered as text
+// External App URL
 const appUrl = 'https://example.com/my-interactive-app';
 const externalAppResource = createHtmlResource({
   uri: 'ui-app://my-app-identifier/session123',
@@ -77,30 +79,17 @@ const externalAppResource = createHtmlResource({
 
 ### Client-Side (`@mcp-ui/client`)
 
-The `@mcp-ui/client` package provides an `<HtmlResource />` component (example path: `packages/client/src/components/HtmlResource.tsx`) designed to render these blocks.
-
-**Conceptual Usage:**
+The main export is the `<HtmlResource />` React component. Use it to render any MCP HTML resource block:
 
 ```tsx
 import React from 'react';
 import { HtmlResource } from '@mcp-ui/client';
 
-// Dummy type for the example
-interface HtmlResource {
-  type: "resource";
-  resource: {
-    uri: string;
-    mimeType: "text/html";
-    text?: string;
-    blob?: string;
-  }
-}
-
-const MyComponent: React.FC<{ mcpResource: HtmlResource }> = ({ mcpResource }) => {
-  const handleAction = async (tool: string, params: Record<string, unknown>) => {
+const MyComponent = ({ mcpResource }) => {
+  const handleAction = async (tool, params) => {
     console.log('Action from iframe:', tool, params);
     // Handle actions posted from the iframe content
-    return { TBD: "Action handled" }; 
+    return { status: 'Action handled' };
   };
 
   if (mcpResource.type === 'resource' && mcpResource.resource.mimeType === 'text/html') {
@@ -115,17 +104,16 @@ const MyComponent: React.FC<{ mcpResource: HtmlResource }> = ({ mcpResource }) =
 };
 ```
 
-See the specific documentation for each package for more detailed API information and advanced usage.
-
+For more details and advanced usage, check out the [docs](./docs/src/guide/client/overview.md) and the [HtmlResource component guide](./docs/src/guide/client/html-resource.md).
 
 ## 👥 Contributing
 
-Contributions, feedback, and ideas are more than welcome! Please review the [contribution](https://github.com/idosal/mco-ui/blob/main/.github/CONTRIBUTING.md) guidelines.
+Ideas, feedback, and contributions are always welcome! See the [contribution guidelines](https://github.com/idosal/mco-ui/blob/main/.github/CONTRIBUTING.md).
 
 ## 📄 License
 
-This project is licensed under the [Apache License 2.0](LICENSE).
+Licensed under the [Apache License 2.0](LICENSE).
 
 ## Disclaimer
 
-MCP UI is provided "as is" without warranty of any kind. Authors are not responsible for any damages or issues that may arise from its use.
+MCP UI is provided "as is" with no warranty. Use at your own risk.
