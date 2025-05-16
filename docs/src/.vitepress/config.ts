@@ -2,8 +2,8 @@ import { defineConfig } from 'vitepress';
 
 export default defineConfig({
   lang: 'en-US',
-  title: 'MCP-UI SDK',
-  description: 'Documentation for the MCP-UI Client & Server SDKs',
+  title: 'MCP UI',
+  description: 'MCP-UI Client & Server SDK Documentation',
   base: process.env.VITEPRESS_BASE || '/', // For GitHub Pages deployment
 
   vite: { // Vite specific config for VitePress
@@ -61,12 +61,12 @@ export default defineConfig({
     },
 
     socialLinks: [
-      { icon: 'github', link: 'https://github.com/your-org/mcp-ui' } // TODO: Update this link
+      { icon: 'github', link: 'https://github.com/idosal/mcp-ui' } // TODO: Update this link
     ],
 
     footer: {
-      message: 'Released under the MIT License.',
-      copyright: 'Copyright © 2023-present Your Name/Org' // TODO: Update copyright
+      message: 'Released under the Apache 2.0 License.',
+      copyright: 'Copyright © 2025-present Ido Salomon'
     }
   },
   markdown: {

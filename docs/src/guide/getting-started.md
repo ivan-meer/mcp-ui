@@ -11,7 +11,7 @@ This guide will walk you through setting up your development environment and usi
 
 1.  **Clone the Monorepo**:
     ```bash
-    git clone https://github.com/your-org/mcp-ui.git # TODO: Update this link
+    git clone https://github.com/idosal/mcp-ui.git # TODO: Update this link
     cd mcp-ui
     ```
 
@@ -54,8 +54,7 @@ Once built, you can typically import from the packages as you would with any oth
 
 ```typescript
 // main.ts (your server-side application)
-import { createHtmlResource, PlaceholderEnum } from '@mcp-ui/server';
-// If @mcp-ui/server is not published, you'd need to link it or use a path alias
+import { createHtmlResource } from '@mcp-ui/server';
 
 console.log('Using shared enum:', PlaceholderEnum.BAR);
 
@@ -144,7 +143,7 @@ To build specifically this package from the monorepo root:
 pnpm build -w @mcp-ui/server
 ```
 
-See the [Server SDK Usage & Examples](./usage-examples.md) page for practical examples.
+See the [Server SDK Usage & Examples](./server/usage-examples.md) page for practical examples.
 
 To build specifically this package from the monorepo root:
 ```bash
