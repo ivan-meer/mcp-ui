@@ -235,6 +235,29 @@ const CustomAvatarXAxisTick = (props: { x: number, y: number, payload: { value: 
           width={baseAvatarSize}  // Image base size is constant
           clipPath="url(#clipCircle)" // Clip path is for a 24x24 image starting at 0,0
         />
+        {isHovered && (
+          <g>
+            <rect 
+              x={baseAvatarSize / 2 - 22} // Center the tooltip background
+              y={-18} // Position above the avatar
+              width={44} // Width of the tooltip background
+              height={16} // Height of the tooltip background
+              rx={3} // Rounded corners for the background
+              ry={3}
+              fill="rgba(0,0,0,0.75)" 
+            />
+            <text
+              x={baseAvatarSize / 2} // Center the text
+              y={-7} // Position above the avatar, vertically centered in the rect
+              fill="#FFFFFF"
+              fontSize="10px"
+              textAnchor="middle"
+              style={{ pointerEvents: 'none' }} // Ensure text doesn't interfere with mouse events on avatar
+            >
+              Nudge
+            </text>
+          </g>
+        )}
       </g>
     );
   }

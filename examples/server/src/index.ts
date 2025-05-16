@@ -31,16 +31,14 @@ export class MyMCP extends McpAgent {
 		const url = new URL(requestUrl);
 		const requestHost = url.host;
 
-		// Simple addition tool
 		this.server.tool(
-			"add",
-			{ a: z.number(), b: z.number() },
-			async ({ a, b }) => ({
-				content: [{ type: "text", text: String(a + b) }],
+			"nudge_team_member",
+			{ name: z.string() },
+			async ({ name }) => ({
+				content: [{ type: "text", text: "Nudged " + name + "!" }],
 			})
 		);
 
-		// Calculator tool with multiple operations
 		this.server.tool(
 			"show_task_status",
 			"Displays a UI for the user to see the status of tasks",
