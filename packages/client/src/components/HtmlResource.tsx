@@ -129,7 +129,7 @@ export const HtmlResource: React.FC<RenderHtmlResourceProps> = ({
       <iframe
         ref={iframeRef}
         src={iframeSrc}
-        sandbox="allow-scripts"
+        sandbox="allow-scripts allow-same-origin" // unsafe
         style={{ width: '100%', minHeight: 200, ...style }}
         title="MCP HTML Resource (URL)"
       />
