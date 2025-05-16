@@ -15,7 +15,7 @@ Make it simple to create and render HTML resource blocks. These are special obje
 
 ### `HtmlResource` at a Glance
 
-This is the main object exchanged between server and client:
+This is the main object exchanged between the server and the client:
 
 ```typescript
 interface HtmlResource {
@@ -37,20 +37,11 @@ interface HtmlResource {
 
 ## Packages
 
-- **`@mcp-ui/client`**: React components for the client. The main export is `<HtmlResource />`—just drop it into your app to render MCP HTML resources.
+- **`@mcp-ui/client`**: React components for the client. The main export is `<HtmlResource />` — just drop it into your app to render MCP HTML resources.
 - **`@mcp-ui/server`**: Helpers for building `HtmlResource` objects on the server.
 
 ## Quickstart
-
-1. **Clone the repo:**
-   ```bash
-   git clone https://github.com/idosal/mcp-ui.git
-   cd mcp-ui
-   ```
-2. **Install dependencies:**
-   ```bash
-   pnpm install
-   ```
+The example server (`examples/server`) is hosted at `https://remote-mcp-server-authless.idosalomon.workers.dev/mcp` (HTTP Streaming) and `https://remote-mcp-server-authless.idosalomon.workers.dev/sse` (SSE). You can use it with any compatible host.
 
 ## How to Use
 
