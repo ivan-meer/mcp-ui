@@ -2,6 +2,7 @@ import { McpAgent } from "agents/mcp";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
 import { createRequestHandler } from "react-router";
+import { createHtmlResource } from "@mcp-ui/server";
 
 declare module "react-router" {
 	export interface AppLoadContext {
@@ -26,6 +27,10 @@ export class MyMCP extends McpAgent {
 	});
 
 	async init() {
+		const requestUrl = this.props.requestUrl as string;
+		const url = new URL(requestUrl);
+		const requestHost = url.host;
+
 		// Simple addition tool
 		this.server.tool(
 			"add",
@@ -37,39 +42,26 @@ export class MyMCP extends McpAgent {
 
 		// Calculator tool with multiple operations
 		this.server.tool(
-			"calculate",
-			{
-				operation: z.enum(["add", "subtract", "multiply", "divide"]),
-				a: z.number(),
-				b: z.number(),
-			},
-			async ({ operation, a, b }) => {
-				let result: number;
-				switch (operation) {
-					case "add":
-						result = a + b;
-						break;
-					case "subtract":
-						result = a - b;
-						break;
-					case "multiply":
-						result = a * b;
-						break;
-					case "divide":
-						if (b === 0)
-							return {
-								content: [
-									{
-										type: "text",
-										text: "Error: Cannot divide by zero",
-									},
-								],
-							};
-						result = a / b;
-						break;
-				}
-				return { content: [{ type: "text", text: String(result) }] };
-			}
+			"show_task_status",
+			"Displays a UI for the user to see the status of tasks",
+			async () => {
+				const scheme = requestHost.includes('localhost') || requestHost.includes('127.0.0.1') ? 'http' : 'https';
+				
+				const pickerPageUrl = `${scheme}://${requestHost}/task`;
+		  
+				// Generate a unique URI for this specific invocation of the file picker UI.
+				// This URI identifies the resource block itself, not the content of the iframe.
+				const uniqueUiAppUri = `ui-app://task-manager/${Date.now()}`;
+				const resourceBlock = createHtmlResource({
+				  uri: uniqueUiAppUri,
+				  content: { type: "externalUrl", iframeUrl: pickerPageUrl },
+				  delivery: "text" // The URL itself is delivered as text
+				});
+		  
+				return {
+				  content: [resourceBlock]
+				};
+			  }
 		);
 	}
 }
@@ -77,6 +69,7 @@ export class MyMCP extends McpAgent {
 export default {
 	fetch(request: Request, env: Env, ctx: ExecutionContext) {
 		const url = new URL(request.url);
+		ctx.props.requestUrl = request.url;
 
 		if (url.pathname === "/sse" || url.pathname === "/sse/message") {
 			return MyMCP.serveSSE("/sse").fetch(request, env, ctx);

@@ -8,6 +8,9 @@ importers:
 
   .:
     dependencies:
+      '@mcp-ui/server':
+        specifier: ^1.0.4
+        version: 1.0.4
       '@modelcontextprotocol/sdk':
         specifier: ^1.11.1
         version: 1.11.3
@@ -601,6 +604,9 @@ packages:
 
   '@jridgewell/trace-mapping@0.3.9':
     resolution: {integrity: sha512-3Belt6tdc8bPgAtbcmdtNJlirVoTmEb5e2gC94PnkwEW9jI6CAHUeoG85tjWP5WquqfavoMtMwiG4P926ZKKuQ==}
+
+  '@mcp-ui/server@1.0.4':
+    resolution: {integrity: sha512-aSBiWEwOXymYmwVwFfguTgR6NVyKKlWnMV80v2zPKx+xiz4MvbeeQtlGdjbz7X/BmHtcDENGiL2dn9uzIxEuFw==}
 
   '@mjackson/node-fetch-server@0.2.0':
     resolution: {integrity: sha512-EMlH1e30yzmTpGLQjlFmaDAjyOeZhng1/XCd7DExR8PNAnG/G1tyruZxEoUe11ClnwGhGrtsdnyyUx1frSzjng==}
@@ -2640,6 +2646,8 @@ snapshots:
     dependencies:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.5.0
+
+  '@mcp-ui/server@1.0.4': {}
 
   '@mjackson/node-fetch-server@0.2.0': {}
 
