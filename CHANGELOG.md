@@ -1,3 +1,10 @@
+## [1.0.7](https://github.com/idosal/mcp-ui/compare/v1.0.6...v1.0.7) (2025-05-16)
+
+
+### Bug Fixes
+
+* **client:** specify iframe ([fd0b70a](https://github.com/idosal/mcp-ui/commit/fd0b70a84948d3aa5d7a79269ff7c3bcd0946689))
+
 ## [1.0.6](https://github.com/idosal/mcp-ui/compare/v1.0.5...v1.0.6) (2025-05-16)
 
 
