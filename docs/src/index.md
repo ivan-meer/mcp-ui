@@ -18,4 +18,4 @@ features:
     details: React components and hooks for easy frontend integration.
   - title: Server SDK
     details: Helpers to construct interactive resource blocks for MCP.
---- 
+---

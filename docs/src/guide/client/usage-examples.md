@@ -25,18 +25,19 @@ const fetchMcpResource = async (id: string): Promise<HtmlResourceBlock> => {
       resource: {
         uri: 'ui://example/direct-html',
         mimeType: 'text/html',
-        text: '<h1>Direct HTML via Text</h1><p>Content loaded directly.</p><button onclick="window.parent.postMessage({tool: \'uiInteraction\', params: { action: \'directClick\', value: Date.now() }}, \'*\')">Click Me (Direct)</button>'
-      }
+        text: "<h1>Direct HTML via Text</h1><p>Content loaded directly.</p><button onclick=\"window.parent.postMessage({tool: 'uiInteraction', params: { action: 'directClick', value: Date.now() }}, '*')\">Click Me (Direct)</button>",
+      },
     };
   } else if (id === 'blob') {
-    const html = '<h1>HTML from Blob</h1><p>Content was Base64 encoded.</p><button onclick="window.parent.postMessage({tool: \'uiInteraction\', params: { action: \'blobClick\', value: \'test\' }}, \'*\')">Click Me (Blob)</button>';
+    const html =
+      "<h1>HTML from Blob</h1><p>Content was Base64 encoded.</p><button onclick=\"window.parent.postMessage({tool: 'uiInteraction', params: { action: 'blobClick', value: 'test' }}, '*')\">Click Me (Blob)</button>";
     return {
       type: 'resource',
       resource: {
         uri: 'ui://example/blob-html',
         mimeType: 'text/html',
-        blob: btoa(html)
-      }
+        blob: btoa(html),
+      },
     };
   } else if (id === 'external') {
     return {
@@ -44,15 +45,17 @@ const fetchMcpResource = async (id: string): Promise<HtmlResourceBlock> => {
       resource: {
         uri: 'ui-app://example/external-site',
         mimeType: 'text/html',
-        text: 'https://vitepress.dev'
-      }
+        text: 'https://vitepress.dev',
+      },
     };
   }
   throw new Error('Unknown resource ID');
 };
 
 const App: React.FC = () => {
-  const [resourceBlock, setResourceBlock] = useState<HtmlResourceBlock | null>(null);
+  const [resourceBlock, setResourceBlock] = useState<HtmlResourceBlock | null>(
+    null,
+  );
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [lastAction, setLastAction] = useState<any>(null);
@@ -70,28 +73,40 @@ const App: React.FC = () => {
     setLoading(false);
   };
 
-  const handleGenericMcpAction = async (tool: string, params: Record<string, unknown>) => {
+  const handleGenericMcpAction = async (
+    tool: string,
+    params: Record<string, unknown>,
+  ) => {
     console.log(`Action received in host app - Tool: ${tool}, Params:`, params);
     setLastAction({ tool, params });
-    return { status: 'Action handled by host application', receivedParams: params };
+    return {
+      status: 'Action handled by host application',
+      receivedParams: params,
+    };
   };
 
   return (
     <div>
       <h1>MCP-UI Client Demo</h1>
-      <button onClick={() => loadResource('direct')}>Load Direct HTML (Text)</button>
-      <button onClick={() => loadResource('blob')}>Load Direct HTML (Blob)</button>
-      <button onClick={() => loadResource('external')}>Load External App (URL)</button>
+      <button onClick={() => loadResource('direct')}>
+        Load Direct HTML (Text)
+      </button>
+      <button onClick={() => loadResource('blob')}>
+        Load Direct HTML (Blob)
+      </button>
+      <button onClick={() => loadResource('external')}>
+        Load External App (URL)
+      </button>
 
       {loading && <p>Loading resource...</p>}
       {error && <p style={{ color: 'red' }}>Error: {error}</p>}
-      
+
       {resourceBlock && resourceBlock.resource && (
         <div style={{ marginTop: 20, border: '2px solid blue', padding: 10 }}>
           <h2>Rendering Resource: {resourceBlock.resource.uri}</h2>
-          <HtmlResource 
-            resource={resourceBlock.resource} 
-            onGenericMcpAction={handleGenericMcpAction} 
+          <HtmlResource
+            resource={resourceBlock.resource}
+            onGenericMcpAction={handleGenericMcpAction}
           />
         </div>
       )}
@@ -111,4 +126,4 @@ export default App;
 
 ---
 
-That’s it! Just use `<HtmlResource />` with the right props and you’re ready to render interactive HTML from MCP resources in your React app. If you need more details, check out the [HtmlResource Component](./html-resource.md) page. 
+That’s it! Just use `<HtmlResource />` with the right props and you’re ready to render interactive HTML from MCP resources in your React app. If you need more details, check out the [HtmlResource Component](./html-resource.md) page.

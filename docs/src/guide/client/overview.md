@@ -6,10 +6,10 @@ The `@mcp-ui/client` package helps you render `HtmlResourceBlock` objects from a
 
 - **`HtmlResource` (React Component)**:
   The primary component for rendering an interactive HTML resource. It handles:
-    - Decoding Base64 blobs if necessary.
-    - Rendering content using `srcDoc` for `ui://` URIs.
-    - Rendering content using `src` for `ui-app://` URIs.
-    - Setting up a `message` event listener to receive actions from `ui://` iframes.
+  - Decoding Base64 blobs if necessary.
+  - Rendering content using `srcDoc` for `ui://` URIs.
+  - Rendering content using `src` for `ui-app://` URIs.
+  - Setting up a `message` event listener to receive actions from `ui://` iframes.
 - **(Other potential exports might include context providers or hooks if the client SDK grows more complex).**
 
 ## Purpose
@@ -23,10 +23,12 @@ The `@mcp-ui/client` package helps you render `HtmlResourceBlock` objects from a
 This package uses Vite in library mode. It outputs ESM (`.mjs`) and UMD (`.js`) formats, plus TypeScript declarations (`.d.ts`). `react` and `@mcp-ui/shared` are externalized.
 
 To build just this package from the monorepo root:
+
 ```bash
 pnpm build --filter @mcp-ui/client
 ```
 
 See the following pages for more details:
+
 - [HtmlResource Component](./html-resource.md)
-- [Client SDK Usage & Examples](./usage-examples.md) 
+- [Client SDK Usage & Examples](./usage-examples.md)

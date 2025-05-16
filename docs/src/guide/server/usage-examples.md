@@ -17,7 +17,7 @@ The core function is `createHtmlResource`.
 ```typescript
 import {
   createHtmlResource,
-  PlaceholderEnum // Example import from shared, re-exported by server or directly via @mcp-ui/shared
+  PlaceholderEnum, // Example import from shared, re-exported by server or directly via @mcp-ui/shared
 } from '@mcp-ui/server';
 
 // Using a shared enum value (just for demonstration)
@@ -27,7 +27,7 @@ console.log('Shared Enum from server usage:', PlaceholderEnum.FOO);
 const resource1 = createHtmlResource({
   uri: 'ui://my-component/instance-1',
   content: { type: 'directHtml', htmlString: '<p>Hello World</p>' },
-  delivery: 'text'
+  delivery: 'text',
 });
 console.log('Resource 1:', JSON.stringify(resource1, null, 2));
 /* Output for Resource 1:
@@ -45,9 +45,12 @@ console.log('Resource 1:', JSON.stringify(resource1, null, 2));
 const resource2 = createHtmlResource({
   uri: 'ui://my-component/instance-2',
   content: { type: 'directHtml', htmlString: '<h1>Complex HTML</h1>' },
-  delivery: 'blob'
+  delivery: 'blob',
 });
-console.log('Resource 2 (blob will be Base64):', JSON.stringify(resource2, null, 2));
+console.log(
+  'Resource 2 (blob will be Base64):',
+  JSON.stringify(resource2, null, 2),
+);
 /* Output for Resource 2:
 {
   "type": "resource",
@@ -64,7 +67,7 @@ const dashboardUrl = 'https://my.analytics.com/dashboard/123';
 const resource3 = createHtmlResource({
   uri: 'ui-app://analytics-dashboard/main',
   content: { type: 'externalUrl', iframeUrl: dashboardUrl },
-  delivery: 'text'
+  delivery: 'text',
 });
 console.log('Resource 3:', JSON.stringify(resource3, null, 2));
 /* Output for Resource 3:
@@ -83,9 +86,12 @@ const chartApiUrl = 'https://charts.example.com/api?type=pie&data=1,2,3';
 const resource4 = createHtmlResource({
   uri: 'ui-app://live-chart/session-xyz',
   content: { type: 'externalUrl', iframeUrl: chartApiUrl },
-  delivery: 'blob'
+  delivery: 'blob',
 });
-console.log('Resource 4 (blob will be Base64 of URL):', JSON.stringify(resource4, null, 2));
+console.log(
+  'Resource 4 (blob will be Base64 of URL):',
+  JSON.stringify(resource4, null, 2),
+);
 /* Output for Resource 4:
 {
   "type": "resource",
@@ -104,6 +110,7 @@ console.log('Resource 4 (blob will be Base64 of URL):', JSON.stringify(resource4
 ## Error Handling
 
 The `createHtmlResource` function will throw errors if invalid combinations are provided, for example:
+
 - URI `ui://` with `content.type: 'externalUrl'`
 - URI `ui-app://` with `content.type: 'directHtml'`
 
@@ -112,10 +119,10 @@ try {
   createHtmlResource({
     uri: 'ui://should-be-direct-html',
     content: { type: 'externalUrl', iframeUrl: 'https://example.com' },
-    delivery: 'text'
+    delivery: 'text',
   });
 } catch (e: any) {
   console.error('Caught expected error:', e.message);
   // MCP SDK: URI must start with 'ui-app://' when content.type is 'externalUrl'. (Or similar, error message might vary slightly)
 }
-``` 
+```

@@ -22,10 +22,10 @@ export function User({ user }: { user: UserInfo }) {
   const data = months.map((m, i) => ({ month: m, tasks: taskCounts[i] }));
 
   const avg = Math.round(
-    taskCounts.reduce((sum, v) => sum + v, 0) / taskCounts.length
+    taskCounts.reduce((sum, v) => sum + v, 0) / taskCounts.length,
   );
   const reachPct = Math.round(
-    (taskCounts[taskCounts.length - 1] / Math.max(...taskCounts)) * 100
+    (taskCounts[taskCounts.length - 1] / Math.max(...taskCounts)) * 100,
   );
 
   const handleNudge = () => {
@@ -36,7 +36,7 @@ export function User({ user }: { user: UserInfo }) {
         params: {
           id: user.id,
           name: user.name,
-        }
+        },
       };
       // @ts-expect-error - window is not typed correctly
       window.parent.postMessage(message, '*');
@@ -54,9 +54,7 @@ export function User({ user }: { user: UserInfo }) {
         />
         <div>
           <h2 style={styles.name}>{user.name}</h2>
-          {user.location && (
-            <div style={styles.location}>{user.location}</div>
-          )}
+          {user.location && <div style={styles.location}>{user.location}</div>}
         </div>
       </div>
 
@@ -75,7 +73,10 @@ export function User({ user }: { user: UserInfo }) {
         </div>
         <div style={{ height: 120, width: '100%' }}>
           <ResponsiveContainer>
-            <AreaChart data={data} margin={{ top: 0, right: 0, left: 0, bottom: 0 }}>
+            <AreaChart
+              data={data}
+              margin={{ top: 0, right: 0, left: 0, bottom: 0 }}
+            >
               <defs>
                 <linearGradient id="colorTasks" x1="0" y1="0" x2="0" y2="1">
                   <stop offset="5%" stopColor="#1976d2" stopOpacity={0.4} />
@@ -128,7 +129,7 @@ export function User({ user }: { user: UserInfo }) {
       </button>
     </div>
   );
-};
+}
 
 const styles: Record<string, React.CSSProperties> = {
   card: {

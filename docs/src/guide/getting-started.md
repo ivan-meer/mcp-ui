@@ -10,6 +10,7 @@ This guide will walk you through setting up your development environment and usi
 ## Installation
 
 1.  **Clone the Monorepo**:
+
     ```bash
     git clone https://github.com/idosal/mcp-ui.git # TODO: Update this link
     cd mcp-ui
@@ -63,7 +64,7 @@ const myHtmlPayload = `<h1>Hello from Server!</h1><p>Timestamp: ${new Date().toI
 const resourceBlock = createHtmlResource({
   uri: 'ui://server-generated/item1',
   content: { type: 'directHtml', htmlString: myHtmlPayload },
-  delivery: 'text'
+  delivery: 'text',
 });
 
 console.log(JSON.stringify(resourceBlock, null, 2));
@@ -96,15 +97,18 @@ function App() {
           resource: {
             uri: 'ui://client-example/dynamic-section',
             mimeType: 'text/html',
-            text: '<h2>Dynamic Content via MCP-UI</h2><button onclick="alert(\'Clicked!\')">Click me</button>'
-          }
-        }
-      ]
+            text: '<h2>Dynamic Content via MCP-UI</h2><button onclick="alert(\'Clicked!\')">Click me</button>',
+          },
+        },
+      ],
     };
     setMcpData(fakeMcpResponse);
   }, []);
 
-  const handleResourceAction = async (tool: string, params: Record<string, unknown>) => {
+  const handleResourceAction = async (
+    tool: string,
+    params: Record<string, unknown>,
+  ) => {
     console.log(`Action from resource (tool: ${tool}):`, params);
     // Potentially send this action back to the server or handle locally
     return { status: 'Action received by client' };
@@ -114,15 +118,28 @@ function App() {
     <div className="App">
       <h1>MCP Client Application</h1>
       {mcpData?.content.map((item, index) => {
-        if (item.type === 'resource' && item.resource.mimeType === 'text/html') {
+        if (
+          item.type === 'resource' &&
+          item.resource.mimeType === 'text/html'
+        ) {
           return (
-            <div key={item.resource.uri || index} style={{ border: '1px solid #eee', margin: '10px', padding: '10px' }}>
+            <div
+              key={item.resource.uri || index}
+              style={{
+                border: '1px solid #eee',
+                margin: '10px',
+                padding: '10px',
+              }}
+            >
               <h3>Resource: {item.resource.uri}</h3>
-              <HtmlResource resource={item.resource} onGenericMcpAction={handleResourceAction} />
+              <HtmlResource
+                resource={item.resource}
+                onGenericMcpAction={handleResourceAction}
+              />
             </div>
           );
         }
-        return <p key={index}>Unsupported content item</p>; 
+        return <p key={index}>Unsupported content item</p>;
       })}
     </div>
   );
@@ -134,11 +151,13 @@ export default App;
 Next, explore the specific guides for each SDK package to learn more about their APIs and capabilities.
 
 To build specifically this package from the monorepo root:
+
 ```bash
 pnpm build -w @mcp-ui/shared
 ```
 
 To build specifically this package from the monorepo root:
+
 ```bash
 pnpm build -w @mcp-ui/server
 ```
@@ -146,6 +165,7 @@ pnpm build -w @mcp-ui/server
 See the [Server SDK Usage & Examples](./server/usage-examples.md) page for practical examples.
 
 To build specifically this package from the monorepo root:
+
 ```bash
 pnpm build -w @mcp-ui/client
 ```
@@ -170,4 +190,4 @@ Ensure `@mcp-ui/client` and its peer dependencies (`react`, `@mcp-ui/shared`, an
 pnpm add @mcp-ui/client @mcp-ui/shared react @modelcontextprotocol/sdk
 ```
 
-## Using the `<HtmlResource />` Component 
+## Using the `<HtmlResource />` Component

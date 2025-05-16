@@ -6,9 +6,9 @@ export default defineConfig({
   description: 'MCP-UI Client & Server SDK Documentation',
   base: process.env.VITEPRESS_BASE || '/', // For GitHub Pages deployment
 
-  vite: { // Vite specific config for VitePress
-    plugins: [
-    ]
+  vite: {
+    // Vite specific config for VitePress
+    plugins: [],
   },
 
   themeConfig: {
@@ -30,7 +30,7 @@ export default defineConfig({
           items: [
             { text: 'Introduction', link: '/guide/introduction' },
             { text: 'Getting Started', link: '/guide/getting-started' },
-            { text: 'Protocol Details', link: '/guide/protocol-details' }
+            { text: 'Protocol Details', link: '/guide/protocol-details' },
           ],
         },
         {
@@ -52,7 +52,10 @@ export default defineConfig({
           text: 'Client SDK (@mcp-ui/client)',
           items: [
             { text: 'Overview', link: '/guide/client/overview' },
-            { text: 'HtmlResource Component', link: '/guide/client/html-resource' },
+            {
+              text: 'HtmlResource Component',
+              link: '/guide/client/html-resource',
+            },
             { text: 'Usage & Examples', link: '/guide/client/usage-examples' },
             // { text: 'API', link: '/guide/client/api' } // Placeholder
           ],
@@ -61,19 +64,18 @@ export default defineConfig({
     },
 
     socialLinks: [
-      { icon: 'github', link: 'https://github.com/idosal/mcp-ui' } // TODO: Update this link
+      { icon: 'github', link: 'https://github.com/idosal/mcp-ui' }, // TODO: Update this link
     ],
 
     footer: {
       message: 'Released under the Apache 2.0 License.',
-      copyright: 'Copyright © 2025-present Ido Salomon'
-    }
+      copyright: 'Copyright © 2025-present Ido Salomon',
+    },
   },
   markdown: {
     // options for markdown-it-anchor
     // anchor: { permalink: anchor.permalink.headerLink() },
-
     // options for markdown-it-toc
     // toc: { includeLevel: [1, 2] },
-  }
-}); 
+  },
+});

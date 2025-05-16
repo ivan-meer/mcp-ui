@@ -41,12 +41,14 @@ Before you start working on MCP UI, make sure you have the following installed:
 ### Setting Up Your Development Environment
 
 1. Clone your forked repository:
+
    ```bash
    git clone https://github.com/your-username/git-mcp.git
    cd git-mcp
    ```
 
 2. Install dependencies:
+
    ```bash
    pnpm install
    ```
@@ -133,7 +135,7 @@ We welcome ideas for improvements and new features. To suggest an enhancement, o
 
 ### Code Style
 
-MCP UI uses [ESLint](https://eslint.org/) as its code style guide. Please ensure that your code follows these guidelines. 
+MCP UI uses [ESLint](https://eslint.org/) as its code style guide. Please ensure that your code follows these guidelines.
 
 ### Commit Messages
 
@@ -146,4 +148,3 @@ Write clear and concise commit messages that briefly describe the changes made i
 - [ESLint Style Guide](https://eslint.org/)
 
 Thank you once again for your interest in contributing to MCP UI. We look forward to collaborating with you and creating an even better project together!
-

@@ -3,18 +3,23 @@ import type { Resource } from '@modelcontextprotocol/sdk/types.js';
 
 export interface RenderHtmlResourceProps {
   resource: Partial<Resource>;
-  onGenericMcpAction: (tool: string, params: Record<string, unknown>) => Promise<unknown>;
+  onUiAction?: (
+    tool: string,
+    params: Record<string, unknown>,
+  ) => Promise<unknown>;
   style?: React.CSSProperties;
 }
 
 export const HtmlResource: React.FC<RenderHtmlResourceProps> = ({
   resource,
-  onGenericMcpAction,
+  onUiAction,
   style,
 }) => {
   const [htmlString, setHtmlString] = useState<string | null>(null);
   const [iframeSrc, setIframeSrc] = useState<string | null>(null);
-  const [iframeRenderMode, setIframeRenderMode] = useState<'srcDoc' | 'src'>('srcDoc');
+  const [iframeRenderMode, setIframeRenderMode] = useState<'srcDoc' | 'src'>(
+    'srcDoc',
+  );
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const iframeRef = useRef<HTMLIFrameElement>(null);
@@ -27,8 +32,8 @@ export const HtmlResource: React.FC<RenderHtmlResourceProps> = ({
       setIframeSrc(null);
       setIframeRenderMode('srcDoc'); // Default to srcDoc
 
-      if (resource.mimeType !== "text/html") {
-        setError("Resource is not of type text/html.");
+      if (resource.mimeType !== 'text/html') {
+        setError('Resource is not of type text/html.');
         setIsLoading(false);
         return;
       }
@@ -40,23 +45,27 @@ export const HtmlResource: React.FC<RenderHtmlResourceProps> = ({
         } else if (typeof resource.blob === 'string') {
           try {
             const decodedUrl = new TextDecoder().decode(
-              Uint8Array.from(atob(resource.blob), (c) => c.charCodeAt(0))
+              Uint8Array.from(atob(resource.blob), (c) => c.charCodeAt(0)),
             );
             if (decodedUrl.trim() !== '') {
               setIframeSrc(decodedUrl);
             } else {
-              setError("Decoded blob for ui-app:// URL is empty.");
+              setError('Decoded blob for ui-app:// URL is empty.');
             }
           } catch (e) {
-            console.error("Error decoding base64 blob for ui-app URL:", e);
-            setError("Error decoding URL from blob for ui-app://.");
+            console.error('Error decoding base64 blob for ui-app URL:', e);
+            setError('Error decoding URL from blob for ui-app://.');
           }
         } else {
-          setError("ui-app:// resource expects a non-empty text or blob field containing the URL.");
+          setError(
+            'ui-app:// resource expects a non-empty text or blob field containing the URL.',
+          );
         }
       } else if (
         resource.uri?.startsWith('ui://') ||
-        (!resource.uri && (typeof resource.text === 'string' || typeof resource.blob === 'string'))
+        (!resource.uri &&
+          (typeof resource.text === 'string' ||
+            typeof resource.blob === 'string'))
       ) {
         setIframeRenderMode('srcDoc');
         if (typeof resource.text === 'string') {
@@ -64,21 +73,23 @@ export const HtmlResource: React.FC<RenderHtmlResourceProps> = ({
         } else if (typeof resource.blob === 'string') {
           try {
             const decodedHtml = new TextDecoder().decode(
-              Uint8Array.from(atob(resource.blob), (c) => c.charCodeAt(0))
+              Uint8Array.from(atob(resource.blob), (c) => c.charCodeAt(0)),
             );
             setHtmlString(decodedHtml);
           } catch (e) {
-            console.error("Error decoding base64 blob for HTML content:", e);
-            setError("Error decoding HTML content from blob.");
+            console.error('Error decoding base64 blob for HTML content:', e);
+            setError('Error decoding HTML content from blob.');
           }
         } else if (resource.uri?.startsWith('ui://')) {
           // This case implies uri is 'ui://' but no text AND no blob.
-          setError("ui:// HTML resource requires text or blob content.");
+          setError('ui:// HTML resource requires text or blob content.');
         }
         // If !resource.uri, the outer condition ensures text or blob is present.
       } else {
         // MimeType is text/html, but no uri, or URI schema not handled, and no direct text/blob.
-        setError("HTML resource has no suitable content (text, blob, or interpretable URI).");
+        setError(
+          'HTML resource has no suitable content (text, blob, or interpretable URI).',
+        );
       }
       setIsLoading(false);
     };
@@ -89,18 +100,20 @@ export const HtmlResource: React.FC<RenderHtmlResourceProps> = ({
   useEffect(() => {
     function handleMessage(event: MessageEvent) {
       // Only process the message if it came from this specific iframe
-      if (iframeRef.current && event.source === iframeRef.current.contentWindow) {
-        if (event.data?.tool) {
-          onGenericMcpAction(event.data.tool, event.data.params || {})
-            .catch(err => {
-              console.error("Error from onGenericMcpAction in RenderHtmlResource:", err);
-            });
-        }
+      if (
+        onUiAction &&
+        iframeRef.current &&
+        event.source === iframeRef.current.contentWindow &&
+        event.data?.tool
+      ) {
+        onUiAction(event.data.tool, event.data.params || {}).catch((err) => {
+          console.error('Error from onUiAction in RenderHtmlResource:', err);
+        });
       }
     }
     window.addEventListener('message', handleMessage);
     return () => window.removeEventListener('message', handleMessage);
-  }, [onGenericMcpAction]);
+  }, [onUiAction]);
 
   if (isLoading) return <p>Loading HTML content...</p>;
   if (error) return <p className="text-red-500">{error}</p>;
@@ -124,7 +137,9 @@ export const HtmlResource: React.FC<RenderHtmlResourceProps> = ({
   } else if (iframeRenderMode === 'src') {
     if (iframeSrc === null || iframeSrc === undefined) {
       if (!isLoading && !error) {
-        return <p className="text-orange-500">No URL provided for HTML resource.</p>;
+        return (
+          <p className="text-orange-500">No URL provided for HTML resource.</p>
+        );
       }
       return null;
     }
@@ -140,4 +155,4 @@ export const HtmlResource: React.FC<RenderHtmlResourceProps> = ({
   }
 
   return <p className="text-gray-500">Initializing HTML resource display...</p>;
-}; 
+};

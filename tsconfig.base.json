@@ -17,4 +17,4 @@
     "isolatedModules": true,
     "types": ["vitest/globals"]
   }
-} 
+}

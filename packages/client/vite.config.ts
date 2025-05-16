@@ -8,12 +8,8 @@ export default defineConfig({
     react(),
     dts({
       insertTypesEntry: true,
-      exclude: [
-        "**/__tests__/**",
-        "**/*.test.ts",
-        "**/*.spec.ts"
-      ]
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      exclude: ['**/__tests__/**', '**/*.test.ts', '**/*.spec.ts'],
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     }) as any,
   ],
   build: {
@@ -21,16 +17,22 @@ export default defineConfig({
       entry: path.resolve(__dirname, 'src/index.ts'),
       name: 'McpUiClient',
       formats: ['es', 'umd'],
-      fileName: (format) => `index.${format === 'es' ? 'mjs' : format === 'umd' ? 'js' : format + '.js'}`,
+      fileName: (format) =>
+        `index.${format === 'es' ? 'mjs' : format === 'umd' ? 'js' : format + '.js'}`,
     },
     rollupOptions: {
-      external: ['react', 'react/jsx-runtime', '@mcp-ui/shared', /@modelcontextprotocol\/sdk(\/.*)?/],
+      external: [
+        'react',
+        'react/jsx-runtime',
+        '@mcp-ui/shared',
+        /@modelcontextprotocol\/sdk(\/.*)?/,
+      ],
       output: {
         globals: {
           react: 'React',
           'react/jsx-runtime': 'jsxRuntime',
           '@mcp-ui/shared': 'McpUiShared',
-          '@modelcontextprotocol/sdk': 'ModelContextProtocolSDK'
+          '@modelcontextprotocol/sdk': 'ModelContextProtocolSDK',
         },
       },
     },
@@ -38,4 +40,4 @@ export default defineConfig({
   },
   // Vitest specific config can go here if not using a separate vitest.config.ts for the package
   // test: { ... }
-}); 
+});

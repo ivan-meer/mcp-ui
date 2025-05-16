@@ -9,11 +9,7 @@ export default defineConfig({
     dts({
       insertTypesEntry: true,
       tsconfigPath: path.resolve(__dirname, 'tsconfig.json'),
-      exclude: [
-        "**/__tests__/**",
-        "**/*.test.ts",
-        "**/*.spec.ts"
-      ]
+      exclude: ['**/__tests__/**', '**/*.test.ts', '**/*.spec.ts'],
     }),
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   ],
@@ -24,16 +20,7 @@ export default defineConfig({
       formats: ['es', 'cjs'], // cjs for Node compatibility
       fileName: (format) => `index.${format === 'es' ? 'mjs' : 'cjs'}`,
     },
-    rollupOptions: {
-      // Externalize deps that shouldn't be bundled
-      external: ['@mcp-ui/shared', /^node:.*/], // Externalize node built-ins
-      output: {
-        globals: {
-          '@mcp-ui/shared': 'McpUiShared',
-        },
-      },
-    },
-    target: 'node18', // Target Node.js 18
+    target: 'node18',
     sourcemap: true,
   },
-}); 
+});

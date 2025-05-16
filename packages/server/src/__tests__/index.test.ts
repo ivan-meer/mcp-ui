@@ -23,14 +23,19 @@ describe('@mcp-ui/server', () => {
         delivery: 'blob' as const,
       };
       const resource = createHtmlResource(options);
-      expect(resource.resource.blob).toBe(Buffer.from('<h1>Blob</h1>').toString('base64'));
+      expect(resource.resource.blob).toBe(
+        Buffer.from('<h1>Blob</h1>').toString('base64'),
+      );
       expect(resource.resource.text).toBeUndefined();
     });
 
     it('should create a text-based external URL resource', () => {
       const options = {
         uri: 'ui-app://test-url',
-        content: { type: 'externalUrl' as const, iframeUrl: 'https://example.com' },
+        content: {
+          type: 'externalUrl' as const,
+          iframeUrl: 'https://example.com',
+        },
         delivery: 'text' as const,
       };
       const resource = createHtmlResource(options);
@@ -42,11 +47,16 @@ describe('@mcp-ui/server', () => {
     it('should create a blob-based external URL resource', () => {
       const options = {
         uri: 'ui-app://test-url-blob',
-        content: { type: 'externalUrl' as const, iframeUrl: 'https://example.com/blob' },
+        content: {
+          type: 'externalUrl' as const,
+          iframeUrl: 'https://example.com/blob',
+        },
         delivery: 'blob' as const,
       };
       const resource = createHtmlResource(options);
-      expect(resource.resource.blob).toBe(Buffer.from('https://example.com/blob').toString('base64'));
+      expect(resource.resource.blob).toBe(
+        Buffer.from('https://example.com/blob').toString('base64'),
+      );
       expect(resource.resource.text).toBeUndefined();
     });
 
@@ -56,16 +66,23 @@ describe('@mcp-ui/server', () => {
         content: { type: 'directHtml' as const, htmlString: '<p>Test</p>' },
         delivery: 'text' as const,
       };
-      expect(() => createHtmlResource(options)).toThrow("MCP SDK: URI must start with 'ui://' when content.type is 'directHtml'.");
+      expect(() => createHtmlResource(options)).toThrow(
+        "MCP SDK: URI must start with 'ui://' when content.type is 'directHtml'.",
+      );
     });
 
     it('should throw error for invalid URI prefix with externalUrl', () => {
       const options = {
         uri: 'invalid://test-url',
-        content: { type: 'externalUrl' as const, iframeUrl: 'https://example.com' },
+        content: {
+          type: 'externalUrl' as const,
+          iframeUrl: 'https://example.com',
+        },
         delivery: 'text' as const,
       };
-      expect(() => createHtmlResource(options)).toThrow("MCP SDK: URI must start with 'ui-app://' when content.type is 'externalUrl'.");
+      expect(() => createHtmlResource(options)).toThrow(
+        "MCP SDK: URI must start with 'ui-app://' when content.type is 'externalUrl'.",
+      );
     });
   });
-}); 
+});

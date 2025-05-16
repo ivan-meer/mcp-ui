@@ -19,13 +19,13 @@ This is the main object exchanged between server and client:
 
 ```typescript
 interface HtmlResource {
-  type: "resource";
+  type: 'resource';
   resource: {
-    uri: string;        // e.g., "ui://my-component/1" or "ui-app://my-app/instance-1"
-    mimeType: "text/html";
-    text?: string;      // HTML content OR external app URL
-    blob?: string;      // Base64 encoded HTML content or external app URL
-  }
+    uri: string; // e.g., "ui://my-component/1" or "ui-app://my-app/instance-1"
+    mimeType: 'text/html';
+    text?: string; // HTML content OR external app URL
+    blob?: string; // Base64 encoded HTML content or external app URL
+  };
 }
 ```
 
@@ -92,11 +92,14 @@ const MyComponent = ({ mcpResource }) => {
     return { status: 'Action handled' };
   };
 
-  if (mcpResource.type === 'resource' && mcpResource.resource.mimeType === 'text/html') {
+  if (
+    mcpResource.type === 'resource' &&
+    mcpResource.resource.mimeType === 'text/html'
+  ) {
     return (
-      <HtmlResource 
-        resource={mcpResource.resource} 
-        onGenericMcpAction={handleAction} 
+      <HtmlResource
+        resource={mcpResource.resource}
+        onGenericMcpAction={handleAction}
       />
     );
   }

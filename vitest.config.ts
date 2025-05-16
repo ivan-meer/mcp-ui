@@ -16,8 +16,8 @@ export default defineConfig({
         'packages/**/*.d.ts',
         'packages/**/__tests__/**',
         'packages/**/dist/**',
-        'apps/docs/**'
+        'apps/docs/**',
       ],
     },
   },
-}); 
+});

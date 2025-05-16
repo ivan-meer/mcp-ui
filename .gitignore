@@ -128,8 +128,8 @@ out
 dist
 
 # VitePress
-apps/docs/src/.vitepress/dist
-apps/docs/src/.vitepress/cache
+docs/src/.vitepress/dist
+docs/src/.vitepress/cache
 
 # Monorepo specific
 /packages/**/dist
