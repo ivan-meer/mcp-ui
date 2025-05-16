@@ -4,11 +4,13 @@ import type { Resource } from '@modelcontextprotocol/sdk/types.js';
 export interface RenderHtmlResourceProps {
   resource: Partial<Resource>;
   onGenericMcpAction: (tool: string, params: Record<string, unknown>) => Promise<unknown>;
+  style?: React.CSSProperties;
 }
 
 export const HtmlResource: React.FC<RenderHtmlResourceProps> = ({
   resource,
   onGenericMcpAction,
+  style,
 }) => {
   const [htmlString, setHtmlString] = useState<string | null>(null);
   const [iframeSrc, setIframeSrc] = useState<string | null>(null);
@@ -112,7 +114,7 @@ export const HtmlResource: React.FC<RenderHtmlResourceProps> = ({
         ref={iframeRef}
         srcDoc={htmlString}
         sandbox="allow-scripts"
-        style={{ width: '100%', minHeight: 200, border: '1px solid #ccc' }}
+        style={{ width: '100%', minHeight: 200, ...style }}
         title="MCP HTML Resource (Embedded Content)"
       />
     );
@@ -127,8 +129,8 @@ export const HtmlResource: React.FC<RenderHtmlResourceProps> = ({
       <iframe
         ref={iframeRef}
         src={iframeSrc}
-        sandbox="allow-scripts allow-same-origin" // allow-same-origin might be needed for external sites if they use it
-        style={{ width: '100%', minHeight: 200, border: '1px solid #ccc' }}
+        sandbox="allow-scripts"
+        style={{ width: '100%', minHeight: 200, ...style }}
         title="MCP HTML Resource (URL)"
       />
     );
