@@ -68,6 +68,16 @@ export class MyMCP extends McpAgent {
 
 export default {
 	fetch(request: Request, env: Env, ctx: ExecutionContext) {
+		if (request.method === 'OPTIONS') {
+			return new Response(null, {
+			  headers: {
+				'Access-Control-Allow-Origin': '*',
+				'Access-Control-Allow-Methods': 'GET,HEAD,OPTIONS',
+				'Access-Control-Allow-Headers': '*',
+			  }
+			})
+		  }
+
 		const url = new URL(request.url);
 		ctx.props.requestUrl = request.url;
 
