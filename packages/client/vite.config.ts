@@ -8,7 +8,13 @@ export default defineConfig({
     react(),
     dts({
       insertTypesEntry: true,
-    }),
+      exclude: [
+        "**/__tests__/**",
+        "**/*.test.ts",
+        "**/*.spec.ts"
+      ]
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    }) as any,
   ],
   build: {
     lib: {
@@ -28,7 +34,7 @@ export default defineConfig({
         },
       },
     },
-    sourcemap: true,
+    sourcemap: false,
   },
   // Vitest specific config can go here if not using a separate vitest.config.ts for the package
   // test: { ... }
