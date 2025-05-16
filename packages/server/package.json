@@ -1,4 +1,5 @@
 {
+  "name": "@mcp-ui/server",
   "version": "0.0.0-semantically-released",
   "private": false,
   "description": "mcp-ui Server SDK",
