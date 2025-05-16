@@ -76,8 +76,20 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Build all packages
-        run: pnpm --filter=\"./packages/*\" build
-        
+        run: pnpm --filter="./packages/*" build
+
+      - name: List contents of client dist
+        run: |
+          echo "--- Listing packages/client/dist ---"
+          ls -R packages/client/dist || echo "packages/client/dist not found or empty"
+          echo "--- End of packages/client/dist ---"
+      
+      - name: List contents of server dist
+        run: |
+          echo "--- Listing packages/server/dist ---"
+          ls -R packages/server/dist || echo "packages/server/dist not found or empty"
+          echo "--- End of packages/server/dist ---"
+
       - name: Semantic Release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Provided by Actions, used by @semantic-release/github and @semantic-release/git
