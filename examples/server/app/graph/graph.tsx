@@ -196,10 +196,11 @@ const CustomAvatarXAxisTick = (props: { x: number, y: number, payload: { value: 
     // @ts-expect-error - window is not typed correctly
     if (memberInfo && window.parent) {
       const message = {
-        type: 'sprintGraphAvatarClick',
-        teamMemberId: memberInfo.id,
-        teamMemberName: memberInfo.name,
-        avatarUrl: memberInfo.avatarUrl
+        tool: 'nudge_team_member',
+        data: {
+          teamMemberId: memberInfo.id,
+          teamMemberName: memberInfo.name,
+        }
       };
       // @ts-expect-error - window is not typed correctly
       window.parent.postMessage(message, '*');
