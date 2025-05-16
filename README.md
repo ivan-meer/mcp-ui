@@ -1,7 +1,7 @@
 # Model Context Protocol UI SDK
 
-![Client Version](https://img.shields.io/npm/v/@mcp-ui/client?label=client&color=blue)
-![Server Version](https://img.shields.io/npm/v/@mcp-ui/client?label=server&color=blue)
+[![Server Version](https://img.shields.io/npm/v/@mcp-ui/server?label=server&color=green)](https://www.npmjs.com/package/@mcp-ui/server)
+[![Client Version](https://img.shields.io/npm/v/@mcp-ui/client?label=client&color=blue)](https://www.npmjs.com/package/@mcp-ui/client)
 
 **mcp-ui** is a TypeScript SDK that adds UI capabilities to the [Model-Context Protocol](https://modelcontextprotocol.io/introduction) (MCP). It provides packages to create interactive HTML components on the server and handle their rendering on the client.
 
