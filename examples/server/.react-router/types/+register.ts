@@ -13,4 +13,5 @@ declare module "react-router" {
 type Params = {
   "/": {};
   "/task": {};
+  "/user": {};
 };

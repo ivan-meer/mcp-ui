@@ -1,12 +1,12 @@
-# MCP-UI SDK Monorepo
+# Model Context Protocol UI SDK
 
-**mcp-ui** is a TypeScript SDK monorepo for building applications that use the Model-Context Protocol (MCP) to deliver interactive HTML components. It provides packages for shared utilities, client-side rendering (React), and server-side resource creation.
+**mcp-ui** is a TypeScript SDK for building applications that use the Model-Context Protocol (MCP) to deliver interactive HTML components. It provides packages for client-side handling, and server-side resource creation.
 
 ## Core Concept: Interactive HTML Resources
 
-The primary goal of this SDK is to facilitate the creation and rendering of `HtmlResourceBlock` objects. These blocks are designed to be part of an MCP response, allowing a model or tool to send structured HTML content to a client for display.
+The primary goal of this SDK is to facilitate the creation and rendering of `HtmlResource` objects. These blocks are designed to be part of an MCP response, allowing a model or tool to send structured HTML content to a client for display.
 
-### The `HtmlResourceBlock`
+### The `HtmlResource`
 
 This is the fundamental object exchanged. It has the following structure (simplified):
 
@@ -47,24 +47,6 @@ interface HtmlResourceBlock {
    ```bash
     pnpm install
    ```
-
-## Available Scripts (from Root)
-
-*   `pnpm dev`: Run development mode for all relevant packages (e.g., starts Vite dev server for packages that have one).
-*   `pnpm build`: Build all packages.
-*   `pnpm preview`: Preview Vite builds for packages that support it.
-*   `pnpm test`: Run all Vitest tests.
-*   `pnpm test:watch`: Run Vitest in watch mode.
-*   `pnpm coverage`: Generate test coverage reports.
-*   `pnpm lint`: Lint all packages.
-*   `pnpm lint:fix`: Fix lint issues.
-*   `pnpm format`: Format code with Prettier.
-*   `pnpm version:patch`: Patch version all packages using Changesets. Run `pnpm install` afterwards.
-*   `pnpm publish-packages`: Build and publish all packages using Changesets (requires NPM authentication).
-*   `pnpm docs:dev`: Start the VitePress development server.
-*   `pnpm docs:build`: Build the VitePress site.
-*   `pnpm docs:preview`: Preview the built VitePress site.
-
 ## How to Use
 
 ### Server-Side (`@mcp-ui/server`)
@@ -129,10 +111,6 @@ const MyComponent: React.FC<{ mcpResource: HtmlResourceBlock }> = ({ mcpResource
   }
   return <p>Unsupported resource type.</p>;
 };
-
-// Example of how you might receive and render a resource:
-// const resourceFromServer = { /* ... received HtmlResourceBlock ... */ };
-// <MyComponent mcpResource={resourceFromServer} />
 ```
 
 See the specific documentation for each package for more detailed API information and advanced usage.

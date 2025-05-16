@@ -22,7 +22,7 @@ declare module "react-router" {
 // Define our MCP agent with tools
 export class MyMCP extends McpAgent {
 	server = new McpServer({
-		name: "Authless Calculator",
+		name: "MCP UI Example",
 		version: "1.0.0",
 	});
 
@@ -119,6 +119,29 @@ export class MyMCP extends McpAgent {
 				// Generate a unique URI for this specific invocation of the file picker UI.
 				// This URI identifies the resource block itself, not the content of the iframe.
 				const uniqueUiAppUri = `ui-app://task-manager/${Date.now()}`;
+				const resourceBlock = createHtmlResource({
+				  uri: uniqueUiAppUri,
+				  content: { type: "externalUrl", iframeUrl: pickerPageUrl },
+				  delivery: "text" // The URL itself is delivered as text
+				});
+		  
+				return {
+				  content: [resourceBlock]
+				};
+			  }
+		);
+		this.server.tool(
+			"show_user_status",
+			"Displays a UI for the user to see the status of a user and their tasks",
+			{ id: z.string(), name: z.string(), avatarUrl: z.string() },
+			async ({ id, name, avatarUrl }) => {
+				const scheme = requestHost.includes('localhost') || requestHost.includes('127.0.0.1') ? 'http' : 'https';
+				
+				const pickerPageUrl = `${scheme}://${requestHost}/user?id=${id}&name=${name}&avatarUrl=${avatarUrl}`;
+		  
+				// Generate a unique URI for this specific invocation of the file picker UI.
+				// This URI identifies the resource block itself, not the content of the iframe.
+				const uniqueUiAppUri = `ui-app://user-profile/${Date.now()}`;
 				const resourceBlock = createHtmlResource({
 				  uri: uniqueUiAppUri,
 				  content: { type: "externalUrl", iframeUrl: pickerPageUrl },

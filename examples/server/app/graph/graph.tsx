@@ -196,10 +196,11 @@ const CustomAvatarXAxisTick = (props: { x: number, y: number, payload: { value: 
     // @ts-expect-error - window is not typed correctly
     if (memberInfo && window.parent) {
       const message = {
-        tool: 'nudge_team_member',
+        tool: 'show_user_status',
         params: {
           id: memberInfo.id,
           name: memberInfo.name,
+          avatarUrl: memberInfo.avatarUrl,
         }
       };
       // @ts-expect-error - window is not typed correctly
