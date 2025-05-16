@@ -1,3 +1,10 @@
+## [1.0.5](https://github.com/idosal/mcp-ui/compare/v1.0.4...v1.0.5) (2025-05-16)
+
+
+### Bug Fixes
+
+* **client:** styling ([6ff9b68](https://github.com/idosal/mcp-ui/commit/6ff9b685fd1be770fd103943e45275e9ec86905c))
+
 ## [1.0.4](https://github.com/idosal/mcp-ui/compare/v1.0.3...v1.0.4) (2025-05-16)
 
 
