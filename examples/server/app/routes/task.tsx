@@ -1,12 +1,8 @@
-import React from 'react';
-import type { Route } from "./+types/task";
 import { Graph } from '../graph/graph';
 
-
-export function meta({}: Route.MetaArgs) {
+export function meta() {
     return [
-      { title: "Order Uber" },
-      { name: "description", content: "Order Uber!" },
+      { title: "Task Status" },
     ];
   }
   
@@ -18,6 +14,6 @@ export function meta({}: Route.MetaArgs) {
     return { url: request.url, host, pathname };
   };
 
-  export default function Uber({ loaderData }: Route.ComponentProps) {
+  export default function Task() {
     return <Graph />;
   }
