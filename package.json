@@ -1,6 +1,6 @@
 {
   "name": "mcp-ui",
-  "private": false,
+  "private": true,
   "scripts": {
     "preinstall": "npx only-allow pnpm",
     "dev": "pnpm --filter=\"./packages/*\" --parallel dev",
@@ -22,6 +22,7 @@
     "@semantic-release/changelog": "^6.0.3",
     "@semantic-release/git": "^10.0.1",
     "@semantic-release/npm": "^12.0.0",
+    "@semantic-release/exec": "^6.0.3",
     "@swc/core": "^1.4.0",
     "@testing-library/jest-dom": "^6.1.5",
     "@testing-library/react": "^14.1.2",
@@ -49,5 +50,6 @@
     "vitepress": "^1.0.0-rc.44",
     "vitest": "^1.0.4"
   },
-  "packageManager": "pnpm@8.10.2"
+  "packageManager": "pnpm@8.10.2",
+  "license": "Apache-2.0"
 }
