@@ -122,8 +122,7 @@ out
 
 # Gatsby cache
 .cache/
-# Gatsby public directory
-public/
+
 
 # Vite build output
 dist
