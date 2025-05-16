@@ -1,0 +1,411 @@
+import React, { useState, useMemo } from 'react';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
+
+interface TaskDetails {
+  remaining: number;
+  toDo: number;
+  inProgress: number;
+  blocked: number;
+}
+
+type TeamMemberId = 'alice' | 'bob' | 'charlie';
+
+interface TeamMemberInfo {
+  id: TeamMemberId;
+  name: string;
+  color: string;
+  gradientId: string;
+  avatarUrl: string;
+}
+
+interface SprintDayDataEntry {
+  date: string;
+  alice: TaskDetails;
+  bob: TaskDetails;
+  charlie: TaskDetails;
+  [key: string]: any;
+}
+
+interface ProcessedChartItemFullView {
+  date: string;
+  toDo: number;
+  inProgress: number;
+  blocked: number;
+}
+
+interface ProcessedChartItemZoomedView {
+  teamMemberId: TeamMemberId;
+  teamMemberName: string;
+  toDo: number;
+  inProgress: number;
+  blocked: number;
+  originalColor: string;
+}
+
+const teamMembers: TeamMemberInfo[] = [
+  { id: 'alice', name: 'Alice', color: '#26A69A', gradientId: 'gradAlice', avatarUrl: '/avatar1.png' }, 
+  { id: 'bob', name: 'Bob', color: '#42A5F5', gradientId: 'gradBob', avatarUrl: '/avatar2.png' },     
+  { id: 'charlie', name: 'Charlie', color: '#D32F2F', gradientId: 'gradCharlie', avatarUrl: '/avatar3.png' } 
+];
+
+const statusMeta = {
+  toDo: { name: 'To Do', color: '#B0BEC5' },       // Light Grey/Blue - Neutral
+  inProgress: { name: 'In Progress', color: '#FFCA28' }, // Amber - Active
+  blocked: { name: 'Blocked', color: '#EF5350' }       // Soft Red - Urgent
+};
+const statusKeys = ['toDo', 'inProgress', 'blocked'] as const;
+
+// Original full sprint data
+const sprintDataFull: SprintDayDataEntry[] = [
+  { date: '7 days ago', alice: { remaining: 8, toDo: 3, inProgress: 3, blocked: 2 }, bob: { remaining: 7, toDo: 2, inProgress: 3, blocked: 2 }, charlie: { remaining: 9, toDo: 4, inProgress: 3, blocked: 2 } },
+  { date: '6 days ago', alice: { remaining: 7, toDo: 2, inProgress: 3, blocked: 2 }, bob: { remaining: 6, toDo: 2, inProgress: 2, blocked: 2 }, charlie: { remaining: 8, toDo: 3, inProgress: 3, blocked: 2 } },
+  { date: '5 days ago', alice: { remaining: 9, toDo: 3, inProgress: 4, blocked: 2 }, bob: { remaining: 8, toDo: 3, inProgress: 3, blocked: 2 }, charlie: { remaining: 10, toDo: 4, inProgress: 4, blocked: 2 } },
+  { date: '4 days ago', alice: { remaining: 6, toDo: 1, inProgress: 2, blocked: 3 }, bob: { remaining: 9, toDo: 3, inProgress: 3, blocked: 3 }, charlie: { remaining: 11, toDo: 5, inProgress: 3, blocked: 3 } },
+  { date: '3 days ago', alice: { remaining: 10, toDo: 4, inProgress: 3, blocked: 3 }, bob: { remaining: 9, toDo: 3, inProgress: 3, blocked: 3 }, charlie: { remaining: 12, toDo: 5, inProgress: 4, blocked: 3 } },
+  { date: '2 days ago', alice: { remaining: 11, toDo: 4, inProgress: 4, blocked: 3 }, bob: { remaining: 10, toDo: 3, inProgress: 4, blocked: 3 }, charlie: { remaining: 13, toDo: 6, inProgress: 4, blocked: 3 } },
+  { date: 'Today', alice: { remaining: 12, toDo: 5, inProgress: 4, blocked: 3 }, bob: { remaining: 11, toDo: 4, inProgress: 4, blocked: 3 }, charlie: { remaining: 14, toDo: 6, inProgress: 5, blocked: 3 } },
+];
+
+// Process data for the full view (stacked by STATUS, grouped by date)
+const originalProcessedDataFullView: ProcessedChartItemFullView[] = sprintDataFull.map((day) => {
+  let dayTotalToDo = 0;
+  let dayTotalInProgress = 0;
+  let dayTotalBlocked = 0;
+  teamMembers.forEach(member => {
+    dayTotalToDo += day[member.id]?.toDo || 0;
+    dayTotalInProgress += day[member.id]?.inProgress || 0;
+    dayTotalBlocked += day[member.id]?.blocked || 0;
+  });
+  return {
+    date: day.date,
+    toDo: dayTotalToDo,
+    inProgress: dayTotalInProgress,
+    blocked: dayTotalBlocked,
+  };
+});
+
+// Mapping statuses to team member gradients for the full view bar colors
+const fullViewStatusToGradientMapping: Record<typeof statusKeys[number], string> = {
+  toDo: teamMembers[0].gradientId,       // Alice's gradient (Teal)
+  inProgress: teamMembers[1].gradientId, // Bob's gradient (Blue)
+  blocked: teamMembers[2].gradientId,    // Charlie's gradient (Red)
+};
+
+// --- Custom Rounded Bar Shape (used for both views) ---
+const RoundedBar = (props: any) => {
+  const { fill, x, y, width, height } = props;
+  // Use the existing radius calculation. This radius will be applied to all four corners.
+  const radius = Math.min(Math.abs(width), Math.abs(height)) / 6;
+
+  if (height === 0) return null; 
+  
+  // Fallback for very small bars where path calculations might lead to visual glitches.
+  // This condition remains the same.
+  if (Math.abs(height) < radius * 1.5 || Math.abs(width) < radius * 1.5) {
+    return <rect x={x} y={y} width={width} height={height} fill={fill} />;
+  }
+
+  if (height < 0) { // Handle negative values - path unchanged as not currently used and not specified in request
+    const absHeight = Math.abs(height);
+    // This existing path rounds the two corners at the "bottom" (y + absHeight) of the negative bar.
+    // For full consistency, if negative bars were used and needed all 4 corners rounded, this would also need changing.
+    const path = `
+      M ${x},${y}
+      L ${x + width},${y}
+      A ${radius},${radius} 0 0 0 ${x + width - radius},${y + absHeight}
+      L ${x + radius},${y + absHeight}
+      A ${radius},${radius} 0 0 0 ${x},${y}
+      Z
+    `;
+    return <path d={path} fill={fill} />;
+  }
+
+  const path = `
+    M ${x + radius},${y}
+    L ${x + width - radius},${y}
+    A ${radius},${radius} 0 0 1 ${x + width},${y + radius}
+    L ${x + width},${y + height - radius}
+    A ${radius},${radius} 0 0 1 ${x + width - radius},${y + height}
+    L ${x + radius},${y + height}
+    A ${radius},${radius} 0 0 1 ${x},${y + height - radius}
+    L ${x},${y + radius}
+    A ${radius},${radius} 0 0 1 ${x + radius},${y}
+    Z
+  `;
+  return <path d={path} fill={fill} />;
+};
+
+// --- Custom Tooltip ---
+const CustomTooltip = ({ active, payload, label, isZoomedView }: any) => {
+  if (active && payload && payload.length) {
+    const commonStyle = {
+      backgroundColor: 'rgba(40, 40, 40, 0.92)',
+      padding: '10px 14px',
+      border: 'none',
+      borderRadius: '8px',
+      boxShadow: '0 4px 12px rgba(0,0,0,0.25)',
+      fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
+      fontSize: '13px',
+      color: '#FFFFFF',
+      minWidth: '150px' // Adjusted min width for potentially more content
+    };
+
+    if (isZoomedView) {
+      const statusName = payload[0].name;
+      const taskCount = payload[0].value;
+
+      return (
+        <div style={commonStyle}>
+          <p style={{ margin: 0, fontWeight: '600', opacity: 0.85, fontSize: '0.9em', marginBottom: '5px' }}>{label}</p>
+          <p style={{ margin: 0, fontWeight: 'bold', fontSize: '1.05em' }}>
+            {taskCount} {statusName}
+          </p>
+        </div>
+      );
+    } else {
+      const dayData = sprintDataFull.find(d => d.date === label);
+      if (!dayData) return null;
+
+      let totalDayToDo = 0;
+      let totalDayInProgress = 0;
+      let totalDayBlocked = 0;
+      let grandTotalDayRemaining = 0;
+
+      teamMembers.forEach(member => {
+        totalDayToDo += dayData[member.id]?.toDo || 0;
+        totalDayInProgress += dayData[member.id]?.inProgress || 0;
+        totalDayBlocked += dayData[member.id]?.blocked || 0;
+        grandTotalDayRemaining += dayData[member.id]?.remaining || 0;
+      });
+
+      return (
+        <div style={commonStyle}>
+          <p style={{ margin: 0, fontWeight: '600', opacity: 0.85, fontSize: '0.9em', marginBottom: '6px' }}>{label}</p>
+          <ul style={{ listStyleType: 'none', paddingLeft: 0, margin: 0, fontSize: '0.9em' }}>
+            <li style={{ marginBottom: '4px', display: 'flex', justifyContent: 'space-between' }}>
+              <span style={{color: statusMeta.toDo.color, fontWeight: '500'}}>{statusMeta.toDo.name}:</span>
+              <span style={{fontWeight: 'bold', marginLeft: '10px'}}>{totalDayToDo}</span>
+            </li>
+            <li style={{ marginBottom: '4px', display: 'flex', justifyContent: 'space-between' }}>
+              <span style={{color: statusMeta.inProgress.color, fontWeight: '500'}}>{statusMeta.inProgress.name}:</span>
+              <span style={{fontWeight: 'bold', marginLeft: '10px'}}>{totalDayInProgress}</span>
+            </li>
+            <li style={{ display: 'flex', justifyContent: 'space-between' }}>
+              <span style={{color: statusMeta.blocked.color, fontWeight: 'bold'}}>{statusMeta.blocked.name}:</span>
+              <span style={{fontWeight: 'bold', marginLeft: '10px'}}>{totalDayBlocked}</span>
+            </li>
+          </ul>
+        </div>
+      );
+    }
+  }
+  return null;
+};
+
+// --- Custom X-Axis Tick for Avatars (Zoomed View) ---
+const CustomAvatarXAxisTick = (props: any) => {
+  const { x, y, payload } = props;
+  const teamMemberName = payload.value;
+  const memberInfo = teamMembers.find(member => member.name === teamMemberName);
+  const [isHovered, setIsHovered] = useState(false); // State for hover effect
+
+  const handleAvatarClick = () => {
+    if (memberInfo && window.parent) {
+      const message = {
+        type: 'sprintGraphAvatarClick',
+        teamMemberId: memberInfo.id,
+        teamMemberName: memberInfo.name,
+        avatarUrl: memberInfo.avatarUrl
+      };
+      window.parent.postMessage(message, '*');
+    }
+  };
+
+  if (memberInfo && memberInfo.avatarUrl) {
+    const baseAvatarSize = 24; // Diameter of the avatar
+    const yPositionOffset = 8; // Determines vertical placement relative to Recharts y
+    
+    const scale = isHovered ? 1.15 : 1.0; // Scale factor for hover effect
+
+    // Transform to: 
+    // 1. Translate to the intended center of the avatar (x, y + yPositionOffset).
+    // 2. Apply scaling.
+    // 3. Translate back by half of the base size, so the image (drawn at 0,0) is centered before scaling.
+    const transformValue = `translate(${x}, ${y + yPositionOffset}) scale(${scale}) translate(${-baseAvatarSize / 2}, ${-baseAvatarSize / 2})`;
+
+    return (
+      <g 
+        transform={transformValue}
+        onClick={handleAvatarClick} 
+        style={{ cursor: 'pointer', transition: 'transform 0.1s ease-out' }} // Added transition
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
+      >
+        <image 
+          href={memberInfo.avatarUrl} 
+          x={0} // Image is drawn from the (0,0) of the transformed <g>
+          y={0}
+          height={baseAvatarSize} // Image base size is constant
+          width={baseAvatarSize}  // Image base size is constant
+          clipPath="url(#clipCircle)" // Clip path is for a 24x24 image starting at 0,0
+        />
+      </g>
+    );
+  }
+  // Fallback to text if no avatar
+  return <text x={x} y={y + 10} textAnchor="middle" fill="#666" fontSize="11px">{teamMemberName}</text>; 
+};
+
+// --- Graph Component ---
+export function Graph() {
+  const [zoomedDate, setZoomedDate] = useState<string | null>(null);
+  const [lastClickInfo, setLastClickInfo] = useState<{ time: number; date: string | null }>({ time: 0, date: null });
+
+  const isZoomed = !!zoomedDate;
+
+  const chartData = useMemo(() => {
+    if (isZoomed && zoomedDate) {
+      const dayEntry = sprintDataFull.find(d => d.date === zoomedDate);
+      if (!dayEntry) return [];
+      return teamMembers.map(member => ({
+        teamMemberId: member.id,
+        teamMemberName: member.name,
+        toDo: dayEntry[member.id]?.toDo || 0,
+        inProgress: dayEntry[member.id]?.inProgress || 0,
+        blocked: dayEntry[member.id]?.blocked || 0,
+        originalColor: member.color
+      })) as ProcessedChartItemZoomedView[];
+    }
+    return originalProcessedDataFullView;
+  }, [isZoomed, zoomedDate]);
+
+  const handleChartClick = (clickEventData: any) => {
+    if (isZoomed || !clickEventData || !clickEventData.activeLabel) {
+      return;
+    }
+    const clickedDate = clickEventData.activeLabel;
+    const currentTime = new Date().getTime();
+    if (currentTime - lastClickInfo.time < 350 && clickedDate === lastClickInfo.date) {
+      setZoomedDate(clickedDate);
+      setLastClickInfo({ time: 0, date: null });
+    } else {
+      setLastClickInfo({ time: currentTime, date: clickedDate });
+    }
+  };
+
+  return (
+    <div style={{
+      padding: '20px 20px 15px 20px',
+      fontFamily: "'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, 'Helvetica Neue', sans-serif",
+      backgroundColor: '#F8F9FA',
+      borderRadius: '12px',
+      boxShadow: '0 6px 18px rgba(0,0,0,0.08)',
+      maxWidth: '520px',
+      margin: 'auto',
+      position: 'relative'
+    }}>
+      <div style={{ width: '100%', height: isZoomed ? 270 : 280 }}>
+        <ResponsiveContainer width="100%" height="100%">
+          <BarChart
+            data={chartData as any[]}
+            margin={{ top: 5, right: (isZoomed ? 20: 5), left: (isZoomed ? 5 : 10), bottom: (isZoomed ? 25 : 20) }} // Increased bottom margin for zoomed view avatars
+            onClick={isZoomed ? undefined : handleChartClick}
+            barCategoryGap={isZoomed ? '25%' : '30%'}
+            barGap={isZoomed ? 0 : 4}
+          >
+            <defs>
+              {/* Gradients */}
+              {teamMembers.map(member => (
+                <linearGradient id={member.gradientId} x1="0" y1="0" x2="0" y2="1" key={member.gradientId}>
+                  <stop offset="5%" stopColor={member.color} stopOpacity={0.9}/> 
+                  <stop offset="95%" stopColor={member.color} stopOpacity={0.6}/> 
+                </linearGradient>
+              ))}
+              {/* ClipPath for Avatar */}
+              <clipPath id="clipCircle">
+                <circle r="12" cx="12" cy="12" /> {/* Radius is half of avatarSize */}
+              </clipPath>
+            </defs>
+            <CartesianGrid strokeDasharray="4 4" stroke="#E0E0E0" vertical={false} />
+            <XAxis 
+                dataKey={isZoomed ? "teamMemberName" : "date"} 
+                stroke="#78909C" 
+                fontSize="11px" 
+                axisLine={false} 
+                tickLine={false} 
+                padding={{ left: 0, right: 0}}
+                interval={0} 
+                {...(isZoomed && { tick: <CustomAvatarXAxisTick />, dy: 10 })} // Use custom tick in zoomed view, dy for potential offset
+            />
+            <YAxis 
+              stroke="#78909C" 
+              fontSize="11px"
+              axisLine={false}
+              tickLine={false}
+              tickCount={5}
+              width={35}
+              allowDecimals={false}
+            />
+            <Tooltip content={<CustomTooltip isZoomedView={isZoomed} />} cursor={{fill: 'rgba(176, 190, 197, 0.08)'}}/>
+            
+            {isZoomed ? (
+              // Zoomed View: Bars are statuses, stacked, NOW COLORED by mapped team member GRADIENTS
+              statusKeys.map((statusKey, index) => (
+                <Bar 
+                  key={statusKey}
+                  dataKey={statusKey}
+                  stackId="zoomedDayStack"
+                  name={statusMeta[statusKey].name}
+                  fill={`url(#${fullViewStatusToGradientMapping[statusKey]})`} // Use team member GRADIENTS
+                  shape={<RoundedBar />} 
+                  barSize={50} 
+                />
+              ))
+            ) : (
+              statusKeys.map(statusKey => (
+                <Bar 
+                  key={statusKey} 
+                  dataKey={statusKey} 
+                  stackId="fullViewStack" 
+                  name={statusMeta[statusKey].name} // Name is status (e.g. "To Do") for tooltip payload if it were used
+                  fill={`url(#${fullViewStatusToGradientMapping[statusKey]})`} // Color from team member gradients
+                  shape={<RoundedBar />}
+                />
+              ))
+            )}
+            {isZoomed ? (
+                <Legend 
+                    payload={statusKeys.map((key, index) => ({ 
+                        value: statusMeta[key].name, 
+                        type: 'square', 
+                        color: teamMembers[index % teamMembers.length].color // Use team member colors in order
+                    }))}
+                    wrapperStyle={{ fontSize: '11px', paddingTop: '10px', paddingBottom: '0px'}} 
+                />
+            ) : (
+                <Legend // Legend for Full View (zoomed-out graph) - NOW WITH UPDATED COLORS
+                    payload={statusKeys.map((key, index) => ({
+                         value: statusMeta[key].name, 
+                         type: 'square', 
+                         color: teamMembers[index % teamMembers.length].color // Use team member colors in order
+                    }))}
+                    wrapperStyle={{ fontSize: '11px', paddingTop: '10px', paddingBottom: '0px'}} 
+                    align="center"
+                    verticalAlign="bottom"
+                />
+            )}
+          </BarChart>
+        </ResponsiveContainer>
+      </div>
+      {!isZoomed && (
+        <p style={{
+          textAlign: 'center',
+          marginTop: '5px',
+          fontSize: '10px',
+          color: '#90A4AE'
+        }}>
+        </p>
+      )}
+    </div>
+  );
+}
