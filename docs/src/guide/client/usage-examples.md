@@ -1,33 +1,31 @@
 # @mcp-ui/client Usage & Examples
 
-This page shows how to use the `<HtmlResource />` component from `@mcp-ui/client`.
+Here’s how to use the `<HtmlResource />` component from `@mcp-ui/client`.
 
-## Basic Setup
+## Installation
 
-Ensure `@mcp-ui/client` and its peer dependencies (`react`, `@mcp-ui/shared`, and potentially `@modelcontextprotocol/sdk`) are installed in your React project.
+Make sure you have `@mcp-ui/client` and its peer dependencies installed in your React project:
 
 ```bash
-pnpm add @mcp-ui/client @mcp-ui/shared react @modelcontextprotocol/sdk
+pnpm add @mcp-ui/client react @modelcontextprotocol/sdk
 ```
 
-## Using the `<HtmlResource />` Component
+## Rendering HTML Resources
 
 ```tsx
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { HtmlResource } from '@mcp-ui/client';
-// Assuming HtmlResourceBlock structure comes from @mcp-ui/shared or a compatible type
-import type { HtmlResourceBlock } from '@mcp-ui/shared'; 
+import type { HtmlResourceBlock } from '@mcp-ui/shared';
 
-// Mock function to simulate receiving an MCP resource block
+// Simulate fetching an MCP resource block
 const fetchMcpResource = async (id: string): Promise<HtmlResourceBlock> => {
-  // In a real app, this would be an API call
   if (id === 'direct') {
     return {
       type: 'resource',
       resource: {
         uri: 'ui://example/direct-html',
         mimeType: 'text/html',
-        text: '<h1>Direct HTML via Text</h1><p>Content loaded directly.</p><button onclick="window.parent.postMessage({tool: \'uiInteraction\', params: { action: \'directClick', value: Date.now() }}, \'*\')">Click Me (Direct)</button>'
+        text: '<h1>Direct HTML via Text</h1><p>Content loaded directly.</p><button onclick="window.parent.postMessage({tool: \'uiInteraction\', params: { action: \'directClick\', value: Date.now() }}, \'*\')">Click Me (Direct)</button>'
       }
     };
   } else if (id === 'blob') {
@@ -37,7 +35,7 @@ const fetchMcpResource = async (id: string): Promise<HtmlResourceBlock> => {
       resource: {
         uri: 'ui://example/blob-html',
         mimeType: 'text/html',
-        blob: btoa(html) // In Node.js you'd use Buffer.from(html).toString('base64')
+        blob: btoa(html)
       }
     };
   } else if (id === 'external') {
@@ -46,7 +44,7 @@ const fetchMcpResource = async (id: string): Promise<HtmlResourceBlock> => {
       resource: {
         uri: 'ui-app://example/external-site',
         mimeType: 'text/html',
-        text: 'https://vitepress.dev' // Any URL
+        text: 'https://vitepress.dev'
       }
     };
   }
@@ -66,7 +64,7 @@ const App: React.FC = () => {
     try {
       const block = await fetchMcpResource(id);
       setResourceBlock(block);
-    } catch (e:any) {
+    } catch (e: any) {
       setError(e.message);
     }
     setLoading(false);
@@ -75,7 +73,6 @@ const App: React.FC = () => {
   const handleGenericMcpAction = async (tool: string, params: Record<string, unknown>) => {
     console.log(`Action received in host app - Tool: ${tool}, Params:`, params);
     setLastAction({ tool, params });
-    // Example: You might send this to a backend, or update local state further
     return { status: 'Action handled by host application', receivedParams: params };
   };
 
@@ -90,7 +87,7 @@ const App: React.FC = () => {
       {error && <p style={{ color: 'red' }}>Error: {error}</p>}
       
       {resourceBlock && resourceBlock.resource && (
-        <div style={{ marginTop: '20px', border: '2px solid blue', padding: '10px' }}>
+        <div style={{ marginTop: 20, border: '2px solid blue', padding: 10 }}>
           <h2>Rendering Resource: {resourceBlock.resource.uri}</h2>
           <HtmlResource 
             resource={resourceBlock.resource} 
@@ -100,7 +97,7 @@ const App: React.FC = () => {
       )}
 
       {lastAction && (
-        <div style={{ marginTop: '20px', border: '1px solid green', padding: '10px' }}>
+        <div style={{ marginTop: 20, border: '1px solid green', padding: 10 }}>
           <h3>Last Action Received by Host:</h3>
           <pre>{JSON.stringify(lastAction, null, 2)}</pre>
         </div>
@@ -110,4 +107,8 @@ const App: React.FC = () => {
 };
 
 export default App;
-``` 
+```
+
+---
+
+That’s it! Just use `<HtmlResource />` with the right props and you’re ready to render interactive HTML from MCP resources in your React app. If you need more details, check out the [HtmlResource Component](./html-resource.md) page. 

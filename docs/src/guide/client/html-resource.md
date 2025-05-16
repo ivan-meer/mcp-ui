@@ -1,51 +1,49 @@
 # HtmlResource Component
 
-The `<HtmlResource />` component is the workhorse of the `@mcp-ui/client` package.
+The `<HtmlResource />` component is currently the main component of the`@mcp-ui/client` package. It's the only export you need to render interactive HTML resources in your React app.
 
 ## Props
 
 ```typescript
-import type { Resource } from '@modelcontextprotocol/sdk/types'; // Or from @mcp-ui/shared if type is identical
+import type { Resource } from '@modelcontextprotocol/sdk/types';
 
 export interface RenderHtmlResourceProps {
-  resource: Partial<Resource>; // Or your specific HtmlResourceBlock.resource type
+  resource: Partial<Resource>;
   onGenericMcpAction: (tool: string, params: Record<string, unknown>) => Promise<any>;
+  style?: React.CSSProperties;
 }
 ```
 
-- **`resource`**: The `resource` object from an `HtmlResourceBlock`.
-  - It expects `uri`, `mimeType`, and either `text` or `blob`.
-- **`onGenericMcpAction`**: A callback function that is invoked when the iframe content (for `ui://` resources) posts a message to the parent window. The message from the iframe should be an object like: 
-    `{ tool: string, params: Record<string, unknown> }`.
+- **`resource`**: The resource object from an `HtmlResourceBlock`. It should include `uri`, `mimeType`, and either `text` or `blob`.
+- **`onGenericMcpAction`**: A callback that fires when the iframe content (for `ui://` resources) posts a message to your app. The message should look like `{ tool: string, params: Record<string, unknown> }`.
+- **`style`** (optional): Custom styles for the iframe.
 
-## Behavior
+## How It Works
 
-1.  **Content Type Check**: Verifies `resource.mimeType` is `"text/html"`. If not, an error is displayed.
-2.  **URI Scheme Handling**:
-    *   If `resource.uri` starts with `ui-app://`:
-        *   It expects `resource.text` or `resource.blob` to contain a URL.
-        *   If `blob` is used, it Base64 decodes it to get the URL.
-        *   Renders an `<iframe>` with its `src` attribute set to this URL.
-        *   Sandbox: `allow-scripts allow-same-origin` (consider if `allow-same-origin` is always appropriate).
-    *   If `resource.uri` starts with `ui://` (or if no URI is present but `text`/`blob` HTML content is):
-        *   It expects `resource.text` or `resource.blob` to contain an HTML string.
-        *   If `blob` is used, it Base64 decodes it to get the HTML string.
-        *   Renders an `<iframe>` with its `srcdoc` attribute set to this HTML string.
+1.  **Checks Content Type**: If `resource.mimeType` isn't `"text/html"`, you'll see an error.
+2.  **Handles URI Schemes**:
+    *   For `ui-app://` URIs:
+        *   Expects `resource.text` or `resource.blob` to contain a URL.
+        *   If using `blob`, it decodes it from Base64.
+        *   Renders an `<iframe>` with its `src` set to the URL.
+        *   Sandbox: `allow-scripts allow-same-origin` (needed for some external sites; be mindful of security).
+    *   For `ui://` URIs (or if there's no URI but you provide HTML in `text`/`blob`):
+        *   Expects `resource.text` or `resource.blob` to contain HTML.
+        *   If using `blob`, it decodes it from Base64.
+        *   Renders an `<iframe>` with its `srcdoc` set to the HTML.
         *   Sandbox: `allow-scripts`.
-3.  **Message Handling**: For both URI schemes, it adds a global `message` event listener. If an event is received from an iframe with `event.data.tool`, it calls the `onGenericMcpAction` prop.
+3.  **Listens for Messages**: Adds a global `message` event listener. If an iframe posts a message with `event.data.tool`, your `onGenericMcpAction` callback is called.
 
 ## Styling
 
-The component applies a default style to the iframe: `width: '100%', minHeight: 200, border: '1px solid #ccc'`. This can be overridden with CSS targeting iframes if needed, or by wrapping the component.
+By default, the iframe stretches to 100% width and is at least 200px tall. You can override this with the `style` prop or your own CSS.
 
 ## Example Usage
 
 See [Client SDK Usage & Examples](./usage-examples.md).
 
-## Security Considerations
+## Security Notes
 
-- **`sandbox` attribute**: The `sandbox` attribute on iframes is used to restrict their capabilities. 
-  - `allow-scripts` is generally needed for interactive content.
-  - `allow-same-origin` is added for `ui-app://` which might be necessary for some external sites but has security implications. Evaluate if this is always required or should be configurable.
-- **`postMessage` origin**: When iframe content uses `window.parent.postMessage`, it should **always** specify the target origin for security. The `<HtmlResource>` component listens globally, so the iframe content is responsible for this.
-- **Content Sanitization**: The component currently renders HTML content (from `srcDoc`) as is. If the HTML source is not fully trusted, consider an HTML sanitization step before passing it to the component or ensure the iframe sandbox is sufficiently restrictive. 
+- **`sandbox` attribute**: Restricts what the iframe can do. `allow-scripts` is needed for interactivity. `allow-same-origin` is only used for `ui-app://` URLs. Caution - it's not a secure way to render untrusted code. We should add more secure methods such as RSC ASAP.
+- **`postMessage` origin**: When sending messages from the iframe, always specify the target origin for safety. The component listens globally, so your iframe content should be explicit.
+- **Content Sanitization**: HTML is rendered as-is. If you don't fully trust the source, sanitize the HTML before passing it in, or rely on the iframe's sandboxing. 

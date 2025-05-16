@@ -1,8 +1,8 @@
 # @mcp-ui/client Overview
 
-The `@mcp-ui/client` package is designed to help you render `HtmlResourceBlock` objects received from an MCP-enabled server or tool within a React application.
+The `@mcp-ui/client` package helps you render `HtmlResourceBlock` objects from an MCP-enabled server or tool in your React app.
 
-## Key Exports
+## What’s Included?
 
 - **`HtmlResource` (React Component)**:
   The primary component for rendering an interactive HTML resource. It handles:
@@ -20,9 +20,9 @@ The `@mcp-ui/client` package is designed to help you render `HtmlResourceBlock` 
 
 ## Building
 
-This package is built using Vite in library mode. It outputs ESM (`.mjs`) and UMD (`.js`) formats, along with TypeScript declaration files (`.d.ts`). It correctly externalizes `react` and `@mcp-ui/shared`.
+This package uses Vite in library mode. It outputs ESM (`.mjs`) and UMD (`.js`) formats, plus TypeScript declarations (`.d.ts`). `react` and `@mcp-ui/shared` are externalized.
 
-To build specifically this package from the monorepo root:
+To build just this package from the monorepo root:
 ```bash
 pnpm build --filter @mcp-ui/client
 ```
