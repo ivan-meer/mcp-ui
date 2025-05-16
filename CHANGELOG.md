@@ -1,3 +1,10 @@
+## [1.0.2](https://github.com/idosal/mcp-ui/compare/v1.0.1...v1.0.2) (2025-05-16)
+
+
+### Bug Fixes
+
+* remove shared dependency ([e66e8f4](https://github.com/idosal/mcp-ui/commit/e66e8f49b1ba46090db6e4682060488566f4fe41))
+
 ## [1.0.1](https://github.com/idosal/mcp-ui/compare/v1.0.0...v1.0.1) (2025-05-16)
 
 
