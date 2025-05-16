@@ -57,13 +57,13 @@ const statusKeys = ['toDo', 'inProgress', 'blocked'] as const;
 
 // Original full sprint data
 const sprintDataFull: SprintDayDataEntry[] = [
-  { date: '7 days ago', alice: { remaining: 8, toDo: 3, inProgress: 3, blocked: 2 }, bob: { remaining: 7, toDo: 2, inProgress: 3, blocked: 2 }, charlie: { remaining: 9, toDo: 4, inProgress: 3, blocked: 2 } },
-  { date: '6 days ago', alice: { remaining: 7, toDo: 2, inProgress: 3, blocked: 2 }, bob: { remaining: 6, toDo: 2, inProgress: 2, blocked: 2 }, charlie: { remaining: 8, toDo: 3, inProgress: 3, blocked: 2 } },
-  { date: '5 days ago', alice: { remaining: 9, toDo: 3, inProgress: 4, blocked: 2 }, bob: { remaining: 8, toDo: 3, inProgress: 3, blocked: 2 }, charlie: { remaining: 10, toDo: 4, inProgress: 4, blocked: 2 } },
-  { date: '4 days ago', alice: { remaining: 6, toDo: 1, inProgress: 2, blocked: 3 }, bob: { remaining: 9, toDo: 3, inProgress: 3, blocked: 3 }, charlie: { remaining: 11, toDo: 5, inProgress: 3, blocked: 3 } },
-  { date: '3 days ago', alice: { remaining: 10, toDo: 4, inProgress: 3, blocked: 3 }, bob: { remaining: 9, toDo: 3, inProgress: 3, blocked: 3 }, charlie: { remaining: 12, toDo: 5, inProgress: 4, blocked: 3 } },
-  { date: '2 days ago', alice: { remaining: 11, toDo: 4, inProgress: 4, blocked: 3 }, bob: { remaining: 10, toDo: 3, inProgress: 4, blocked: 3 }, charlie: { remaining: 13, toDo: 6, inProgress: 4, blocked: 3 } },
-  { date: 'Today', alice: { remaining: 12, toDo: 5, inProgress: 4, blocked: 3 }, bob: { remaining: 11, toDo: 4, inProgress: 4, blocked: 3 }, charlie: { remaining: 14, toDo: 6, inProgress: 5, blocked: 3 } },
+  { date: '5/10', alice: { remaining: 8, toDo: 3, inProgress: 3, blocked: 2 }, bob: { remaining: 7, toDo: 2, inProgress: 3, blocked: 2 }, charlie: { remaining: 9, toDo: 4, inProgress: 3, blocked: 2 } },
+  { date: '5/11', alice: { remaining: 7, toDo: 2, inProgress: 3, blocked: 2 }, bob: { remaining: 6, toDo: 2, inProgress: 2, blocked: 2 }, charlie: { remaining: 8, toDo: 3, inProgress: 3, blocked: 2 } },
+  { date: '5/12', alice: { remaining: 9, toDo: 3, inProgress: 4, blocked: 2 }, bob: { remaining: 8, toDo: 3, inProgress: 3, blocked: 2 }, charlie: { remaining: 10, toDo: 4, inProgress: 4, blocked: 2 } },
+  { date: '5/13', alice: { remaining: 6, toDo: 1, inProgress: 2, blocked: 3 }, bob: { remaining: 9, toDo: 3, inProgress: 3, blocked: 3 }, charlie: { remaining: 11, toDo: 5, inProgress: 3, blocked: 3 } },
+  { date: '5/14', alice: { remaining: 10, toDo: 4, inProgress: 3, blocked: 3 }, bob: { remaining: 9, toDo: 3, inProgress: 3, blocked: 3 }, charlie: { remaining: 12, toDo: 5, inProgress: 4, blocked: 3 } },
+  { date: '5/15', alice: { remaining: 11, toDo: 4, inProgress: 4, blocked: 3 }, bob: { remaining: 10, toDo: 3, inProgress: 4, blocked: 3 }, charlie: { remaining: 13, toDo: 6, inProgress: 4, blocked: 3 } },
+  { date: '5/16', alice: { remaining: 12, toDo: 5, inProgress: 4, blocked: 3 }, bob: { remaining: 11, toDo: 4, inProgress: 4, blocked: 3 }, charlie: { remaining: 14, toDo: 6, inProgress: 5, blocked: 3 } },
 ];
 
 // Process data for the full view (stacked by STATUS, grouped by date)
