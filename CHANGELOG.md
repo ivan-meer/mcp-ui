@@ -1,3 +1,10 @@
+## [1.0.6](https://github.com/idosal/mcp-ui/compare/v1.0.5...v1.0.6) (2025-05-16)
+
+
+### Bug Fixes
+
+* support react-router ([21ffb95](https://github.com/idosal/mcp-ui/commit/21ffb95fe6d77a348b95b38dbf3741ba6442894e))
+
 ## [1.0.5](https://github.com/idosal/mcp-ui/compare/v1.0.4...v1.0.5) (2025-05-16)
 
 
