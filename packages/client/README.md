@@ -16,8 +16,7 @@
   <a href="#-installation">Installation</a> •
   <a href="#-quickstart">Quickstart</a> •
   <a href="#-core-concepts">Core Concepts</a> •
-  <a href="#-advanced-usage">Advanced Usage</a> •
-  <a href="#-example-server">Example Server</a> •
+  <a href="#-example-server">Example Implementation</a> •
   <a href="#-contributing">Contributing</a> •
   <a href="#-license">License</a>
 </p>
@@ -121,17 +120,7 @@ yarn add @mcp-ui/server @mcp-ui/client
 
 3. **Enjoy** interactive MCP UIs — no extra configuration required.
 
-
-## 🛠️ Advanced Usage
-
-* **Custom themes & styles**: Pass CSS via `createHtmlResource` or host assets externally.
-* **Action handling**: Use `onUiAction` callbacks to bridge iframe events back to your application logic.
-* **Caching & performance**: Leverage the `uri` field for deduplication and client-side caching.
-
-Explore more in the [full documentation](./docs/src/guide/overview.md).
-
-
-## 🌍 Example implementations
+## 🌍 Example implementation
 
 **Client example**
 https://github.com/modelcontextprotocol/inspector/pull/413
