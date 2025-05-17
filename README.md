@@ -22,8 +22,6 @@
   <a href="#-license">License</a>
 </p>
 
----
-
 ## 💡 What Is `mcp-ui`?
 
 `mcp-ui` is a TypeScript SDK comprising two packages:
@@ -33,13 +31,12 @@
 
 Together, they let you define reusable HTML resource blocks on the server side and seamlessly display them and react to their actions in any MCP host environment.
 
----
 
 ## ✨ Core Concepts
 
-### HtmlResourceBlock
+### HtmlResource
 
-The primary payload exchanged between server and client:
+The primary payload exchanged between the server and the client:
 
 ```ts
 interface HtmlResourceBlock {
@@ -59,6 +56,11 @@ interface HtmlResourceBlock {
 * **`mimeType`**: Always `text/html`
 * **`text` vs. `blob`**: Choose `text` for simple strings; use `blob` for larger or encoded content.
 
+It's rendered in the client with the `<HtmlResource>` React component.
+
+### UI Action
+
+UI blocks must be able to interact with the agent. In `mcp-ui`, this is done by hooking into events sent from the UI block and reacting to them in the host. For example, an HTML may trigger a tool call when a button is clicked by sending an event which will be caught handled by the client.
 
 ## 🏗️ Installation
 
@@ -129,14 +131,19 @@ yarn add @mcp-ui/server @mcp-ui/client
 Explore more in the [full documentation](./docs/src/guide/overview.md).
 
 
-## 🌍 Example Server
+## 🌍 Example implementations
 
-Test-drive an example at:
+**Client example**
+https://github.com/modelcontextprotocol/inspector/pull/413
 
+**Server example**
+Try out the hosted app at -
 * **HTTP Streaming**: `https://remote-mcp-server-authless.idosalomon.workers.dev/mcp`
 * **SSE**: `https://remote-mcp-server-authless.idosalomon.workers.dev/sse`
 
-Drop those into any MCP-compatible host to see `mcp-ui` in action.
+The app is deployed from `examples/server`.
+
+Drop those URLs into any MCP-compatible host to see `mcp-ui` in action.
 
 
 ## 🤝 Contributing
