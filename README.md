@@ -6,7 +6,7 @@
 </p>
 
 <p align="center">
-  <a href="#-what-is-mcp-ui">What Is `mcp-ui`</a> •
+  <a href="#-what-is-mcp-ui">What Is mcp-ui</a> •
   <a href="#-installation">Installation</a> •
   <a href="#-quickstart">Quickstart</a> •
   <a href="#-core-concepts">Core Concepts</a> •
@@ -18,7 +18,7 @@
 
 ----
 
-**`mcp-ui`** brings interactive web components to your [Model Context Protocol](https://modelcontextprotocol.io/introduction) (MCP) workflow. Build on the server, render on the client — let your MCP server deliver dynamic HTML resources out of the box.
+**`mcp-ui`** brings interactive web components to [Model Context Protocol](https://modelcontextprotocol.io/introduction) (MCP). Deliver rich, dynamic UI resources directly from your MCP server to be rendered by the client. Take Human<>AI interaction to the next level!
 
 > *This project is an experimental playground for MCP UI ideas. Expect rapid iteration and community-driven enhancements!*
 
@@ -31,7 +31,7 @@
 * **`@mcp-ui/server`**: Utilities to generate `HtmlResourceBlock` objects on your MCP server.
 * **`@mcp-ui/client`**: UI components (e.g., `<HtmlResource />`) to render those blocks in the browser and handle their events.
 
-Together, they let you define reusable HTML resource blocks on the server side and seamlessly display them and react to their actions in any MCP host environment.
+Together, they let you define reusable UI resource blocks on the server side, seamlessly display them in the client, and react to their actions in the MCP host environment.
 
 
 ## ✨ Core Concepts
@@ -148,7 +148,7 @@ Drop those URLs into any MCP-compatible host to see `mcp-ui` in action.
 
 ## 🤝 Contributing
 
-Contributions, ideas, and bug reports are welcome! See our [contribution guidelines](https://github.com/idosal/mco-ui/blob/main/.github/CONTRIBUTING.md) to get started.
+Contributions, ideas, and bug reports are welcome! See the [contribution guidelines](https://github.com/idosal/mco-ui/blob/main/.github/CONTRIBUTING.md) to get started.
 
 
 ## 📄 License
