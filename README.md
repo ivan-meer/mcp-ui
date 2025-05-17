@@ -1,11 +1,9 @@
 ## 📦 Model Context Protocol UI SDK
 
-<p align="center">
-  <a href="https://www.npmjs.com/package/@mcp-ui/server"><img src="https://img.shields.io/npm/v/@mcp-ui/server?label=server&color=green" alt="Server Version"></a>
-  <a href="https://www.npmjs.com/package/@mcp-ui/client"><img src="https://img.shields.io/npm/v/@mcp-ui/client?label=client&color=blue" alt="Client Version"></a>
-</p>
+[![Server](https://img.shields.io/npm/v/@mcp-ui/server?label=server&color=green)](https://www.npmjs.com/package/@mcp-ui/server)
+[![Server](https://img.shields.io/npm/v/@mcp-ui/client?label=client&color=blue)](https://www.npmjs.com/package/@mcp-ui/client)
 
-**`mcp-ui`** brings interactive web components to your [Model Context Protocol](https://modelcontextprotocol.io/introduction) (MCP) workflow. Build on the server, render on the client — let your MCP server deliver dynamic HTML resources out of the box.
+[**`mcp-ui`** ](https://idosal.github.io/mcp-ui/) brings interactive web components to your [Model Context Protocol](https://modelcontextprotocol.io/introduction) (MCP) workflow. Build on the server, render on the client — let your MCP server deliver dynamic HTML resources out of the box.
 
 > *This project is an experimental playground for MCP UI ideas. Expect rapid iteration and community-driven enhancements!*
 
