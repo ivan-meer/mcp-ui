@@ -50,4 +50,7 @@ Dive into the "Getting Started" guide or explore specific SDK packages for more 
 
 ## Philosophy
 
-[Explain the project's philosophy here...]
+Returning chunks of UI as responses from MCP servers is a powerful way to create interactive experiences. However, it can be difficult to get right.
+This is an ongoing discussion in the MCP community and [steering committee](https://github.com/orgs/modelcontextprotocol/discussions/287#discussioncomment-13175290).
+
+This project is an experimental playground for MCP UI ideas, as we're exploring ways to make it easier.
