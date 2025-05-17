@@ -4,8 +4,8 @@ This guide will walk you through setting up your development environment and usi
 
 ## Prerequisites
 
-- Node.js (v18.x or v20.x recommended)
-- pnpm (v8 or later recommended)
+- Node.js (v22.x recommended)
+- pnpm (v9 or later recommended)
 
 ## Installation
 
@@ -57,8 +57,6 @@ Once built, you can typically import from the packages as you would with any oth
 // main.ts (your server-side application)
 import { createHtmlResource } from '@mcp-ui/server';
 
-console.log('Using shared enum:', PlaceholderEnum.BAR);
-
 const myHtmlPayload = `<h1>Hello from Server!</h1><p>Timestamp: ${new Date().toISOString()}</p>`;
 
 const resourceBlock = createHtmlResource({
@@ -78,11 +76,10 @@ console.log(JSON.stringify(resourceBlock, null, 2));
 // App.tsx (your React application)
 import React, { useState, useEffect } from 'react';
 import { HtmlResource } from '@mcp-ui/client';
-import type { HtmlResourceBlock } from '@mcp-ui/shared'; // For type safety
 
 // Dummy MCP response structure
 interface McpToolResponse {
-  content: HtmlResourceBlock[];
+  content: HtmlResource[];
 }
 
 function App() {
@@ -134,7 +131,7 @@ function App() {
               <h3>Resource: {item.resource.uri}</h3>
               <HtmlResource
                 resource={item.resource}
-                onGenericMcpAction={handleResourceAction}
+                onUiAction={handleResourceAction}
               />
             </div>
           );
@@ -149,12 +146,6 @@ export default App;
 ```
 
 Next, explore the specific guides for each SDK package to learn more about their APIs and capabilities.
-
-To build specifically this package from the monorepo root:
-
-```bash
-pnpm build -w @mcp-ui/shared
-```
 
 To build specifically this package from the monorepo root:
 
@@ -174,20 +165,11 @@ See the following pages for more details:
 
 ## Basic Setup
 
-First, ensure you have `@mcp-ui/server` (and its peer `@mcp-ui/shared`) available in your Node.js project. If you're working outside this monorepo, you would typically install them:
+For MCP servers, ensure you have `@mcp-ui/server` available in your Node.js project. If you're working outside this monorepo, you would typically install them.
+
+
+For MCP clients, ensure `@mcp-ui/client` and its peer dependencies (`react` and potentially `@modelcontextprotocol/sdk`) are installed in your React project.
 
 ```bash
-pnpm add @mcp-ui/server @mcp-ui/shared
+pnpm add @mcp-ui/client react @modelcontextprotocol/sdk
 ```
-
-## Creating Interactive Resources
-
-## Basic Setup
-
-Ensure `@mcp-ui/client` and its peer dependencies (`react`, `@mcp-ui/shared`, and potentially `@modelcontextprotocol/sdk`) are installed in your React project.
-
-```bash
-pnpm add @mcp-ui/client @mcp-ui/shared react @modelcontextprotocol/sdk
-```
-
-## Using the `<HtmlResource />` Component

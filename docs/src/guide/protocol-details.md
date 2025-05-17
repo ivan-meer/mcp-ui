@@ -40,7 +40,7 @@ export interface HtmlResourceBlock {
 
 ## Communication (Client <-> Iframe)
 
-For `ui://` resources, where you control the HTML, you can use `window.parent.postMessage` to send data or actions from the iframe back to the host client application. The client application should set up an event listener for `message` events.
+For `ui://` or `ui-app://` resources, you can use `window.parent.postMessage` to send data or actions from the iframe back to the host client application. The client application should set up an event listener for `message` events.
 
 **Iframe Script Example:**
 
@@ -56,13 +56,13 @@ For `ui://` resources, where you control the HTML, you can use `window.parent.po
 </script>
 ```
 
-**Client-Side Handler (Conceptual, see `<HtmlResource>` component):**
+**Client-Side Handler:**
 
 ```typescript
 window.addEventListener('message', (event) => {
   // Add origin check for security: if (event.origin !== "expectedOrigin") return;
   if (event.data && event.data.tool) {
-    // Call the onGenericMcpAction prop of HtmlResource
+    // Call the onUiAction prop of HtmlResource
   }
 });
 ```

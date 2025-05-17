@@ -15,10 +15,9 @@ pnpm add @mcp-ui/client react @modelcontextprotocol/sdk
 ```tsx
 import React, { useState } from 'react';
 import { HtmlResource } from '@mcp-ui/client';
-import type { HtmlResourceBlock } from '@mcp-ui/shared';
 
 // Simulate fetching an MCP resource block
-const fetchMcpResource = async (id: string): Promise<HtmlResourceBlock> => {
+const fetchMcpResource = async (id: string): Promise<HtmlResource> => {
   if (id === 'direct') {
     return {
       type: 'resource',
@@ -53,7 +52,7 @@ const fetchMcpResource = async (id: string): Promise<HtmlResourceBlock> => {
 };
 
 const App: React.FC = () => {
-  const [resourceBlock, setResourceBlock] = useState<HtmlResourceBlock | null>(
+  const [resourceBlock, setResourceBlock] = useState<HtmlResource | null>(
     null,
   );
   const [loading, setLoading] = useState(false);
@@ -87,7 +86,7 @@ const App: React.FC = () => {
 
   return (
     <div>
-      <h1>MCP-UI Client Demo</h1>
+      <h1>MCP UI Client Demo</h1>
       <button onClick={() => loadResource('direct')}>
         Load Direct HTML (Text)
       </button>
@@ -106,7 +105,7 @@ const App: React.FC = () => {
           <h2>Rendering Resource: {resourceBlock.resource.uri}</h2>
           <HtmlResource
             resource={resourceBlock.resource}
-            onGenericMcpAction={handleGenericMcpAction}
+            onUiAction={handleGenericMcpAction}
           />
         </div>
       )}

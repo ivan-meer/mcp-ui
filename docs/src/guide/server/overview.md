@@ -1,17 +1,15 @@
 # @mcp-ui/server Overview
 
-The `@mcp-ui/server` package provides server-side utilities to help construct `HtmlResourceBlock` objects, which can then be sent to a client as part of an MCP response.
+The `@mcp-ui/server` package provides server-side utilities to help construct `HtmlResource` objects, which can then be sent to a client as part of an MCP response.
 
 ## Key Exports
 
-- **`createHtmlResource(options: CreateHtmlResourceOptions): HtmlResourceBlock`**:
+- **`createHtmlResource(options: CreateHtmlResourceOptions): HtmlResource`**:
   The primary function for creating resource blocks. It takes an options object to define the URI, content (direct HTML or external URL), and delivery method (text or blob).
-- **`initServer()`**: An example initialization function.
-- (Other exports like `HtmlResourceBlock`, `ResourceContentPayload`, `CreateHtmlResourceOptions` are typically re-exported from `@mcp-ui/shared` for convenience, or you can import them directly from shared).
 
 ## Purpose
 
-- **Ease of Use**: Simplifies the creation of valid `HtmlResourceBlock` objects.
+- **Ease of Use**: Simplifies the creation of valid `HtmlResource` objects.
 - **Validation**: Includes basic validation (e.g., URI prefixes matching content type).
 - **Encoding**: Handles Base64 encoding when `delivery: 'blob'` is specified.
 

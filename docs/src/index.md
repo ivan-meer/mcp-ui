@@ -4,7 +4,7 @@ layout: home
 hero:
   name: MCP UI
   text: Client & Server SDKs
-  tagline: Efficiently build interactive UI components for your Model-Context Protocol applications.
+  tagline: Efficiently build interactive UI components for your Model Context Protocol applications.
   actions:
     - theme: brand
       text: Get Started

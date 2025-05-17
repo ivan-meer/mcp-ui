@@ -1,6 +1,6 @@
 # @mcp-ui/client Overview
 
-The `@mcp-ui/client` package helps you render `HtmlResourceBlock` objects from an MCP-enabled server or tool in your React app.
+The `@mcp-ui/client` package helps you render HTML resource sent from an MCP-enabled server. For example, `HtmlResource` is a React component that handles the logic.
 
 ## What’s Included?
 
@@ -16,7 +16,7 @@ The `@mcp-ui/client` package helps you render `HtmlResourceBlock` objects from a
 
 - **Simplified Rendering**: Abstract away the complexities of handling different URI schemes and content delivery methods (`text` vs. `blob`).
 - **Security**: Encourages rendering user-provided HTML within sandboxed iframes.
-- **Interactivity**: Provides a basic mechanism (`onGenericMcpAction` prop) for iframe content to communicate back to the host application.
+- **Interactivity**: Provides a basic mechanism (`onUiAction` prop) for iframe content to communicate back to the host application.
 
 ## Building
 

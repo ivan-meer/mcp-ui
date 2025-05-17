@@ -3,7 +3,7 @@
 [![Server Version](https://img.shields.io/npm/v/@mcp-ui/server?label=server&color=green)](https://www.npmjs.com/package/@mcp-ui/server)
 [![Client Version](https://img.shields.io/npm/v/@mcp-ui/client?label=client&color=blue)](https://www.npmjs.com/package/@mcp-ui/client)
 
-**mcp-ui** is a TypeScript SDK that adds UI capabilities to the [Model-Context Protocol](https://modelcontextprotocol.io/introduction) (MCP). It provides packages to create interactive HTML components on the server and handle their rendering on the client.
+**mcp-ui** is a TypeScript SDK that adds UI capabilities to the [Model Context Protocol](https://modelcontextprotocol.io/introduction) (MCP). It provides packages to create interactive HTML components on the server and handle their rendering on the client.
 
 This project is a playground for new ideas in the MCP community. Expect it to evolve rapidly!
 
@@ -13,12 +13,12 @@ This project is a playground for new ideas in the MCP community. Expect it to ev
 
 Make it simple to create and render HTML resource blocks. These are special objects you can send in an MCP response, letting your MCP server deliver a structured interactive web component for the host to display.
 
-### `HtmlResource` at a Glance
+### `HtmlResourceBlock` at a Glance
 
 This is the main object exchanged between the server and the client:
 
 ```typescript
-interface HtmlResource {
+interface HtmlResourceBlock {
   type: 'resource';
   resource: {
     uri: string; // e.g., "ui://my-component/1" or "ui-app://my-app/instance-1"
@@ -37,8 +37,8 @@ interface HtmlResource {
 
 ## Packages
 
-- **`@mcp-ui/client`**: React components for the client. The main export is `<HtmlResource />` — just drop it into your app to render MCP HTML resources.
-- **`@mcp-ui/server`**: Helpers for building `HtmlResource` objects on the server.
+- **`@mcp-ui/client`**: Components for the client. The main export is `<HtmlResource />` — just drop it into your app to render HTML resources that can handle UI actions.
+- **`@mcp-ui/server`**: Helpers for building `HtmlResourceBlock` objects on the server.
 
 ## Quickstart
 The example server (`examples/server`) is hosted at `https://remote-mcp-server-authless.idosalomon.workers.dev/mcp` (HTTP Streaming) and `https://remote-mcp-server-authless.idosalomon.workers.dev/sse` (SSE). You can use it with any compatible host.
@@ -90,7 +90,7 @@ const MyComponent = ({ mcpResource }) => {
     return (
       <HtmlResource
         resource={mcpResource.resource}
-        onGenericMcpAction={handleAction}
+        onUiAction={handleAction}
       />
     );
   }

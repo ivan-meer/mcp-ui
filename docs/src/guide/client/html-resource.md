@@ -7,9 +7,9 @@ The `<HtmlResource />` component is currently the main component of the`@mcp-ui/
 ```typescript
 import type { Resource } from '@modelcontextprotocol/sdk/types';
 
-export interface RenderHtmlResourceProps {
+export interface HtmlResourceProps {
   resource: Partial<Resource>;
-  onGenericMcpAction: (
+  onUiAction?: (
     tool: string,
     params: Record<string, unknown>,
   ) => Promise<any>;
@@ -18,7 +18,7 @@ export interface RenderHtmlResourceProps {
 ```
 
 - **`resource`**: The resource object from an `HtmlResourceBlock`. It should include `uri`, `mimeType`, and either `text` or `blob`.
-- **`onGenericMcpAction`**: A callback that fires when the iframe content (for `ui://` resources) posts a message to your app. The message should look like `{ tool: string, params: Record<string, unknown> }`.
+- **`onUiAction`**: An optional callback that fires when the iframe content (for `ui://` resources) posts a message to your app. The message should look like `{ tool: string, params: Record<string, unknown> }`.
 - **`style`** (optional): Custom styles for the iframe.
 
 ## How It Works
@@ -35,7 +35,7 @@ export interface RenderHtmlResourceProps {
       - If using `blob`, it decodes it from Base64.
       - Renders an `<iframe>` with its `srcdoc` set to the HTML.
       - Sandbox: `allow-scripts`.
-3.  **Listens for Messages**: Adds a global `message` event listener. If an iframe posts a message with `event.data.tool`, your `onGenericMcpAction` callback is called.
+3.  **Listens for Messages**: Adds a global `message` event listener. If an iframe posts a message with `event.data.tool`, your `onUiAction` callback is called.
 
 ## Styling
 

@@ -2,24 +2,24 @@
 
 Welcome to the MCP-UI documentation!
 
-This SDK provides tools for building Model-Context Protocol (MCP) enabled applications with interactive UI components. It aims to standardize how models and tools can request the display of rich HTML interfaces within a client application.
+This SDK provides tools for building Model Context Protocol (MCP) enabled applications with interactive UI components. It aims to standardize how models and tools can request the display of rich HTML interfaces within a client application.
 
 ## What is MCP UI?
 
-MCP-UI is a TypeScript monorepo containing:
+MCP UI is a TypeScript SDK containing:
 
-- **`@mcp-ui/client`**: React components (like `<HtmlResource />`) and hooks for easy client-side rendering of interactive resources.
-- **`@mcp-ui/server`**: Helper functions (like `createHtmlResource`) for server-side logic to easily construct `HtmlResourceBlock` objects.
+- **`@mcp-ui/client`**: UI components (like `<HtmlResource />`) for easy rendering of interactive HTML resources.
+- **`@mcp-ui/server`**: Helper functions (like `createHtmlResource`) for server-side logic to easily construct `HtmlResource` objects.
 
 ## Core Concept: The Interactive HTML Resource Protocol
 
-The central piece of this SDK is the `HtmlResourceBlock`. This object defines a contract for how interactive HTML content should be structured and delivered from a server/tool to a client.
+The central piece of this SDK is the `HtmlResource`. This object defines a contract for how interactive HTML content should be structured and delivered from a server/tool to a client.
 
-### `HtmlResourceBlock` Structure
+### `HtmlResource` Structure
 
 ```typescript
 // Defined in @mcp-ui/shared, but shown here for clarity
-export interface HtmlResourceBlock {
+export interface HtmlResource {
   type: 'resource'; // Fixed type identifier
   resource: {
     uri: string; // Unique identifier. Governs rendering behavior.
