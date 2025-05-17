@@ -156,4 +156,4 @@ Apache License 2.0 © [The MCP UI Authors](LICENSE)
 
 ## Disclaimer
 
-This project is provided "as-is". Use at your own risk.*
+This project is provided “as is”, without warranty of any kind. The `mcp-ui` authors and contributors shall not be held liable for any damages, losses, or issues arising from the use of this software. Use at your own risk.
