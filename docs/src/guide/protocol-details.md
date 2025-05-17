@@ -25,7 +25,7 @@ export interface HtmlResourceBlock {
   - **Client Action**: Render in a sandboxed iframe using `srcdoc`.
   - **Example**: A custom button, a small form, a data visualization snippet.
 
-- **`ui-app://<app-name>/<session-info>`**
+- **`ui-app://<app-name>/<instance-id>`**
   - **Purpose**: For embedding external web applications or complex UIs via a URL.
   - **Content**: `text` or `blob` contains the URL.
   - **Client Action**: Render in an iframe using `src`.
