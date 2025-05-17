@@ -4,7 +4,7 @@ export default defineConfig({
   lang: 'en-US',
   title: 'MCP UI',
   description: 'MCP-UI Client & Server SDK Documentation',
-  base: process.env.VITEPRESS_BASE || '/', // For GitHub Pages deployment
+  base: '/mcp-ui/', // For GitHub Pages deployment
 
   vite: {
     // Vite specific config for VitePress

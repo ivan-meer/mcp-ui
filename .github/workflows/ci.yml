@@ -49,7 +49,7 @@ jobs:
     needs: build_lint_test
     runs-on: ubuntu-latest
     # Run on pushes to the main branch. semantic-release will determine if a release is needed.
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main' && !startsWith(github.head_commit.message, 'chore(release):') && !contains(join(github.event.commits.*.files_changed, ','), 'examples/')
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main' && !startsWith(github.head_commit.message, 'chore(release):') && !(contains(join(github.event.commits.*.files_changed, ','), 'examples/') || contains(join(github.event.commits.*.files_changed, ','), 'docs/'))
     permissions:
       contents: write # Needed to push new version tags, commit changelog/package.json updates
       issues: write   # Needed to create/comment on release-related issues (optional, but good practice)

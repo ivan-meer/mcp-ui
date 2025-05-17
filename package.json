@@ -15,8 +15,8 @@
     "version:patch": "echo \"Versioning with Changesets, then run pnpm install\" && pnpm changeset version && pnpm install --lockfile-only",
     "publish-packages": "pnpm build && pnpm changeset publish",
     "docs:dev": "vitepress dev docs/src",
-    "docs:build": "vitepress build docs",
-    "docs:preview": "vitepress preview docs"
+    "docs:build": "vitepress build docs/src",
+    "docs:preview": "vitepress preview docs/src"
   },
   "devDependencies": {
     "@semantic-release/changelog": "^6.0.3",
