@@ -34,13 +34,6 @@ export default defineConfig({
           ],
         },
         {
-          text: 'Shared Package (@mcp-ui/shared)',
-          items: [
-            { text: 'Overview', link: '/guide/shared/overview' },
-            // { text: 'API', link: '/guide/shared/api' } // Placeholder
-          ],
-        },
-        {
           text: 'Server SDK (@mcp-ui/server)',
           items: [
             { text: 'Overview', link: '/guide/server/overview' },
