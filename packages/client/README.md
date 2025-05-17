@@ -5,21 +5,23 @@
   <a href="https://www.npmjs.com/package/@mcp-ui/client"><img src="https://img.shields.io/npm/v/@mcp-ui/client?label=client&color=blue" alt="Client Version"></a>
 </p>
 
-**`mcp-ui`** brings interactive web components to your [Model Context Protocol](https://modelcontextprotocol.io/introduction) (MCP) workflow. Build on the server, render on the client — let your MCP server deliver dynamic HTML resources out of the box.
-
-> *This project is an experimental playground for MCP UI ideas. Expect rapid iteration and community-driven enhancements!*
-
-<video src="https://github.com/user-attachments/assets/51f7c712-8133-4d7c-86d3-fdca550b9767"></video>
-
 <p align="center">
   <a href="#-what-is-mcp-ui">What Is `mcp-ui`</a> •
   <a href="#-installation">Installation</a> •
   <a href="#-quickstart">Quickstart</a> •
   <a href="#-core-concepts">Core Concepts</a> •
   <a href="#-example-server">Example Implementation</a> •
+  <a href="#-roadmap">Roadmap</a> •
   <a href="#-contributing">Contributing</a> •
   <a href="#-license">License</a>
 </p>
+
+
+**`mcp-ui`** brings interactive web components to your [Model Context Protocol](https://modelcontextprotocol.io/introduction) (MCP) workflow. Build on the server, render on the client — let your MCP server deliver dynamic HTML resources out of the box.
+
+> *This project is an experimental playground for MCP UI ideas. Expect rapid iteration and community-driven enhancements!*
+
+<video src="https://github.com/user-attachments/assets/51f7c712-8133-4d7c-86d3-fdca550b9767"></video>
 
 ## 💡 What Is `mcp-ui`?
 
@@ -57,6 +59,8 @@ interface HtmlResourceBlock {
 
 It's rendered in the client with the `<HtmlResource>` React component.
 
+The HTML method is limited, and the external app method isn't secure enough for untrusted 3rd party sites. We need a better method. Some ideas we should explore: RSC, remotedom, etc.
+
 ### UI Action
 
 UI blocks must be able to interact with the agent. In `mcp-ui`, this is done by hooking into events sent from the UI block and reacting to them in the host. For example, an HTML may trigger a tool call when a button is clicked by sending an event which will be caught handled by the client.
@@ -93,7 +97,7 @@ yarn add @mcp-ui/server @mcp-ui/client
    });
    ```
 
-2. **Client-side**: Render in your React app
+2. **Client-side**: Render in your MCP host
 
    ```tsx
    import React from 'react';
@@ -134,6 +138,12 @@ The app is deployed from `examples/server`.
 
 Drop those URLs into any MCP-compatible host to see `mcp-ui` in action.
 
+## 🛣️ Roadmap
+
+- [ ] Support new SSR methods (e.g., RSC)
+- [ ] Support additional client-side libraries
+- [ ] Expand UI Action API
+- [ ] Do more with Resources and Sampling
 
 ## 🤝 Contributing
 
