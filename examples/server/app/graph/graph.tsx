@@ -512,7 +512,7 @@ export function Graph() {
         backgroundColor: '#F8F9FA',
         // borderRadius: '12px',
         boxShadow: '0 6px 18px rgba(0,0,0,0.08)',
-        maxWidth: '520px',
+        // maxWidth: '520px',
         margin: 'auto',
         position: 'relative',
       }}
