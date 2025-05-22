@@ -6,7 +6,7 @@
 </p>
 
 <p align="center">
-  <a href="#-what-is-mcp-ui">What Is mcp-ui</a> •
+  <a href="#-what-is-mcp-ui">What's mcp-ui?</a> •
   <a href="#-installation">Installation</a> •
   <a href="#-quickstart">Quickstart</a> •
   <a href="#-core-concepts">Core Concepts</a> •
@@ -18,13 +18,13 @@
 
 ----
 
-**`mcp-ui`** brings interactive web components to [Model Context Protocol](https://modelcontextprotocol.io/introduction) (MCP). Deliver rich, dynamic UI resources directly from your MCP server to be rendered by the client. Take Human<>AI interaction to the next level!
+**`mcp-ui`** brings interactive web components to the [Model Context Protocol](https://modelcontextprotocol.io/introduction) (MCP). Deliver rich, dynamic UI resources directly from your MCP server to be rendered by the client. Take AI interaction to the next level!
 
 > *This project is an experimental playground for MCP UI ideas. Expect rapid iteration and community-driven enhancements!*
 
 <video src="https://github.com/user-attachments/assets/51f7c712-8133-4d7c-86d3-fdca550b9767"></video>
 
-## 💡 What Is `mcp-ui`?
+## 💡 What's `mcp-ui`?
 
 `mcp-ui` is a TypeScript SDK comprising two packages:
 
@@ -71,6 +71,9 @@ UI blocks must be able to interact with the agent. In `mcp-ui`, this is done by 
 ```bash
 # using npm
 npm install @mcp-ui/server @mcp-ui/client
+
+# or pnpm
+pnpm add @mcp-ui/server @mcp-ui/client
 
 # or yarn
 yarn add @mcp-ui/server @mcp-ui/client
@@ -128,16 +131,18 @@ yarn add @mcp-ui/server @mcp-ui/client
 ## 🌍 Example implementation
 
 **Client example**
-https://github.com/modelcontextprotocol/inspector/pull/413
+* [ui-inspector](https://github.com/idosal/ui-inspector) - inspect local `mcp-ui`-enabled servers.
+* [MCP-UI Chat](https://github.com/idosal/scira-mcp-ui-chat) - interactive chat built with the `mcp-ui` client.
 
 **Server example**
-Try out the hosted app at -
+Try out the hosted app -
 * **HTTP Streaming**: `https://remote-mcp-server-authless.idosalomon.workers.dev/mcp`
 * **SSE**: `https://remote-mcp-server-authless.idosalomon.workers.dev/sse`
 
 The app is deployed from `examples/server`.
 
 Drop those URLs into any MCP-compatible host to see `mcp-ui` in action.
+
 
 ## 🛣️ Roadmap
 
