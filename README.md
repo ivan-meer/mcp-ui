@@ -10,7 +10,7 @@
   <a href="#-installation">Installation</a> •
   <a href="#-quickstart">Quickstart</a> •
   <a href="#-core-concepts">Core Concepts</a> •
-  <a href="#-example-implementation">Example Implementation</a> •
+  <a href="#-examples">Examples</a> •
   <a href="#-roadmap">Roadmap</a> •
   <a href="#-contributing">Contributing</a> •
   <a href="#-license">License</a>
@@ -128,10 +128,10 @@ yarn add @mcp-ui/server @mcp-ui/client
 
 3. **Enjoy** interactive MCP UIs — no extra configuration required.
 
-## 🌍 Example implementation
+## 🌍 Examples
 
 **Client example**
-* [ui-inspector](https://github.com/idosal/ui-inspector) - inspect local `mcp-ui`-enabled servers.
+* [ui-inspector](https://github.com/idosal/ui-inspector) - inspect local `mcp-ui`-enabled servers. Check out the [hosted version](https://scira-mcp-chat-git-main-idosals-projects.vercel.app/)!
 * [MCP-UI Chat](https://github.com/idosal/scira-mcp-ui-chat) - interactive chat built with the `mcp-ui` client.
 
 **Server example**
