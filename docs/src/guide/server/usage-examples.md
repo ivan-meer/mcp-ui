@@ -26,7 +26,7 @@ console.log('Shared Enum from server usage:', PlaceholderEnum.FOO);
 // Example 1: Direct HTML, delivered as text
 const resource1 = createHtmlResource({
   uri: 'ui://my-component/instance-1',
-  content: { type: 'directHtml', htmlString: '<p>Hello World</p>' },
+  content: { type: 'rawHtml', htmlString: '<p>Hello World</p>' },
   delivery: 'text',
 });
 console.log('Resource 1:', JSON.stringify(resource1, null, 2));
@@ -44,7 +44,7 @@ console.log('Resource 1:', JSON.stringify(resource1, null, 2));
 // Example 2: Direct HTML, delivered as a Base64 blob
 const resource2 = createHtmlResource({
   uri: 'ui://my-component/instance-2',
-  content: { type: 'directHtml', htmlString: '<h1>Complex HTML</h1>' },
+  content: { type: 'rawHtml', htmlString: '<h1>Complex HTML</h1>' },
   delivery: 'blob',
 });
 console.log(
@@ -112,7 +112,7 @@ console.log(
 The `createHtmlResource` function will throw errors if invalid combinations are provided, for example:
 
 - URI `ui://` with `content.type: 'externalUrl'`
-- URI `ui-app://` with `content.type: 'directHtml'`
+- URI `ui-app://` with `content.type: 'rawHtml'`
 
 ```typescript
 try {

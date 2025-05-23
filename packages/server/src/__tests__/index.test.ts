@@ -5,7 +5,7 @@ describe('@mcp-ui/server', () => {
     it('should create a text-based direct HTML resource', () => {
       const options = {
         uri: 'ui://test-html',
-        content: { type: 'directHtml' as const, htmlString: '<p>Test</p>' },
+        content: { type: 'rawHtml' as const, htmlString: '<p>Test</p>' },
         delivery: 'text' as const,
       };
       const resource = createHtmlResource(options);
@@ -19,7 +19,7 @@ describe('@mcp-ui/server', () => {
     it('should create a blob-based direct HTML resource', () => {
       const options = {
         uri: 'ui://test-html-blob',
-        content: { type: 'directHtml' as const, htmlString: '<h1>Blob</h1>' },
+        content: { type: 'rawHtml' as const, htmlString: '<h1>Blob</h1>' },
         delivery: 'blob' as const,
       };
       const resource = createHtmlResource(options);
@@ -60,14 +60,14 @@ describe('@mcp-ui/server', () => {
       expect(resource.resource.text).toBeUndefined();
     });
 
-    it('should throw error for invalid URI prefix with directHtml', () => {
+    it('should throw error for invalid URI prefix with rawHtml', () => {
       const options = {
         uri: 'invalid://test-html',
-        content: { type: 'directHtml' as const, htmlString: '<p>Test</p>' },
+        content: { type: 'rawHtml' as const, htmlString: '<p>Test</p>' },
         delivery: 'text' as const,
       };
       expect(() => createHtmlResource(options)).toThrow(
-        "MCP SDK: URI must start with 'ui://' when content.type is 'directHtml'.",
+        "MCP SDK: URI must start with 'ui://' when content.type is 'rawHtml'.",
       );
     });
 

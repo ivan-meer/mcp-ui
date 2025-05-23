@@ -61,16 +61,16 @@ export function createHtmlResource(
 ): HtmlResourceBlock {
   let actualContentString: string;
 
-  if (options.content.type === 'directHtml') {
+  if (options.content.type === 'rawHtml') {
     if (!options.uri.startsWith('ui://')) {
       throw new Error(
-        "MCP SDK: URI must start with 'ui://' when content.type is 'directHtml'.",
+        "MCP SDK: URI must start with 'ui://' when content.type is 'rawHtml'.",
       );
     }
     actualContentString = options.content.htmlString;
     if (typeof actualContentString !== 'string') {
       throw new Error(
-        "MCP SDK: content.htmlString must be provided as a string when content.type is 'directHtml'.",
+        "MCP SDK: content.htmlString must be provided as a string when content.type is 'rawHtml'.",
       );
     }
   } else if (options.content.type === 'externalUrl') {

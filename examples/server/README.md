@@ -85,7 +85,7 @@ yarn add @mcp-ui/server @mcp-ui/client
    // Inline HTML
    const direct = createHtmlResource({
      uri: 'ui://greeting/1',
-     content: { type: 'directHtml', htmlString: '<p>Hello, MCP UI!</p>' },
+     content: { type: 'rawHtml', htmlString: '<p>Hello, MCP UI!</p>' },
      delivery: 'text',
    });
 

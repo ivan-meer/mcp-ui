@@ -61,11 +61,10 @@ const myHtmlPayload = `<h1>Hello from Server!</h1><p>Timestamp: ${new Date().toI
 
 const resourceBlock = createHtmlResource({
   uri: 'ui://server-generated/item1',
-  content: { type: 'directHtml', htmlString: myHtmlPayload },
+  content: { type: 'rawHtml', htmlString: myHtmlPayload },
   delivery: 'text',
 });
 
-console.log(JSON.stringify(resourceBlock, null, 2));
 
 // Send this resourceBlock as part of your MCP response...
 ```
@@ -107,7 +106,7 @@ function App() {
     params: Record<string, unknown>,
   ) => {
     console.log(`Action from resource (tool: ${tool}):`, params);
-    // Potentially send this action back to the server or handle locally
+    // Add your handling logic (e.g., initiate followup tool call)
     return { status: 'Action received by client' };
   };
 
