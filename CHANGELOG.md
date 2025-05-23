@@ -1,3 +1,15 @@
+# [2.0.0](https://github.com/idosal/mcp-ui/compare/v1.1.0...v2.0.0) (2025-05-23)
+
+
+### Documentation
+
+* bump ([#4](https://github.com/idosal/mcp-ui/issues/4)) ([ad4d163](https://github.com/idosal/mcp-ui/commit/ad4d1632cc1f9c99072349a8f0cdaac343236132))
+
+
+### BREAKING CHANGES
+
+* (previous one didn't take due to semantic-release misalignment)
+
 # [1.1.0](https://github.com/idosal/mcp-ui/compare/v1.0.7...v1.1.0) (2025-05-16)
 
 
