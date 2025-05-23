@@ -34,7 +34,6 @@ export function User({ user }: { user: UserInfo }) {
       const message = {
         tool: 'nudge_team_member',
         params: {
-          id: user.id,
           name: user.name,
         },
       };
