@@ -6,11 +6,11 @@
 </p>
 
 <p align="center">
-  <a href="#-what-is-mcp-ui">What Is `mcp-ui`</a> •
+  <a href="#-what-is-mcp-ui">What's mcp-ui?</a> •
   <a href="#-installation">Installation</a> •
   <a href="#-quickstart">Quickstart</a> •
   <a href="#-core-concepts">Core Concepts</a> •
-  <a href="#-example-implementation">Example Implementation</a> •
+  <a href="#-examples">Examples</a> •
   <a href="#-roadmap">Roadmap</a> •
   <a href="#-contributing">Contributing</a> •
   <a href="#-license">License</a>
@@ -18,20 +18,20 @@
 
 ----
 
-**`mcp-ui`** brings interactive web components to your [Model Context Protocol](https://modelcontextprotocol.io/introduction) (MCP) workflow. Build on the server, render on the client — let your MCP server deliver dynamic HTML resources out of the box.
+**`mcp-ui`** brings interactive web components to the [Model Context Protocol](https://modelcontextprotocol.io/introduction) (MCP). Deliver rich, dynamic UI resources directly from your MCP server to be rendered by the client. Take AI interaction to the next level!
 
 > *This project is an experimental playground for MCP UI ideas. Expect rapid iteration and community-driven enhancements!*
 
 <video src="https://github.com/user-attachments/assets/51f7c712-8133-4d7c-86d3-fdca550b9767"></video>
 
-## 💡 What Is `mcp-ui`?
+## 💡 What's `mcp-ui`?
 
 `mcp-ui` is a TypeScript SDK comprising two packages:
 
 * **`@mcp-ui/server`**: Utilities to generate `HtmlResourceBlock` objects on your MCP server.
 * **`@mcp-ui/client`**: UI components (e.g., `<HtmlResource />`) to render those blocks in the browser and handle their events.
 
-Together, they let you define reusable HTML resource blocks on the server side and seamlessly display them and react to their actions in any MCP host environment.
+Together, they let you define reusable UI resource blocks on the server side, seamlessly display them in the client, and react to their actions in the MCP host environment.
 
 
 ## ✨ Core Concepts
@@ -71,6 +71,9 @@ UI blocks must be able to interact with the agent. In `mcp-ui`, this is done by 
 ```bash
 # using npm
 npm install @mcp-ui/server @mcp-ui/client
+
+# or pnpm
+pnpm add @mcp-ui/server @mcp-ui/client
 
 # or yarn
 yarn add @mcp-ui/server @mcp-ui/client
@@ -125,19 +128,21 @@ yarn add @mcp-ui/server @mcp-ui/client
 
 3. **Enjoy** interactive MCP UIs — no extra configuration required.
 
-## 🌍 Example implementation
+## 🌍 Examples
 
 **Client example**
-https://github.com/modelcontextprotocol/inspector/pull/413
+* [ui-inspector](https://github.com/idosal/ui-inspector) - inspect local `mcp-ui`-enabled servers. Check out the [hosted version](https://scira-mcp-chat-git-main-idosals-projects.vercel.app/)!
+* [MCP-UI Chat](https://github.com/idosal/scira-mcp-ui-chat) - interactive chat built with the `mcp-ui` client.
 
 **Server example**
-Try out the hosted app at -
+Try out the hosted app -
 * **HTTP Streaming**: `https://remote-mcp-server-authless.idosalomon.workers.dev/mcp`
 * **SSE**: `https://remote-mcp-server-authless.idosalomon.workers.dev/sse`
 
 The app is deployed from `examples/server`.
 
 Drop those URLs into any MCP-compatible host to see `mcp-ui` in action.
+
 
 ## 🛣️ Roadmap
 
@@ -148,7 +153,7 @@ Drop those URLs into any MCP-compatible host to see `mcp-ui` in action.
 
 ## 🤝 Contributing
 
-Contributions, ideas, and bug reports are welcome! See our [contribution guidelines](https://github.com/idosal/mco-ui/blob/main/.github/CONTRIBUTING.md) to get started.
+Contributions, ideas, and bug reports are welcome! See the [contribution guidelines](https://github.com/idosal/mco-ui/blob/main/.github/CONTRIBUTING.md) to get started.
 
 
 ## 📄 License

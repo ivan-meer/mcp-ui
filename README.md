@@ -146,9 +146,11 @@ Drop those URLs into any MCP-compatible host to see `mcp-ui` in action.
 
 ## 🛣️ Roadmap
 
-- [ ] Support new SSR methods (e.g., RSC)
-- [ ] Support additional client-side libraries
-- [ ] Expand UI Action API
+- [X] Add online playground
+- [ ] Support React Server Components
+- [ ] Support Remote-DOM
+- [ ] Support additional client-side libraries (e.g., Vue)
+- [ ] Expand UI Action API (beyond tool calls)
 - [ ] Do more with Resources and Sampling
 
 ## 🤝 Contributing
