@@ -155,7 +155,7 @@ Drop those URLs into any MCP-compatible host to see `mcp-ui` in action.
 
 ## 🤝 Contributing
 
-Contributions, ideas, and bug reports are welcome! See the [contribution guidelines](https://github.com/idosal/mco-ui/blob/main/.github/CONTRIBUTING.md) to get started.
+Contributions, ideas, and bug reports are welcome! See the [contribution guidelines](https://github.com/idosal/mcp-ui/blob/main/.github/CONTRIBUTING.md) to get started.
 
 
 ## 📄 License
