@@ -5,7 +5,7 @@ import { vi, Mock, MockInstance } from 'vitest';
 import type { Resource } from '@modelcontextprotocol/sdk/types.js';
 
 describe('HtmlResource component', () => {
-  const mockOnUiAction = vi.fn();
+  const mockOnUiAction = vi.fn().mockResolvedValue(undefined);
 
   const defaultProps: RenderHtmlResourceProps = {
     resource: { mimeType: 'text/html', text: '<p>Hello Test</p>' },
@@ -23,6 +23,24 @@ describe('HtmlResource component', () => {
     ) as HTMLIFrameElement;
     expect(iframe).toBeInTheDocument();
     expect(iframe.srcdoc).toContain('<p>Hello Test</p>');
+  });
+
+  it('renders sanitized HTML using secure mode and handles actions', () => {
+    const props: RenderHtmlResourceProps = {
+      resource: {
+        mimeType: 'text/html',
+        text: '<p>Hello <script>alert(1)</script>World</p><button data-tool="foo" data-params="{\"a\":1}">Click</button>',
+      },
+      onUiAction: mockOnUiAction,
+      renderMode: 'secure',
+    };
+    render(<HtmlResource {...props} />);
+    const container = screen.getByTestId('html-resource-secure');
+    expect(container).toBeInTheDocument();
+    expect(container.innerHTML).toContain('Hello');
+    expect(container.innerHTML).not.toContain('<script>');
+    fireEvent.click(screen.getByText('Click'));
+    expect(mockOnUiAction).toHaveBeenCalledWith('foo', {});
   });
 
   it('renders iframe with src for ui-app:// URI with text', () => {
@@ -142,7 +160,9 @@ describe('HtmlResource - onUiAction', () => {
     consoleErrorSpy.mockRestore();
   });
 
-  const renderComponentForUiActionTests = (props: Partial<RenderHtmlResourceProps> = {}) => {
+  const renderComponentForUiActionTests = (
+    props: Partial<RenderHtmlResourceProps> = {},
+  ) => {
     return render(
       <HtmlResource
         resource={props.resource || mockResourceBaseForUiActionTests}
@@ -170,7 +190,7 @@ describe('HtmlResource - onUiAction', () => {
     const iframe = (await screen.findByTitle(
       'MCP HTML Resource (Embedded Content)',
     )) as HTMLIFrameElement;
-    
+
     const eventData = { tool: 'testTool' }; // No params
     dispatchMessage(iframe.contentWindow, eventData);
 
@@ -211,28 +231,36 @@ describe('HtmlResource - onUiAction', () => {
 
     expect(mockOnUiAction).not.toHaveBeenCalled();
   });
-  
+
   it('should work correctly and not throw if onUiAction is undefined', async () => {
     // Pass undefined directly to onUiAction for this specific test
-    renderComponentForUiActionTests({ onUiAction: undefined, resource: mockResourceBaseForUiActionTests });
+    renderComponentForUiActionTests({
+      onUiAction: undefined,
+      resource: mockResourceBaseForUiActionTests,
+    });
     const iframe = (await screen.findByTitle(
       'MCP HTML Resource (Embedded Content)',
     )) as HTMLIFrameElement;
 
     const eventData = { tool: 'testTool', params: { foo: 'bar' } };
-    
+
     expect(() => {
       dispatchMessage(iframe.contentWindow, eventData);
     }).not.toThrow();
     // mockOnUiAction (the one from the describe block scope) should not be called
     // as it was effectively replaced by 'undefined' for this render.
-    expect(mockOnUiAction).not.toHaveBeenCalled(); 
+    expect(mockOnUiAction).not.toHaveBeenCalled();
   });
 
   it('should log an error if onUiAction returns a rejected promise', async () => {
     const errorMessage = 'Async action failed';
-    const specificMockForThisTest = vi.fn<[string, Record<string, unknown>], Promise<unknown>>().mockRejectedValue(new Error(errorMessage));
-    renderComponentForUiActionTests({ onUiAction: specificMockForThisTest, resource: mockResourceBaseForUiActionTests });
+    const specificMockForThisTest = vi
+      .fn<[string, Record<string, unknown>], Promise<unknown>>()
+      .mockRejectedValue(new Error(errorMessage));
+    renderComponentForUiActionTests({
+      onUiAction: specificMockForThisTest,
+      resource: mockResourceBaseForUiActionTests,
+    });
 
     const iframe = (await screen.findByTitle(
       'MCP HTML Resource (Embedded Content)',
@@ -253,21 +281,28 @@ describe('HtmlResource - onUiAction', () => {
 
   it('should not attempt to call onUiAction if iframeRef.current is null (e.g. resource error)', async () => {
     // Render with a resource that will cause an error and prevent iframe rendering
-    const localMockOnUiAction = vi.fn<[string, Record<string, unknown>], Promise<unknown>>();
+    const localMockOnUiAction = vi.fn<
+      [string, Record<string, unknown>],
+      Promise<unknown>
+    >();
     render(
-      <HtmlResource 
+      <HtmlResource
         resource={{ mimeType: 'text/plain', text: 'not html' }} // Invalid mimeType
-        onUiAction={localMockOnUiAction} 
-      />
+        onUiAction={localMockOnUiAction}
+      />,
     );
 
     // Iframe should not be present
-    expect(screen.queryByTitle('MCP HTML Resource (Embedded Content)')).not.toBeInTheDocument();
+    expect(
+      screen.queryByTitle('MCP HTML Resource (Embedded Content)'),
+    ).not.toBeInTheDocument();
     // Error message should be displayed
-    expect(await screen.findByText('Resource is not of type text/html.')).toBeInTheDocument();
-    
+    expect(
+      await screen.findByText('Resource is not of type text/html.'),
+    ).toBeInTheDocument();
+
     const eventData = { tool: 'testTool', params: { foo: 'bar' } };
-    dispatchMessage(window, eventData); 
+    dispatchMessage(window, eventData);
 
     expect(localMockOnUiAction).not.toHaveBeenCalled();
     expect(mockOnUiAction).not.toHaveBeenCalled(); // also check the describe-scoped one
