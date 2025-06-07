@@ -175,6 +175,10 @@ Drop those URLs into any MCP-compatible host to see `mcp-ui` in action.
 - [ ] Expand UI Action API (beyond tool calls)
 - [ ] Do more with Resources and Sampling
 
+## 🌙 Документация на русском
+
+- [План трансформации проекта](docs/src/ru/transformation-plan.md)
+
 ## 🤝 Contributing
 
 Contributions, ideas, and bug reports are welcome! See the [contribution guidelines](https://github.com/idosal/mcp-ui/blob/main/.github/CONTRIBUTING.md) to get started.
