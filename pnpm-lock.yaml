@@ -142,6 +142,37 @@ importers:
         specifier: ^1.0.0
         version: 1.6.1(@types/node@22.15.18)(jsdom@22.1.0)
 
+  packages/generator:
+    dependencies:
+      react:
+        specifier: ^18.2.0
+        version: 18.3.1
+    devDependencies:
+      '@testing-library/jest-dom':
+        specifier: ^6.0.0
+        version: 6.6.3
+      '@testing-library/react':
+        specifier: ^14.0.0
+        version: 14.3.1(@types/react@18.3.21)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      '@types/react':
+        specifier: ^18.2.0
+        version: 18.3.21
+      jsdom:
+        specifier: ^22.0.0
+        version: 22.1.0
+      typescript:
+        specifier: ^5.0.0
+        version: 5.8.3
+      vite:
+        specifier: ^5.0.0
+        version: 5.4.19(@types/node@22.15.18)
+      vite-plugin-dts:
+        specifier: ^3.6.0
+        version: 3.9.1(@types/node@22.15.18)(rollup@4.40.2)(typescript@5.8.3)(vite@5.4.19(@types/node@22.15.18))
+      vitest:
+        specifier: ^1.0.0
+        version: 1.6.1(@types/node@22.15.18)(jsdom@22.1.0)
+
   packages/server:
     devDependencies:
       '@types/node':

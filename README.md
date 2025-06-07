@@ -9,6 +9,7 @@
   <a href="#-what-is-mcp-ui">What's mcp-ui?</a> •
   <a href="#-installation">Installation</a> •
   <a href="#-quickstart">Quickstart</a> •
+  <a href="#-json-schema-generator">JSON Schema Generator</a> •
   <a href="#-core-concepts">Core Concepts</a> •
   <a href="#-examples">Examples</a> •
   <a href="#-roadmap">Roadmap</a> •
@@ -127,6 +128,27 @@ yarn add @mcp-ui/server @mcp-ui/client
    ```
 
 3. **Enjoy** interactive MCP UIs — no extra configuration required.
+## 🧩 JSON Schema Generator
+
+Generate simple React forms from JSON Schema using the `generateUI` API.
+
+```tsx
+import { generateUI } from "@mcp-ui/generator";
+
+const schema = {
+  type: "object",
+  properties: {
+    name: { type: "string" },
+    age: { type: "number" },
+    color: { type: "string", enum: ["red", "green"] },
+  },
+};
+
+export default function MyForm() {
+  return generateUI(schema);
+}
+```
+
 
 ## 🌍 Examples
 
