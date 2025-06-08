@@ -49,59 +49,59 @@ const debounce = <T extends (...args: any[]) => any>(func: T, waitFor: number) =
   };
 };
 
-// + HACK: Context menu positioning can be tricky; this is a basic implementation.
-// + TODO: Improve context menu accessibility (keyboard navigation).
-// + TODO: Consider a more robust context menu library for advanced features or if this becomes complex.
-// + TODO: Add support for long-press on touch devices to open context menu.
+// HACK: Context menu positioning can be tricky; this is a basic implementation.
+// TODO: Improve context menu accessibility (keyboard navigation).
+// TODO: Consider a more robust context menu library for advanced features or if this becomes complex.
+// TODO: Add support for long-press on touch devices to open context menu.
 
-+ interface ContextMenuProps {
-+   x: number;
-+   y: number;
-+   actions: Array<{ label: string; onClick: () => void; disabled?: boolean; className?: string }>;
-+   onClose: () => void;
-+ }
+interface ContextMenuProps {
+  x: number;
+  y: number;
+  actions: Array<{ label: string; onClick: () => void; disabled?: boolean; className?: string }>;
+  onClose: () => void;
+}
 
-+ const ContextMenu: React.FC<ContextMenuProps> = ({ x, y, actions, onClose }) => {
-+   const menuRef = useRef<HTMLDivElement>(null);
+const ContextMenu: React.FC<ContextMenuProps> = ({ x, y, actions, onClose }) => {
+  const menuRef = useRef<HTMLDivElement>(null);
 
-+   useEffect(() => {
-+     const handleClickOutside = (event: MouseEvent) => {
-+       if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
-+         onClose();
-+       }
-+     };
-+     document.addEventListener('mousedown', handleClickOutside);
-+     return () => {
-+       document.removeEventListener('mousedown', handleClickOutside);
-+     };
-+   }, [onClose]);
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+        onClose();
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [onClose]);
 
-+   return (
-+     <div
-+       ref={menuRef}
-+       className="absolute z-50 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-md shadow-lg py-1"
-+       style={{ top: y, left: x }}
-+     >
-+       {actions.map((action, index) => (
-+         <button
-+           key={index}
-+           onClick={() => {
-+             action.onClick();
-+             onClose();
-+           }}
-+           disabled={action.disabled}
-+           className={clsx(
-+             "block w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700",
-+             "disabled:opacity-50 disabled:cursor-not-allowed",
-+             action.className
-+           )}
-+         >
-+           {action.label}
-+         </button>
-+       ))}
-+     </div>
-+   );
-+ };
+  return (
+    <div
+      ref={menuRef}
+      className="absolute z-50 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-md shadow-lg py-1"
+      style={{ top: y, left: x }}
+    >
+      {actions.map((action, index) => (
+        <button
+          key={index}
+          onClick={() => {
+            action.onClick();
+            onClose();
+          }}
+          disabled={action.disabled}
+          className={clsx(
+            "block w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700",
+            "disabled:opacity-50 disabled:cursor-not-allowed",
+            action.className
+          )}
+        >
+          {action.label}
+        </button>
+      ))}
+    </div>
+  );
+};
 
 
 // 📦 ПРОПСЫ КОМПОНЕНТА

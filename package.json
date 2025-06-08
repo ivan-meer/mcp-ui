@@ -4,7 +4,7 @@
   "scripts": {
     "preinstall": "npx only-allow pnpm",
     "dev": "pnpm --filter=\"./packages/*\" --parallel dev",
-    "build": "pnpm --filter=\"./packages/*\" build",
+    "build": "pnpm --filter=\"./packages/{shared,generator,client,server}\" build",
     "preview": "pnpm --filter=\"./packages/*\" --parallel preview",
     "test": "vitest",
     "test:watch": "vitest watch",
