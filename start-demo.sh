@@ -5,6 +5,26 @@
 
 set -e  # Выход при ошибке
 
+# Настройка кодировки для корректного отображения русского текста
+# Проверяем доступные локали и выбираем подходящую
+if locale -a 2>/dev/null | grep -q "ru_RU.utf8\|ru_RU.UTF-8"; then
+    export LANG=ru_RU.UTF-8
+    export LC_CTYPE=ru_RU.UTF-8
+elif locale -a 2>/dev/null | grep -q "C.UTF-8"; then
+    export LANG=C.UTF-8
+    export LC_CTYPE=C.UTF-8
+elif locale -a 2>/dev/null | grep -q "en_US.utf8\|en_US.UTF-8"; then
+    export LANG=en_US.UTF-8
+    export LC_CTYPE=en_US.UTF-8
+else
+    # Fallback к стандартной локали
+    export LANG=C
+    export LC_CTYPE=C
+fi
+
+# Убираем LC_ALL чтобы избежать конфликтов
+unset LC_ALL
+
 # Цвета для вывода
 RED='\033[0;31m'
 GREEN='\033[0;32m'
@@ -142,13 +162,35 @@ start_web_server() {
     fi
 }
 
-# Функция для остановки сервера
+# Функция для остановки всех серверов
 cleanup() {
+    print_step "Останавливаем все серверы..."
+    
+    # Остановка основного веб-сервера
     if [[ -n "$SERVER_PID" ]]; then
-        print_step "Останавливаем веб-сервер..."
         kill "$SERVER_PID" 2>/dev/null || true
-        print_success "Веб-сервер остановлен"
+        wait "$SERVER_PID" 2>/dev/null || true
     fi
+    
+    # Остановка всех Python HTTP серверов
+    pkill -f "python.*http\.server.*$(basename "$(pwd)")" 2>/dev/null || true
+    
+    # Остановка всех pnpm dev серверов
+    pkill -f "pnpm.*dev" 2>/dev/null || true
+    pkill -f "react-router.*dev" 2>/dev/null || true
+    
+    # Проверка освобождения портов
+    local ports_to_check=("8080" "8081" "8082" "5173")
+    for port in "${ports_to_check[@]}"; do
+        if check_port "$port"; then
+            local pid=$(lsof -ti ":$port" 2>/dev/null || true)
+            if [[ -n "$pid" ]]; then
+                kill -9 "$pid" 2>/dev/null || true
+            fi
+        fi
+    done
+    
+    print_success "Все серверы остановлены"
 }
 
 # Функция для показа помощи
@@ -161,12 +203,18 @@ show_help() {
     echo "  -p, --port PORT  Указать порт для веб-сервера (по умолчанию: 8080)"
     echo "  -h, --help       Показать эту справку"
     echo "  --no-browser     Не открывать браузер автоматически"
+    echo "  --stop           Остановить все запущенные серверы"
+    echo "  --status         Показать статус запущенных серверов"
+    echo "  --mcp            Запустить также MCP сервер (examples/server)"
     echo ""
     echo -e "${YELLOW}Примеры:${NC}"
     echo "  ./start-demo.sh                  # Стандартный запуск"
     echo "  ./start-demo.sh --static         # Статичная версия"
     echo "  ./start-demo.sh --port 3000      # Запуск на порту 3000"
     echo "  ./start-demo.sh --no-browser     # Без автооткрытия браузера"
+    echo "  ./start-demo.sh --mcp            # Запуск с MCP сервером"
+    echo "  ./start-demo.sh --stop           # Остановить все серверы"
+    echo "  ./start-demo.sh --status         # Статус серверов"
     echo ""
 }
 
@@ -194,12 +242,125 @@ show_system_info() {
     echo ""
 }
 
+# Функция для показа статуса серверов
+show_server_status() {
+    print_header
+    print_info "Статус запущенных серверов:"
+    echo ""
+    
+    # Проверка HTTP серверов
+    local http_servers=$(ps aux | grep -E "python.*http\.server.*$(basename "$(pwd)")" | grep -v grep | wc -l)
+    if [[ $http_servers -gt 0 ]]; then
+        print_success "HTTP серверы: $http_servers активных"
+        ps aux | grep -E "python.*http\.server.*$(basename "$(pwd)")" | grep -v grep | while read -r line; do
+            local port=$(echo "$line" | grep -o "http\.server [0-9]*" | cut -d' ' -f2)
+            echo "  • Порт $port (PID: $(echo "$line" | awk '{print $2}'))"
+        done
+    else
+        print_error "HTTP серверы: не запущены"
+    fi
+    
+    # Проверка MCP серверов
+    local mcp_servers=$(ps aux | grep -E "(react-router|pnpm.*dev)" | grep -v grep | wc -l)
+    if [[ $mcp_servers -gt 0 ]]; then
+        print_success "MCP серверы: $mcp_servers активных"
+        ps aux | grep -E "(react-router|pnpm.*dev)" | grep -v grep | while read -r line; do
+            echo "  • $(echo "$line" | awk '{print $11}') (PID: $(echo "$line" | awk '{print $2}'))"
+        done
+    else
+        print_error "MCP серверы: не запущены"
+    fi
+    
+    # Проверка занятых портов
+    echo ""
+    print_info "Занятые порты:"
+    local common_ports=("8080" "8081" "8082" "5173" "3000")
+    local ports_found=false
+    
+    for port in "${common_ports[@]}"; do
+        if check_port "$port"; then
+            local pid=$(lsof -ti ":$port" 2>/dev/null || echo "неизвестен")
+            echo "  • Порт $port занят (PID: $pid)"
+            ports_found=true
+        fi
+    done
+    
+    if [[ "$ports_found" == false ]]; then
+        echo "  Основные порты свободны"
+    fi
+    
+    echo ""
+}
+
+# Функция для остановки всех серверов
+stop_all_servers() {
+    print_header
+    cleanup
+    
+    # Дополнительная проверка
+    local remaining=$(ps aux | grep -E "(python.*http\.server|react-router|pnpm.*dev)" | grep -v grep | wc -l)
+    if [[ $remaining -gt 0 ]]; then
+        print_error "Обнаружены оставшиеся процессы, принудительная остановка..."
+        pkill -9 -f "python.*http\.server" 2>/dev/null || true
+        pkill -9 -f "react-router" 2>/dev/null || true
+        pkill -9 -f "pnpm.*dev" 2>/dev/null || true
+        sleep 1
+    fi
+    
+    print_success "Все серверы успешно остановлены"
+}
+
+# Функция для запуска MCP сервера
+start_mcp_server() {
+    local mcp_dir="examples/server"
+    
+    if [[ ! -d "$mcp_dir" ]]; then
+        print_error "Директория MCP сервера не найдена: $mcp_dir"
+        return 1
+    fi
+    
+    print_step "Запускаем MCP сервер..."
+    
+    # Проверка установки зависимостей
+    if [[ ! -d "$mcp_dir/node_modules" ]]; then
+        print_step "Устанавливаем зависимости MCP сервера..."
+        (cd "$mcp_dir" && pnpm install --silent) || {
+            print_error "Ошибка установки зависимостей MCP сервера"
+            return 1
+        }
+    fi
+    
+    # Запуск сервера в фоне
+    (cd "$mcp_dir" && pnpm dev >/dev/null 2>&1 &) || {
+        print_error "Ошибка запуска MCP сервера"
+        return 1
+    }
+    
+    # Ожидание запуска
+    print_step "Ожидание запуска MCP сервера..."
+    local attempts=0
+    local max_attempts=30
+    
+    while [[ $attempts -lt $max_attempts ]]; do
+        if curl -s --connect-timeout 1 "http://localhost:5173" >/dev/null 2>&1; then
+            print_success "MCP сервер запущен: http://localhost:5173"
+            return 0
+        fi
+        sleep 1
+        ((attempts++))
+    done
+    
+    print_error "MCP сервер не отвечает после $max_attempts секунд"
+    return 1
+}
+
 # Основная функция
 main() {
     # Значения по умолчанию
     local static_mode=false
     local port=""
     local no_browser=false
+    local start_mcp=false
     local demo_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
     local demo_file="$demo_dir/demo.html"
     
@@ -220,6 +381,18 @@ main() {
                 ;;
             --no-browser)
                 no_browser=true
+                shift
+                ;;
+            --stop)
+                stop_all_servers
+                exit 0
+                ;;
+            --status)
+                show_server_status
+                exit 0
+                ;;
+            --mcp)
+                start_mcp=true
                 shift
                 ;;
             --system-info)
@@ -336,6 +509,16 @@ main() {
     echo "  • Панель: http://localhost:$port/demo.html#dashboard"
     echo "  • Формы: http://localhost:$port/demo.html#forms"
     echo ""
+    
+    # Запуск MCP сервера если требуется
+    if [[ "$start_mcp" == true ]]; then
+        start_mcp_server && {
+            print_info "MCP эндпоинты:"
+            echo "  • HTTP: http://localhost:5173/mcp"
+            echo "  • SSE: http://localhost:5173/sse"
+            echo ""
+        }
+    fi
     
     # Ожидание завершения
     print_info "Сервер работает... (нажмите Ctrl+C для остановки)"
