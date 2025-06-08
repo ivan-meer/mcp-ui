@@ -9,6 +9,7 @@
   <a href="#-what-is-mcp-ui">What's mcp-ui?</a> •
   <a href="#-installation">Installation</a> •
   <a href="#-quickstart">Quickstart</a> •
+  <a href="#-demo-prototype">Demo & Prototype</a> •
   <a href="#-json-schema-generator">JSON Schema Generator</a> •
   <a href="#-core-concepts">Core Concepts</a> •
   <a href="#-examples">Examples</a> •
@@ -128,6 +129,82 @@ yarn add @mcp-ui/server @mcp-ui/client
    ```
 
 3. **Enjoy** interactive MCP UIs — no extra configuration required.
+
+## 🎨 Demo & Prototype
+
+We've created a comprehensive prototype showcasing the full potential of MCP UI SDK! 
+
+### 🚀 Quick Demo
+
+**Option 1: Static Demo (Instant)**
+```bash
+# Open the demo file directly in your browser
+open demo.html
+# or
+firefox demo.html
+# or 
+google-chrome demo.html
+```
+
+**Option 2: Local Server**
+```bash
+# Start local HTTP server
+./start-demo.sh
+# Opens http://localhost:8080/demo.html automatically
+```
+
+### 🎯 What's in the Demo
+
+The prototype includes **6 different UI component types**:
+
+| Component | Description | Features |
+|-----------|-------------|----------|
+| 📊 **Analytics Dashboard** | Interactive charts and metrics | Chart.js integration, real-time data, system status |
+| 📝 **Form Generator** | Dynamic forms from JSON Schema | Validation, multiple input types, data handling |
+| 📋 **Data Tables** | Interactive data display | Sorting, filtering, pagination |
+| 📅 **Calendar** | Event scheduling interface | Monthly/weekly views, event management |
+| 💬 **Chat Interface** | Embedded chat component | Message handling, user interactions |
+| 📁 **File Manager** | File system browser | Directory navigation, file operations |
+
+### 🔧 MCP Tools Added
+
+The demo server includes these new MCP tools:
+
+```typescript
+// Gallery of all UI components
+server.tool('show_ui_gallery', ...)
+
+// Interactive analytics dashboard with Chart.js
+server.tool('show_dashboard', { type: z.string().optional() }, ...)
+
+// Dynamic form generator with validation
+server.tool('show_form_generator', { 
+  schema: z.string(), 
+  data: z.record(z.any()).optional() 
+}, ...)
+```
+
+### ✨ Demo Features
+
+- **🎨 Modern Design**: Beautiful gradients, animations, hover effects
+- **📱 Responsive**: Works on desktop, tablet, and mobile
+- **⚡ Interactive**: All buttons and elements are fully functional
+- **🔒 Secure**: Safe HTML rendering with DOMPurify
+- **📊 Chart.js Integration**: Live, animated charts and graphs
+- **🎯 Event Handling**: Complete MCP tool integration
+
+### 📁 Demo Files Structure
+
+```
+/home/how2ai/mcp-ui/
+├── demo.html                    # Main prototype demo
+├── start-demo.sh               # Auto-launch script
+├── examples/server/src/index.ts # Enhanced MCP server
+└── docs/
+    ├── DEMO_GUIDE.md          # Detailed demo documentation
+    └── COMPONENTS.md          # Component reference
+```
+
 ## 🧩 JSON Schema Generator
 
 Generate simple React forms from JSON Schema using the `generateUI` API.

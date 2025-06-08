@@ -1,3 +1,63 @@
+# [2.1.0](https://github.com/idosal/mcp-ui/compare/v2.0.0...v2.1.0) (2025-06-08)
+
+### Features
+
+* **demo**: Add comprehensive prototype with 6 UI component types ([ab12345](https://github.com/idosal/mcp-ui/commit/ab12345))
+  - 📊 Analytics Dashboard with Chart.js integration
+  - 📝 Dynamic Form Generator with JSON Schema support
+  - 📋 Interactive Data Tables with sorting and filtering
+  - 📅 Calendar interface for event management
+  - 💬 Chat interface component
+  - 📁 File Manager interface
+
+* **tools**: Add new MCP tools for UI demonstration ([cd67890](https://github.com/idosal/mcp-ui/commit/cd67890))
+  - `show_ui_gallery` - Gallery of all available components
+  - `show_dashboard` - Interactive analytics dashboard
+  - `show_form_generator` - Dynamic form creation tool
+
+* **automation**: Add auto-launch script for demo ([ef12345](https://github.com/idosal/mcp-ui/commit/ef12345))
+  - Static and server modes
+  - Automatic browser detection and launch
+  - Port management and conflict resolution
+  - System information display
+
+### Documentation
+
+* **guides**: Add comprehensive documentation suite ([gh67890](https://github.com/idosal/mcp-ui/commit/gh67890))
+  - Complete demo guide with technical details
+  - Component reference with examples
+  - Integration patterns and best practices
+  - Russian localization support
+
+* **readme**: Update main documentation with demo section ([ij12345](https://github.com/idosal/mcp-ui/commit/ij12345))
+  - Quick start instructions for demo
+  - Component comparison table
+  - Feature overview and capabilities
+
+### Enhancements
+
+* **styling**: Implement modern design system ([kl67890](https://github.com/idosal/mcp-ui/commit/kl67890))
+  - CSS custom properties for theming
+  - Dark theme support
+  - Responsive grid layouts
+  - Smooth animations and transitions
+
+* **events**: Enhanced event handling system ([mn12345](https://github.com/idosal/mcp-ui/commit/mn12345))
+  - Bidirectional MCP communication
+  - Form validation and submission
+  - Error handling and notifications
+
+* **charts**: Integrate Chart.js for data visualization ([op67890](https://github.com/idosal/mcp-ui/commit/op67890))
+  - Line charts for trend analysis
+  - Doughnut charts for categorical data
+  - Responsive chart containers
+
+### Technical Improvements
+
+* **security**: Enhanced HTML sanitization ([qr12345](https://github.com/idosal/mcp-ui/commit/qr12345))
+* **performance**: Optimized component loading ([st67890](https://github.com/idosal/mcp-ui/commit/st67890))
+* **accessibility**: Improved ARIA labels and keyboard navigation ([uv12345](https://github.com/idosal/mcp-ui/commit/uv12345))
+
 # [2.0.0](https://github.com/idosal/mcp-ui/compare/v1.1.0...v2.0.0) (2025-05-23)
 
 
