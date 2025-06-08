@@ -1,0 +1,812 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MCP UI SDK - Демонстрация</title>
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .demo-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.15);
+            overflow: hidden;
+        }
+        
+        .demo-header {
+            background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .demo-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="20" cy="20" r="2" fill="rgba(255,255,255,0.1)"/><circle cx="80" cy="40" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="60" cy="80" r="1.5" fill="rgba(255,255,255,0.1)"/></svg>');
+            animation: float 20s infinite linear;
+        }
+        
+        @keyframes float {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(-100px); }
+        }
+        
+        .demo-header h1 {
+            font-size: 3em;
+            margin-bottom: 15px;
+            position: relative;
+        }
+        
+        .demo-header p {
+            font-size: 1.3em;
+            opacity: 0.9;
+            position: relative;
+        }
+        
+        .demo-nav {
+            background: #f8f9fa;
+            padding: 20px 40px;
+            border-bottom: 2px solid #e9ecef;
+        }
+        
+        .nav-tabs {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .nav-tab {
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            padding: 12px 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            color: #4a5568;
+        }
+        
+        .nav-tab:hover {
+            border-color: #667eea;
+            color: #667eea;
+            transform: translateY(-2px);
+        }
+        
+        .nav-tab.active {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+        
+        .demo-content {
+            padding: 40px;
+            min-height: 600px;
+        }
+        
+        .component-demo {
+            display: none;
+        }
+        
+        .component-demo.active {
+            display: block;
+        }
+        
+        .demo-section {
+            margin-bottom: 40px;
+        }
+        
+        .demo-section h2 {
+            color: #2d3748;
+            margin-bottom: 20px;
+            font-size: 1.8em;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 10px;
+        }
+        
+        .demo-iframe {
+            width: 100%;
+            height: 600px;
+            border: 2px solid #e9ecef;
+            border-radius: 12px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .demo-iframe:hover {
+            box-shadow: 0 12px 35px rgba(0,0,0,0.15);
+            transform: translateY(-2px);
+        }
+        
+        .code-example {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            overflow-x: auto;
+        }
+        
+        .code-example pre {
+            color: #2d3748;
+            font-family: 'Monaco', 'Consolas', monospace;
+            font-size: 0.9em;
+            line-height: 1.5;
+        }
+        
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin: 30px 0;
+        }
+        
+        .feature-card {
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 12px;
+            padding: 25px;
+            transition: all 0.3s ease;
+        }
+        
+        .feature-card:hover {
+            border-color: #667eea;
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+        
+        .feature-card h3 {
+            color: #2d3748;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+        
+        .feature-card p {
+            color: #4a5568;
+            line-height: 1.6;
+        }
+        
+        .btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: all 0.3s ease;
+            margin: 10px 5px;
+            font-weight: 500;
+        }
+        
+        .btn:hover {
+            background: #5a67d8;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        .btn-secondary {
+            background: #e2e8f0;
+            color: #4a5568;
+        }
+        
+        .btn-secondary:hover {
+            background: #cbd5e0;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .alert {
+            background: #e6fffa;
+            border: 1px solid #81e6d9;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 20px 0;
+            color: #234e52;
+        }
+        
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            margin: 30px 0;
+            text-align: center;
+        }
+        
+        .stat {
+            flex: 1;
+            padding: 20px;
+        }
+        
+        .stat-number {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #667eea;
+            display: block;
+        }
+        
+        .stat-label {
+            color: #4a5568;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="demo-container">
+        <div class="demo-header">
+            <h1>🎨 MCP UI SDK</h1>
+            <p>Интерактивные компоненты для Model Context Protocol</p>
+        </div>
+        
+        <div class="demo-nav">
+            <div class="nav-tabs">
+                <div class="nav-tab active" data-tab="overview">📋 Обзор</div>
+                <div class="nav-tab" data-tab="gallery">🎨 Галерея</div>
+                <div class="nav-tab" data-tab="dashboard">📊 Панель</div>
+                <div class="nav-tab" data-tab="forms">📝 Формы</div>
+                <div class="nav-tab" data-tab="integration">🔧 Интеграция</div>
+            </div>
+        </div>
+        
+        <div class="demo-content">
+            <div class="component-demo active" data-content="overview">
+                <div class="demo-section">
+                    <h2>Добро пожаловать в MCP UI SDK</h2>
+                    <p style="font-size: 1.1em; color: #4a5568; line-height: 1.6; margin-bottom: 30px;">
+                        MCP UI SDK позволяет создавать интерактивные пользовательские интерфейсы, которые встраиваются 
+                        в Model Context Protocol серверы. Это открывает новые возможности для создания богатых, 
+                        интерактивных инструментов для AI агентов.
+                    </p>
+                    
+                    <div class="stats">
+                        <div class="stat">
+                            <span class="stat-number">3</span>
+                            <div class="stat-label">Основных пакета</div>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-number">6+</span>
+                            <div class="stat-label">Типов компонентов</div>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-number">2</span>
+                            <div class="stat-label">Режима рендеринга</div>
+                        </div>
+                    </div>
+                    
+                    <div class="feature-grid">
+                        <div class="feature-card">
+                            <h3>🔒 Безопасность</h3>
+                            <p>Санитизация HTML контента и безопасный рендеринг через iframe или безопасный режим с DOMPurify.</p>
+                        </div>
+                        
+                        <div class="feature-card">
+                            <h3>⚡ Производительность</h3>
+                            <p>Оптимизированная обработка событий и эффективное управление состоянием компонентов.</p>
+                        </div>
+                        
+                        <div class="feature-card">
+                            <h3>🎯 Простота использования</h3>
+                            <p>Простой API для создания HTML ресурсов и интеграции с существующими MCP серверами.</p>
+                        </div>
+                        
+                        <div class="feature-card">
+                            <h3>🔧 Гибкость</h3>
+                            <p>Поддержка различных типов UI компонентов: формы, таблицы, графики, файловые менеджеры.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="alert">
+                        <strong>💡 Совет:</strong> Для начала работы изучите примеры в галерее компонентов. 
+                        Каждый компонент демонстрирует различные возможности SDK.
+                    </div>
+                </div>
+            </div>
+            
+            <div class="component-demo" data-content="gallery">
+                <div class="demo-section">
+                    <h2>Галерея компонентов</h2>
+                    <p style="margin-bottom: 20px; color: #4a5568;">
+                        Интерактивная галерея различных типов UI компонентов, поддерживаемых MCP UI SDK.
+                    </p>
+                    <iframe class="demo-iframe" id="galleryFrame"></iframe>
+                </div>
+            </div>
+            
+            <div class="component-demo" data-content="dashboard">
+                <div class="demo-section">
+                    <h2>Аналитическая панель</h2>
+                    <p style="margin-bottom: 20px; color: #4a5568;">
+                        Пример интерактивной панели с графиками, метриками и системными индикаторами.
+                    </p>
+                    <iframe class="demo-iframe" id="dashboardFrame"></iframe>
+                </div>
+            </div>
+            
+            <div class="component-demo" data-content="forms">
+                <div class="demo-section">
+                    <h2>Генератор динамических форм</h2>
+                    <p style="margin-bottom: 20px; color: #4a5568;">
+                        Демонстрация создания форм на основе JSON Schema с валидацией и обработкой событий.
+                    </p>
+                    <iframe class="demo-iframe" id="formsFrame"></iframe>
+                </div>
+            </div>
+            
+            <div class="component-demo" data-content="integration">
+                <div class="demo-section">
+                    <h2>Интеграция с MCP сервером</h2>
+                    
+                    <h3 style="margin: 30px 0 15px; color: #2d3748;">1. Установка зависимостей</h3>
+                    <div class="code-example">
+                        <pre>npm install @mcp-ui/server @mcp-ui/client</pre>
+                    </div>
+                    
+                    <h3 style="margin: 30px 0 15px; color: #2d3748;">2. Создание HTML ресурса на сервере</h3>
+                    <div class="code-example">
+                        <pre>import { createHtmlResource } from '@mcp-ui/server';
+
+// В вашем MCP tool
+const resourceBlock = createHtmlResource({
+  uri: 'ui://my-dashboard/1',
+  content: { 
+    type: 'rawHtml', 
+    htmlString: '&lt;h1&gt;Hello World&lt;/h1&gt;' 
+  },
+  delivery: 'text'
+});
+
+return {
+  content: [resourceBlock]
+};</pre>
+                    </div>
+                    
+                    <h3 style="margin: 30px 0 15px; color: #2d3748;">3. Рендеринг на клиенте</h3>
+                    <div class="code-example">
+                        <pre>import { HtmlResource } from '@mcp-ui/client';
+
+function MyComponent({ resource }) {
+  const handleUiAction = async (tool, params) => {
+    // Обработка действий пользователя
+    console.log('Tool called:', tool, params);
+  };
+
+  return (
+    &lt;HtmlResource 
+      resource={resource}
+      onUiAction={handleUiAction}
+      renderMode="secure" // или "iframe"
+    /&gt;
+  );
+}</pre>
+                    </div>
+                    
+                    <h3 style="margin: 30px 0 15px; color: #2d3748;">4. Обработка событий</h3>
+                    <div class="code-example">
+                        <pre>// В HTML ресурсе
+&lt;button data-tool="save_data" data-params='{"id": 123}'&gt;
+  Сохранить
+&lt;/button&gt;
+
+// В режиме iframe используйте postMessage
+window.parent.postMessage({
+  tool: 'save_data',
+  params: { id: 123 }
+}, '*');</pre>
+                    </div>
+                    
+                    <div class="alert">
+                        <strong>📚 Документация:</strong> Подробную документацию и больше примеров 
+                        вы найдете в файлах README каждого пакета.
+                    </div>
+                    
+                    <div style="text-align: center; margin-top: 40px;">
+                        <button class="btn" onclick="window.open('https://github.com/example/mcp-ui', '_blank')">
+                            📖 Документация
+                        </button>
+                        <button class="btn btn-secondary" onclick="window.open('https://github.com/example/mcp-ui/examples', '_blank')">
+                            💾 Примеры кода
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // HTML контент для галереи
+        const galleryHTML = `
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MCP UI Gallery</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container { 
+            max-width: 1200px; 
+            margin: 0 auto; 
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        .header {
+            background: #4a5568;
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        .header h1 { font-size: 2.5em; margin-bottom: 10px; }
+        .header p { opacity: 0.9; font-size: 1.1em; }
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            padding: 30px;
+        }
+        .card {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            border: 2px solid #e9ecef;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+            border-color: #667eea;
+        }
+        .card h3 {
+            color: #2d3748;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+        .card p {
+            color: #4a5568;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+        .btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: background 0.3s ease;
+        }
+        .btn:hover { background: #5a67d8; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎨 MCP UI Gallery</h1>
+            <p>Интерактивные компоненты для Model Context Protocol</p>
+        </div>
+        
+        <div class="gallery">
+            <div class="card">
+                <h3>📊 Аналитическая панель</h3>
+                <p>Интерактивные графики и метрики для отображения данных</p>
+                <button class="btn">Открыть панель</button>
+            </div>
+
+            <div class="card">
+                <h3>📝 Генератор форм</h3>
+                <p>Динамическое создание форм на основе JSON Schema</p>
+                <button class="btn">Создать форму</button>
+            </div>
+
+            <div class="card">
+                <h3>📋 Таблица данных</h3>
+                <p>Интерактивная таблица с сортировкой и фильтрацией</p>
+                <button class="btn">Открыть таблицу</button>
+            </div>
+
+            <div class="card">
+                <h3>📅 Календарь событий</h3>
+                <p>Календарный интерфейс для планирования и отображения событий</p>
+                <button class="btn">Открыть календарь</button>
+            </div>
+
+            <div class="card">
+                <h3>💬 Чат интерфейс</h3>
+                <p>Встроенный чат для взаимодействия с агентами</p>
+                <button class="btn">Открыть чат</button>
+            </div>
+
+            <div class="card">
+                <h3>📁 Файловый менеджер</h3>
+                <p>Интерфейс для работы с файлами и папками</p>
+                <button class="btn">Открыть менеджер</button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>`;
+
+        // HTML контент для панели
+        const dashboardHTML = `
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analytics Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f8f9fa;
+            padding: 20px;
+        }
+        .dashboard {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        .widget {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .widget h3 {
+            color: #2d3748;
+            margin-bottom: 15px;
+            font-size: 1.2em;
+        }
+        .metric {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .metric:last-child { border-bottom: none; }
+        .metric-value {
+            font-weight: bold;
+            font-size: 1.1em;
+            color: #667eea;
+        }
+        .chart-container {
+            position: relative;
+            height: 300px;
+            margin-top: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard">
+        <div class="widget">
+            <h3>📊 Ключевые метрики</h3>
+            <div class="metric">
+                <span>Активные пользователи</span>
+                <span class="metric-value">1,234</span>
+            </div>
+            <div class="metric">
+                <span>Конверсия</span>
+                <span class="metric-value">12.5%</span>
+            </div>
+            <div class="metric">
+                <span>Доход (₽)</span>
+                <span class="metric-value">2,150,000</span>
+            </div>
+        </div>
+
+        <div class="widget">
+            <h3>📈 График продаж</h3>
+            <div class="chart-container">
+                <canvas id="salesChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const salesCtx = document.getElementById('salesChart').getContext('2d');
+        new Chart(salesCtx, {
+            type: 'line',
+            data: {
+                labels: ['Янв', 'Фев', 'Мар', 'Апр', 'Май', 'Июн', 'Июл'],
+                datasets: [{
+                    label: 'Продажи',
+                    data: [120, 190, 300, 500, 200, 300, 450],
+                    borderColor: '#667eea',
+                    backgroundColor: 'rgba(102, 126, 234, 0.1)',
+                    tension: 0.4,
+                    fill: true
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: { beginAtZero: true }
+                }
+            }
+        });
+    </script>
+</body>
+</html>`;
+
+        // HTML контент для форм
+        const formsHTML = `
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic Form Generator</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .form-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+        .form-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .form-header h1 {
+            color: #2d3748;
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            color: #2d3748;
+            font-weight: 500;
+        }
+        .form-input, .form-select, .form-textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+        .form-input:focus, .form-select:focus, .form-textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        .form-textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+        .btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            margin: 10px 5px;
+        }
+        .btn:hover {
+            background: #5a67d8;
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <div class="form-header">
+            <h1>📝 Генератор форм</h1>
+            <p>Пример динамической формы</p>
+        </div>
+
+        <form>
+            <div class="form-group">
+                <label class="form-label">Имя *</label>
+                <input type="text" class="form-input" required>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Email *</label>
+                <input type="email" class="form-input" required>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Роль</label>
+                <select class="form-select">
+                    <option>Выберите роль</option>
+                    <option>Администратор</option>
+                    <option>Пользователь</option>
+                    <option>Гость</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">О себе</label>
+                <textarea class="form-textarea" placeholder="Расскажите немного о себе..."></textarea>
+            </div>
+
+            <button type="submit" class="btn">Сохранить</button>
+        </form>
+    </div>
+</body>
+</html>`;
+
+        // Навигация между табами
+        document.querySelectorAll('.nav-tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                const tabName = tab.getAttribute('data-tab');
+                
+                // Обновление активного таба
+                document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                
+                // Показ соответствующего контента
+                document.querySelectorAll('.component-demo').forEach(demo => {
+                    demo.classList.remove('active');
+                });
+                document.querySelector(\`[data-content="\${tabName}"]\`).classList.add('active');
+                
+                // Загрузка содержимого в iframe
+                if (tabName === 'gallery') {
+                    const frame = document.getElementById('galleryFrame');
+                    frame.srcdoc = galleryHTML;
+                } else if (tabName === 'dashboard') {
+                    const frame = document.getElementById('dashboardFrame');
+                    frame.srcdoc = dashboardHTML;
+                } else if (tabName === 'forms') {
+                    const frame = document.getElementById('formsFrame');
+                    frame.srcdoc = formsHTML;
+                }
+            });
+        });
+    </script>
+</body>
+</html>
