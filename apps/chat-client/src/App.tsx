@@ -17,10 +17,12 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 
 // 🎨 UI Компоненты
 import { ChatWindow, MessageList, MessageInput } from '@mcp-ui/chat-ui';
-import { LoadingSpinner } from '@/components/LoadingSpinner';
-import { Header } from '@/components/Header';
-import { Sidebar } from '@/components/Sidebar';
-import { StatusBar } from '@/components/StatusBar';
+import { ServerManager, ServerConfig } from '@mcp/server-manager'; // Import ServerManager and ServerConfig
+import { LoadingSpinner } from '@/components/LoadingSpinner'; // Existing, will be used by new component
+import { Header } from '@/components/Header'; // Existing, will be used by new component
+import { Sidebar as OldSidebar } from '@/components/Sidebar'; // Renamed for clarity
+import { StatusBar } from '@/components/StatusBar'; // Existing, will be used by new component
+import ServerSidebar from '@/components/ServerSidebar'; // New Sidebar import
 
 // 🔌 MCP подключения
 import { useMcpStore } from '@/store/mcpStore';
@@ -42,8 +44,8 @@ function App() {
   
   // 📊 Состояние
   const { 
-    servers, 
-    activeServer, 
+    servers: serversFromStore, // Rename to avoid conflict
+    activeServer: activeServerFromStore, // Rename
     connectionStatus,
     connectToServer,
     disconnectFromServer 
@@ -53,16 +55,64 @@ function App() {
     messages,
     addMessage,
     isTyping,
-    sendMessage
+    sendMessage,
+    removeMessage // Assuming removeMessage is now exported from useChatStore (it was, named removeMessage)
   } = useChatStore();
   
   // 🔧 Локальное состояние
-  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(false); // For OldSidebar
+  const [isServerSidebarOpen, setIsServerSidebarOpen] = useState(false); // For new ServerSidebar
   const [loading, setLoading] = useState(true);
+
+  // Instantiate ServerManager - ensure it's created once
+  const [serverManagerInstance] = useState(() => {
+    // HACK: Add some default servers for testing if none are loaded from elsewhere (e.g., localStorage)
+    // TODO: Implement proper loading of server configs into ServerManager, possibly from localStorage or a config file.
+    const initialServers: ServerConfig[] = [
+      { id: 'default-ws', name: 'Default WebSocket', transport: 'websocket', url: 'ws://localhost:8080', type: 'mcp' },
+      { id: 'local-echo', name: 'Local Echo Server', transport: 'localprocess', url: 'echo_server_command', type: 'mcp' },
+    ];
+    console.log("Initializing ServerManager with initial configs for sidebar:", initialServers);
+    return new ServerManager(initialServers);
+  });
+
+  const [activeServerIdForSidebar, setActiveServerIdForSidebar] = useState<string | null>(serverManagerInstance.getActiveServerId());
+  const [serverListForSidebar, setServerListForSidebar] = useState<ServerConfig[]>(serverManagerInstance.listServers());
+
+  // Effect to subscribe to ServerManager events
+  useEffect(() => {
+    const handleActiveServerChanged = (server: ServerConfig | null) => {
+      console.log("App.tsx: Active server changed in manager:", server);
+      setActiveServerIdForSidebar(server ? server.id : null);
+    };
+    const handleServersChanged = (updatedServers: ServerConfig[]) => {
+      console.log("App.tsx: Server list changed in manager:", updatedServers);
+      setServerListForSidebar(updatedServers);
+    };
+    const handleStatusChanged = ({ serverId, status }: { serverId: string, status: string }) => {
+      console.log(`App.tsx: Status for ${serverId} changed to ${status} in manager`);
+      // This will trigger re-render in ServerSidebar due to its own useEffect listening to serverManager
+    };
+
+    serverManagerInstance.on('activeServerChanged', handleActiveServerChanged);
+    serverManagerInstance.on('serversChanged', handleServersChanged);
+    serverManagerInstance.on('statusChanged', handleStatusChanged);
+
+    // Initial sync
+    setActiveServerIdForSidebar(serverManagerInstance.getActiveServerId());
+    setServerListForSidebar(serverManagerInstance.listServers());
+
+    return () => {
+      serverManagerInstance.off('activeServerChanged', handleActiveServerChanged);
+      serverManagerInstance.off('serversChanged', handleServersChanged);
+      serverManagerInstance.off('statusChanged', handleStatusChanged);
+    };
+  }, [serverManagerInstance]);
   
   // ⌨️ Горячие клавиши
   useKeyboardShortcuts({
-    'Ctrl+K': () => setSidebarOpen(!sidebarOpen),
+    'Ctrl+K': () => setSidebarOpen(!sidebarOpen), // Original shortcut for OldSidebar
+    'Ctrl+Alt+S': () => setIsServerSidebarOpen(!isServerSidebarOpen), // New shortcut for ServerSidebar
     'Ctrl+Shift+T': toggleTheme,
   });
   
@@ -112,7 +162,7 @@ function App() {
       addMessage(userMessage);
       
       // 📤 Отправляем через MCP если есть активный сервер
-      if (activeServer) {
+      if (activeServerFromStore) { // Use renamed
         await sendMessage(content.trim());
       } else {
         // 🤖 Фиктивный ответ если нет сервера
@@ -147,33 +197,115 @@ function App() {
   };
   
   // 🎯 Обработчик событий чата
-  const handleChatEvent = (event: any) => {
+  const handleChatEvent = (event: ChatEventData) => { // Changed 'any' to 'ChatEventData'
     console.log('💬 Chat Event:', event);
     
     switch (event.type) {
       case 'message-send':
         // Уже обработано в handleSendMessage
         break;
-      case 'message-delete':
-        // TODO: Реализовать удаление сообщений
+      case 'requestDeleteMessage': // Matches the event from MessageList context menu
+        if (event.messageId && typeof event.messageId === 'string') { // Ensure messageId is a string
+          console.log(`App: Request to delete message ${event.messageId}`);
+          if (typeof removeMessage === 'function') {
+            removeMessage(event.messageId);
+          } else {
+            console.warn("removeMessage action not found in useChatStore. Message deletion failed.");
+          }
+          // TODO: Add confirmation dialog before actual deletion if desired by product requirements.
+        } else {
+          console.warn("requestDeleteMessage event received without valid messageId", event);
+        }
+        break;
+      case 'uiAction': // Matches the event from UIComponentRenderer
+        console.log('App: UI Action event received:', event.payload);
+        // TODO: Implement logic to handle actions from UI components (e.g., call MCP tools, interact with app state).
+        addMessage({
+          id: `ui-action-${Date.now()}`,
+          type: 'system',
+          content: `UI Action from component: ${event.payload?.tool || event.payload?.action || 'Unknown action'} with params: ${JSON.stringify(event.payload?.params)}`,
+          timestamp: new Date(),
+          status: 'completed', // System messages are typically completed
+        });
+        break;
+      case 'systemNotification': // Matches the event from MessageList context menu copy action
+        console.log('App: System Notification:', event.payload);
+        // Optionally, display this in a more user-friendly way (e.g., a toast notification system).
+        // For now, logging is sufficient. Adding to chat might be too noisy.
+        // addMessage({
+        //   id: `sys-notification-${Date.now()}`,
+        //   type: 'system',
+        //   content: `Notification: ${event.payload?.text} (Level: ${event.payload?.level})`,
+        //   timestamp: new Date(),
+        //   status: 'completed',
+        // });
         break;
       default:
         console.log('🔍 Неизвестное событие чата:', event.type);
     }
   };
   
+  // ... useKeyboardShortcuts, useEffect for initializeApp ...
+
+  // Handlers for the new ServerSidebar
+  const handleSelectServerForSidebar = useCallback((serverId: string) => {
+    console.log(`App: ServerSidebar requests to select server ${serverId}`);
+    serverManagerInstance.setActiveServer(serverId);
+    // Note: This only sets it active in serverManagerInstance for ServerSidebar's context.
+    // The main app's activeServer (from useMcpStore) is still separate for now.
+    // TODO: Fully integrate ServerManager with useMcpStore so they are in sync.
+  }, [serverManagerInstance]);
+
+  const handleConnectServerFromSidebar = useCallback(async (serverId: string) => {
+    const serverToConnect = serverManagerInstance.getServerById(serverId);
+    if (!serverToConnect) {
+      console.error(`App: Server ${serverId} not found in ServerManager.`);
+      return;
+    }
+    console.log(`App: ServerSidebar requests to connect to server ${serverId}`);
+    serverManagerInstance.updateServerStatus(serverId, 'connecting');
+    try {
+      // Assuming connectToServer from useMcpStore takes a ServerConfig-like object or just the ID
+      // For this refinement, we'll assume useMcpStore's connectToServer can handle a server ID
+      // and find the full config, or that it needs the full config.
+      // For now, connectToServer (from useMcpStore) is NOT being called here to avoid dual state issues.
+      // This handler will just update the status in ServerManager for the sidebar's view.
+      console.warn(`App: connectToServer from useMcpStore NOT CALLED for ${serverId} to prevent state conflicts during this refinement step.`);
+      console.log(`Simulating connection to ${serverToConnect.name}...`);
+      // Simulate connection attempt
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      const success = Math.random() > 0.3; // Simulate success/failure
+      if (success) {
+        serverManagerInstance.updateServerStatus(serverId, 'connected');
+        // If this were the main connection: useMcpStore.setState({ activeServer: serverToConnect, connectionStatus: 'connected' });
+      } else {
+        serverManagerInstance.updateServerStatus(serverId, 'error');
+        // If this were the main connection: useMcpStore.setState({ connectionStatus: 'error' });
+      }
+    } catch (err) {
+      console.error(`App: Error connecting to server ${serverId} from sidebar:`, err);
+      serverManagerInstance.updateServerStatus(serverId, 'error');
+    }
+  }, [serverManagerInstance/*, connectToServer - re-add if fully integrating */]);
+
+  const handleDisconnectServerFromSidebar = useCallback(async (serverId: string) => {
+    console.log(`App: ServerSidebar requests to disconnect from server ${serverId}`);
+    // Similar to connect, this will just update ServerManager's status for now.
+    // disconnectFromServer(serverId); // from useMcpStore - NOT CALLED
+    console.warn(`App: disconnectFromServer from useMcpStore NOT CALLED for ${serverId} to prevent state conflicts.`);
+    serverManagerInstance.updateServerStatus(serverId, 'disconnected');
+    if (serverManagerInstance.getActiveServerId() === serverId) {
+       serverManagerInstance.setActiveServer(null); // Also deactivate in manager if it was active
+    }
+  }, [serverManagerInstance/*, disconnectFromServer - re-add if fully integrating */]);
+
   // ⏳ Экран загрузки
   if (loading) {
     return (
       <div className="min-h-screen bg-bg-primary flex items-center justify-center">
         <div className="text-center">
-          <LoadingSpinner size="large" />
-          <h2 className="mt-4 text-xl font-semibold text-text-primary">
-            Загрузка MCP Chat Client...
-          </h2>
-          <p className="mt-2 text-text-muted">
-            Инициализация системы и подключений
-          </p>
+          {/* Using the new LoadingSpinner component with mapped size and message prop */}
+          <LoadingSpinner isLoading={true} size="lg" message="Загрузка MCP Chat Client..." />
         </div>
       </div>
     );
@@ -184,14 +316,25 @@ function App() {
     <div className={`min-h-screen bg-bg-primary ${theme}`}>
       {/* 📊 Главная структура */}
       <div className="flex h-screen">
-        {/* 📋 Боковая панель */}
-        <Sidebar
+        {/* 📋 Боковая панель (старая) */}
+        <OldSidebar
           isOpen={sidebarOpen}
           onClose={() => setSidebarOpen(false)}
-          servers={servers}
-          activeServer={activeServer}
+          servers={serversFromStore} // Use renamed store state
+          activeServer={activeServerFromStore} // Use renamed store state
           onConnectServer={connectToServer}
           onDisconnectServer={disconnectFromServer}
+        />
+
+        {/* Новый ServerSidebar */}
+        <ServerSidebar
+          isOpen={isServerSidebarOpen}
+          onClose={() => setIsServerSidebarOpen(false)}
+          serverManager={serverManagerInstance}
+          activeServerId={activeServerIdForSidebar}
+          onSelectServer={handleSelectServerForSidebar}
+          onConnectServer={handleConnectServerFromSidebar}
+          onDisconnectServer={handleDisconnectServerFromSidebar}
         />
         
         {/* 💬 Основная область чата */}
@@ -199,7 +342,7 @@ function App() {
           {/* 📊 Шапка */}
           <Header
             onToggleSidebar={() => setSidebarOpen(!sidebarOpen)}
-            activeServer={activeServer}
+            activeServer={activeServerFromStore} // Use renamed store state for Header
             connectionStatus={connectionStatus}
             theme={theme}
             onToggleTheme={toggleTheme}
@@ -207,7 +350,7 @@ function App() {
           
           {/* 💬 Область чата */}
           <main className="flex-1 flex flex-col overflow-hidden">
-            <Suspense fallback={<LoadingSpinner />}>
+            <Suspense fallback={<LoadingSpinner isLoading={true} message="Загрузка..." />}>
               <Routes>
                 {/* 💬 Главная страница - чат */}
                 <Route path="/" element={
@@ -215,8 +358,8 @@ function App() {
                     messages={messages}
                     onSendMessage={handleSendMessage}
                     onChatEvent={handleChatEvent}
-                    connectionStatus={connectionStatus}
-                    activeServer={activeServer}
+                    connectionStatus={connectionStatus} // This comes from useMcpStore
+                    activeServer={activeServerFromStore} // This comes from useMcpStore
                     isTyping={isTyping}
                     config={{
                       theme: theme,
@@ -237,9 +380,9 @@ function App() {
           
           {/* 📊 Строка состояния */}
           <StatusBar
-            connectionStatus={connectionStatus}
-            activeServer={activeServer}
-            messageCount={messages.length}
+            connectionStatus={connectionStatus} // From useMcpStore
+            currentServer={activeServerFromStore?.name} // From useMcpStore
+            // messageCount prop removed as it's not in the new StatusBarProps
           />
         </div>
       </div>

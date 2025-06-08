@@ -18,16 +18,12 @@ export { ServerManager } from './manager/ServerManager';
 export { ServerRegistry } from './registry/ServerRegistry';
 export { ServerDiscovery } from './discovery/ServerDiscovery';
 export { ServerMonitor } from './monitor/ServerMonitor';
+export { default as ServerConfigForm } from './ui/ServerConfigForm'; // Added export
 
 // 🎯 TYPE EXPORTS
-export type {
-  ServerManagerConfig,
-  ServerConnection,
-  ServerHealth,
-  ServerMetrics,
-  DiscoveryOptions,
-  MonitoringConfig,
-} from './types';
+// Replaced specific type exports with a wildcard export to include all types from './types'
+// This ensures ServerConfig, ServerStatus, and ServerTransportType are exported.
+export * from './types';
 
 // 🛠️ UTILITY EXPORTS
 export { createServerManager } from './utils/factory';

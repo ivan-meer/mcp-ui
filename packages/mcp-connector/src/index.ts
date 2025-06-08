@@ -14,9 +14,9 @@
 
 // 📦 CORE EXPORTS
 export { McpClient } from './client/McpClient';
-export { WebSocketTransport } from './transports/WebSocketTransport';
-export { SSETransport } from './transports/SSETransport';
-export { LocalTransport } from './transports/LocalTransport';
+export { WebSocketTransport, WebSocketConfig } from './transports/WebSocketTransport'; // Assuming WebSocketConfig is also desired here if following pattern
+export { LocalTransport, LocalTransportConfig } from './transports/LocalTransport';
+export { SSETransport, SSETransportConfig } from './transports/SSETransport';
 
 // 🎯 TYPE EXPORTS
 export type {

@@ -177,6 +177,16 @@ export interface MessageInputConfig {
   
   /** 💡 Автокомплит команд */
   enableAutocomplete?: boolean;
+  /** ✨ Предварительный просмотр ссылок */
+  enableLinkPreview?: boolean;
+}
+
+// User type for mentions (if not globally defined)
+export interface MentionUser {
+  id: string;
+  name: string; // This is typically the display name / username
+  avatar?: string; // URL to avatar image
+  // Add other relevant fields if needed, e.g., username for a unique login
 }
 
 // 🎭 EVENT TYPES
@@ -456,6 +466,7 @@ export const DEFAULT_INPUT_CONFIG: MessageInputConfig = {
   allowFileUpload: false,
   showEmojiPicker: false,
   enableAutocomplete: true,
+  enableLinkPreview: true, // Default link preview to true
 };
 
 /**
