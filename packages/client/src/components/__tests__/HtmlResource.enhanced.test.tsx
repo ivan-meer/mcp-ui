@@ -188,7 +188,7 @@ describe('HtmlResource Component', () => {
       const resource: Partial<Resource> = {
         uri: 'ui://test/interactive',
         mimeType: 'text/html',
-        text: '<button onclick="parent.postMessage({tool: \\'test-action\\', params: {key: \\'value\\'}}, \\'*\\')">Click</button>'
+        text: '<button onclick="parent.postMessage({tool: \'test-action\', params: {key: \'value\'}}, \'*\')">Click</button>'
       };
 
       render(<HtmlResource resource={resource} onUiAction={onUiAction} />);

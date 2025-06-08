@@ -58,7 +58,7 @@ const GeneratedForm: React.FC<GeneratedFormProps> = ({ schema }) => {
           <input
             data-testid={`${key}-input`}
             type="number"
-            value={formData[key] ?? ''}
+            value={String(formData[key] ?? '')}
             onChange={(e) => handleChange(key, Number(e.target.value))}
           />
         );
@@ -85,4 +85,5 @@ export const generateUI = (schema: JSONSchema): React.ReactElement => {
   return <GeneratedForm schema={schema} />;
 };
 
+export default generateUI;
 export { GeneratedForm };

@@ -1,3 +1,62 @@
+# [3.0.0-alpha.2](https://github.com/ivan-meer/mcp-ui/compare/v3.0.0-alpha...v3.0.0-alpha.2) (2025-06-08)
+
+## 🔧 Technical Improvements
+
+### ✨ Major Updates
+* **chat-client**: 🚀 Complete implementation of core chat functionality ([2fd7618](https://github.com/ivan-meer/mcp-ui/commit/2fd7618))
+  - 💬 Advanced MessageInput with tool autocomplete and file attachments
+  - 📝 Enhanced MessageList with virtual scrolling and filtering
+  - 🎨 Modern UI components (Header, StatusBar, LoadingSpinner, ServerSidebar)
+  - 🔌 Complete MCP connector with WebSocket and SSE transports
+  - 🛠️ Server management system with registry and configuration forms
+  - 🖼️ UI renderer for interactive HTML components
+
+### 🔌 MCP Integration
+* **mcp-connector**: 📡 Full-featured MCP client implementation ([b41dde7](https://github.com/ivan-meer/mcp-ui/commit/b41dde7))
+  - 🔗 LocalTransport and SSETransport for flexible connectivity
+  - ♻️ Automatic reconnection with exponential backoff
+  - 📊 Comprehensive error handling and validation
+  - 🎯 Type-safe operations with Zod schemas
+
+### 🎨 UI Components
+* **chat-ui**: 💎 Enhanced chat interface components ([b41dde7](https://github.com/ivan-meer/mcp-ui/commit/b41dde7))
+  - 📄 MessageList with 500+ lines of advanced functionality
+  - ⌨️ MessageInput with autocomplete, drag-drop, and shortcuts
+  - 🔄 Debounced operations and performance optimizations
+  - 📱 Responsive design with mobile support
+
+### 🛠️ Server Management
+* **server-manager**: 🗄️ Complete server lifecycle management ([b41dde7](https://github.com/ivan-meer/mcp-ui/commit/b41dde7))
+  - 📋 ServerRegistry for configuration storage
+  - ⚙️ ServerConfigForm for easy setup
+  - 📊 Real-time status monitoring
+  - 🔧 Support for multiple server types
+
+### 📐 UI Rendering
+* **ui-renderer**: 🎭 Interactive HTML component renderer ([b41dde7](https://github.com/ivan-meer/mcp-ui/commit/b41dde7))
+  - 🖼️ UIComponentRenderer for MCP HTML resources
+  - 🔒 Secure iframe sandboxing
+  - 🎪 Event handling for interactive components
+
+### 🐛 Bug Fixes
+* **build**: 🔧 Fixed generator package build configuration ([current](https://github.com/ivan-meer/mcp-ui/commit/current))
+  - 📦 Corrected entry point from index.ts to index.tsx
+  - 🏗️ Fixed vite configuration for React components
+  - ✅ Resolved TypeScript compilation issues
+
+* **lint**: 🧹 Cleaned up code quality issues ([current](https://github.com/ivan-meer/mcp-ui/commit/current))
+  - 🔍 Fixed MessageList syntax errors and type issues
+  - 📝 Corrected string escaping in test files
+  - 🎯 Removed unused imports and variables
+
+### 📊 Code Quality
+* **tests**: 🧪 Improved test suite stability ([current](https://github.com/ivan-meer/mcp-ui/commit/current))
+  - ✅ Fixed test failures in HtmlResource components
+  - 🎯 Updated error message expectations
+  - 🔧 Resolved parsing errors in test files
+
+---
+
 # [3.0.0-alpha](https://github.com/ivan-meer/mcp-ui/compare/v2.1.0...v3.0.0-alpha) (2025-06-08)
 
 ## 🚀 BREAKING CHANGES

@@ -38,16 +38,16 @@ import remarkGfm from 'remark-gfm';
 // TODO: Explore options for syntax highlighting in code blocks.
 // TODO: Consider adding other remark/rehype plugins for enhanced markdown features if needed.
 
-// + INFO: Debounce function to limit rapid calls.
-+ const debounce = <F extends (...args: any[]) => any>(func: F, waitFor: number) => {
-+   let timeoutId: ReturnType<typeof setTimeout> | null = null;
-+   return (...args: Parameters<F>): void => {
-+     if (timeoutId) {
-+       clearTimeout(timeoutId);
-+     }
-+     timeoutId = setTimeout(() => func(...args), waitFor);
-+   };
-+ };
+// INFO: Debounce function to limit rapid calls.
+const debounce = <T extends (...args: any[]) => any>(func: T, waitFor: number) => {
+  let timeoutId: ReturnType<typeof setTimeout> | null = null;
+  return (...args: Parameters<T>): void => {
+    if (timeoutId) {
+      clearTimeout(timeoutId);
+    }
+    timeoutId = setTimeout(() => func(...args), waitFor);
+  };
+};
 
 // + HACK: Context menu positioning can be tricky; this is a basic implementation.
 // + TODO: Improve context menu accessibility (keyboard navigation).
