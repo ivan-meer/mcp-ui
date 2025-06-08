@@ -29,8 +29,12 @@
 
 📖 **[English Documentation](./docs/DOCUMENTATION.md)** | 🎯 **[Demo & Live Examples](./demo.html)**
 
+## 🎯 Что такое MCP UI SDK?
+
+**MCP UI SDK** — это TypeScript-библиотека для **АВТОМАТИЧЕСКОЙ** генерации **ИНТЕРАКТИВНЫХ ВЕБ-КОМПОНЕНТОВ** в рамках Model Context Protocol (MCP).
+
 > 🚧 **ЭКСПЕРИМЕНТАЛЬНЫЙ ПРОЕКТ В РАЗРАБОТКЕ**
-> 
+> <img src="assets/img/welcome.png" alt="calendar" width="100%" />
 > <div style="display: flex; justify-content: space-between;">
 >   <img src="assets/img/dashboard.png" alt="dashboard" width="32%" />
 >   <img src="assets/img/gallery.png" alt="gallery" width="32%" />
@@ -41,9 +45,7 @@
 
 ---
 
-## 🎯 Что такое MCP UI SDK?
 
-**MCP UI SDK** — это TypeScript-библиотека для **АВТОМАТИЧЕСКОЙ** генерации **ИНТЕРАКТИВНЫХ ВЕБ-КОМПОНЕНТОВ** в рамках Model Context Protocol (MCP).
 
 ### ✨ Основные возможности
 
