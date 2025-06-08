@@ -17,8 +17,8 @@ import '@/styles/globals.css';
 import App from './App';
 
 // 🔧 Провайдеры и настройки
-import { ErrorBoundary } from '@/components/ErrorBoundary';
-import { DevTools } from '@/components/DevTools';
+import { ErrorBoundary } from './components/ErrorBoundary';
+import { DevTools } from './components/DevTools';
 
 // 📝 Логирование старта приложения
 console.log('🚀 Запуск MCP Chat Client...');
