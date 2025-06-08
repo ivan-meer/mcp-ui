@@ -110,21 +110,6 @@ importers:
       '@hookform/resolvers':
         specifier: ^3.3.2
         version: 3.10.0(react-hook-form@7.57.0(react@18.3.1))
-      '@mcp-ui/chat-ui':
-        specifier: workspace:*
-        version: link:../../packages/chat-ui
-      '@mcp-ui/mcp-connector':
-        specifier: workspace:*
-        version: link:../../packages/mcp-connector
-      '@mcp-ui/server-manager':
-        specifier: workspace:*
-        version: link:../../packages/server-manager
-      '@mcp-ui/shared':
-        specifier: workspace:*
-        version: link:../../packages/shared
-      '@mcp-ui/ui-renderer':
-        specifier: workspace:*
-        version: link:../../packages/ui-renderer
       class-variance-authority:
         specifier: ^0.7.0
         version: 0.7.1
@@ -9893,7 +9878,7 @@ snapshots:
   babel-plugin-jest-hoist@29.6.3:
     dependencies:
       '@babel/template': 7.27.2
-      '@babel/types': 7.27.1
+      '@babel/types': 7.27.6
       '@types/babel__core': 7.20.5
       '@types/babel__traverse': 7.20.7
 
@@ -11947,7 +11932,7 @@ snapshots:
       '@babel/generator': 7.27.1
       '@babel/plugin-syntax-jsx': 7.27.1(@babel/core@7.27.1)
       '@babel/plugin-syntax-typescript': 7.27.1(@babel/core@7.27.1)
-      '@babel/types': 7.27.1
+      '@babel/types': 7.27.6
       '@jest/expect-utils': 29.7.0
       '@jest/transform': 29.7.0
       '@jest/types': 29.6.3

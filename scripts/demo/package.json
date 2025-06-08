@@ -1,0 +1,17 @@
+{
+  "name": "mcp-demo-server",
+  "version": "1.0.0",
+  "description": "Демонстрационный MCP сервер с тестовыми инструментами",
+  "type": "module",
+  "main": "mcp-demo-server.js",
+  "scripts": {
+    "start": "node mcp-demo-server.js",
+    "dev": "node --watch mcp-demo-server.js"
+  },
+  "dependencies": {
+    "ws": "^8.14.2"
+  },
+  "keywords": ["mcp", "demo", "websocket", "server"],
+  "author": "MCP UI Team",
+  "license": "MIT"
+}

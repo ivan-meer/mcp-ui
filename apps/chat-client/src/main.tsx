@@ -11,7 +11,7 @@ import ReactDOM from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
 
 // 🎨 Стили
-import '@/styles/globals.css';
+import './styles/globals.css';
 
 // 📱 Главный компонент приложения
 import App from './App';
@@ -22,9 +22,9 @@ import { DevTools } from './components/DevTools';
 
 // 📝 Логирование старта приложения
 console.log('🚀 Запуск MCP Chat Client...');
-console.log('📊 Версия:', __APP_VERSION__);
-console.log('🌍 Окружение:', __NODE_ENV__);
-console.log('⏰ Время сборки:', __BUILD_TIME__);
+console.log('📊 Версия:', '1.0.0');
+console.log('🌍 Окружение:', 'development');
+console.log('⏰ Время сборки:', new Date().toISOString());
 
 // 🎯 Получаем root элемент
 const rootElement = document.getElementById('root');
@@ -43,14 +43,14 @@ root.render(
       <BrowserRouter>
         <App />
         {/* 🛠️ DevTools только в development режиме */}
-        {__DEV__ && <DevTools />}
+        {process.env.NODE_ENV === 'development' && <DevTools />}
       </BrowserRouter>
     </ErrorBoundary>
   </React.StrictMode>
 );
 
 // 🔥 Hot Module Replacement для разработки
-if (__DEV__ && import.meta.hot) {
+if (import.meta.hot) {
   import.meta.hot.accept();
 }
 
@@ -67,7 +67,7 @@ if (__DEV__ && import.meta.hot) {
 // }
 
 // 🌐 Service Worker регистрация (для PWA в будущем)
-if ('serviceWorker' in navigator && __NODE_ENV__ === 'production') {
+if ('serviceWorker' in navigator && process.env.NODE_ENV === 'production') {
   window.addEventListener('load', () => {
     navigator.serviceWorker.register('/sw.js')
       .then((registration) => {
