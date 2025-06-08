@@ -1,3 +1,54 @@
+# [3.0.0-alpha](https://github.com/ivan-meer/mcp-ui/compare/v2.1.0...v3.0.0-alpha) (2025-06-08)
+
+## 🚀 BREAKING CHANGES
+
+### ✨ Features
+
+* **chat-client**: 💬 Begin development of MCP Chat Client ([#new](https://github.com/ivan-meer/mcp-ui/commit/new))
+  - 📝 Created comprehensive development plan and architecture
+  - 🏗️ Designed monorepo structure for chat application
+  - 📋 Set up task tracking and development diary
+  - 🎯 Established educational approach with detailed documentation
+
+* **planning**: 📋 Complete project planning and documentation ([#plan](https://github.com/ivan-meer/mcp-ui/commit/plan))
+  - 📖 Created CHAT_CLIENT_PLAN.md with detailed roadmap
+  - 📝 Set up DEVELOPMENT_DIARY.md for educational tracking
+  - 📋 Created TASKS.md for independent task management
+  - 🎯 Defined 4-phase development approach (8 weeks)
+
+### 📚 Documentation
+
+* **guides**: 🎓 Add comprehensive educational documentation ([#docs](https://github.com/ivan-meer/mcp-ui/commit/docs))
+  - 📝 Development diary with daily progress tracking
+  - 🔧 Technical decisions and architectural reasoning
+  - 💡 Educational notes and best practices
+  - 📊 Metrics and success criteria
+
+* **tasks**: 📋 Independent task tracking system ([#tasks](https://github.com/ivan-meer/mcp-ui/commit/tasks))
+  - 🎯 150+ detailed tasks across 4 phases
+  - 📈 Progress tracking and metrics
+  - 👥 Multi-contributor support
+  - 🔄 Status management system
+
+### 🏗️ Architecture
+
+* **structure**: 🏗️ Design modular chat client architecture ([#arch](https://github.com/ivan-meer/mcp-ui/commit/arch))
+  - 📦 5 specialized packages (chat-ui, mcp-connector, server-manager, ui-renderer, shared)
+  - 🖥️ Main chat application + demo server
+  - 🔌 Support for local and remote MCP servers
+  - 🎨 Advanced UI component rendering system
+
+### 🛠️ Technical Stack
+
+* **stack**: ⚡ Define modern development stack ([#stack](https://github.com/ivan-meer/mcp-ui/commit/stack))
+  - ⚛️ React 18 + TypeScript 5.3+
+  - 🎨 Tailwind CSS + Headless UI
+  - 🏪 Zustand for state management
+  - 🧪 Vitest for testing
+  - 📡 WebSocket/SSE for real-time communication
+
+---
+
 # [2.1.0](https://github.com/idosal/mcp-ui/compare/v2.0.0...v2.1.0) (2025-06-08)
 
 ### Features

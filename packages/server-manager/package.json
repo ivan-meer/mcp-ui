@@ -1,0 +1,70 @@
+{
+  "name": "@mcp-ui/server-manager",
+  "version": "3.0.0-alpha.1",
+  "description": "🛠️ Management system for local and remote MCP servers",
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc && vite build",
+    "dev": "vite build --watch",
+    "test": "vitest",
+    "test:watch": "vitest --watch",
+    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
+    "lint:fix": "eslint . --ext ts,tsx --fix",
+    "typecheck": "tsc --noEmit"
+  },
+  "peerDependencies": {
+    "react": ">=18.0.0",
+    "react-dom": ">=18.0.0"
+  },
+  "dependencies": {
+    "@mcp-ui/shared": "workspace:*",
+    "@mcp-ui/mcp-connector": "workspace:*",
+    "zod": "^3.22.4",
+    "zustand": "^4.4.7"
+  },
+  "devDependencies": {
+    "@types/react": "^18.2.37",
+    "@types/react-dom": "^18.2.15",
+    "@typescript-eslint/eslint-plugin": "^6.10.0",
+    "@typescript-eslint/parser": "^6.10.0",
+    "@vitejs/plugin-react": "^4.1.1",
+    "eslint": "^8.53.0",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "typescript": "^5.2.2",
+    "vite": "^5.0.0",
+    "vitest": "^0.34.6",
+    "@testing-library/react": "^13.4.0",
+    "@testing-library/jest-dom": "^6.1.4",
+    "jsdom": "^23.0.1"
+  },
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "server",
+    "management",
+    "config",
+    "typescript"
+  ],
+  "author": "HOW2AI Agency <info@how2ai.info>",
+  "license": "Apache-2.0",
+  "homepage": "https://github.com/ivan-meer/mcp-ui#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ivan-meer/mcp-ui.git",
+    "directory": "packages/server-manager"
+  }
+}
