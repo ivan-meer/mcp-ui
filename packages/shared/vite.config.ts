@@ -1,27 +1,39 @@
 import { defineConfig } from 'vite';
 import dts from 'vite-plugin-dts';
-import react from '@vitejs/plugin-react-swc';
-import path from 'path';
+import { resolve } from 'path';
 
 export default defineConfig({
   plugins: [
-    react(),
     dts({
-      insertTypesEntry: true,
-      tsconfigPath: path.resolve(__dirname, 'tsconfig.json'),
+      include: ['src/**/*'],
+      exclude: ['src/**/*.test.ts', 'src/**/*.test.tsx'],
+      rollupTypes: true,
     }),
   ],
   build: {
     lib: {
-      entry: path.resolve(__dirname, 'src/index.ts'),
+      entry: resolve(__dirname, 'src/index.ts'),
       name: 'McpUiShared',
-      formats: ['es', 'umd'], // UMD for broader compatibility if needed, es for modern
-      fileName: (format) =>
-        `index.${format === 'es' ? 'mjs' : format === 'umd' ? 'js' : format + '.js'}`,
+      formats: ['es', 'cjs'],
+      fileName: (format) => `index.${format === 'es' ? 'mjs' : 'js'}`,
+    },
+    rollupOptions: {
+      external: [],
+      output: {
+        exports: 'named',
+      },
     },
     sourcemap: true,
-    // Minify options if needed, default is esbuild which is fast
-    // minify: 'terser',
-    // terserOptions: { ... }
+    target: 'es2022',
+    minify: 'esbuild',
+  },
+  test: {
+    globals: true,
+    environment: 'node',
+    coverage: {
+      provider: 'v8',
+      reporter: ['text', 'json', 'html'],
+      exclude: ['**/*.test.ts', '**/*.config.*', '**/dist/**'],
+    },
   },
 });

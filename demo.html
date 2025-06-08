@@ -436,348 +436,345 @@ window.parent.postMessage({
 
     <script>
         // HTML контент для галереи
-        const galleryHTML = `
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MCP UI Gallery</title>
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { 
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            padding: 20px;
-        }
-        .container { 
-            max-width: 1200px; 
-            margin: 0 auto; 
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
-            overflow: hidden;
-        }
-        .header {
-            background: #4a5568;
-            color: white;
-            padding: 30px;
-            text-align: center;
-        }
-        .header h1 { font-size: 2.5em; margin-bottom: 10px; }
-        .header p { opacity: 0.9; font-size: 1.1em; }
-        .gallery {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 20px;
-            padding: 30px;
-        }
-        .card {
-            background: #f8f9fa;
-            border-radius: 8px;
-            padding: 20px;
-            border: 2px solid #e9ecef;
-            transition: all 0.3s ease;
-            cursor: pointer;
-        }
-        .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
-            border-color: #667eea;
-        }
-        .card h3 {
-            color: #2d3748;
-            margin-bottom: 15px;
-            font-size: 1.3em;
-        }
-        .card p {
-            color: #4a5568;
-            line-height: 1.6;
-            margin-bottom: 15px;
-        }
-        .btn {
-            background: #667eea;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 0.9em;
-            transition: background 0.3s ease;
-        }
-        .btn:hover { background: #5a67d8; }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <div class="header">
-            <h1>🎨 MCP UI Gallery</h1>
-            <p>Интерактивные компоненты для Model Context Protocol</p>
-        </div>
-        
-        <div class="gallery">
-            <div class="card">
-                <h3>📊 Аналитическая панель</h3>
-                <p>Интерактивные графики и метрики для отображения данных</p>
-                <button class="btn">Открыть панель</button>
-            </div>
-
-            <div class="card">
-                <h3>📝 Генератор форм</h3>
-                <p>Динамическое создание форм на основе JSON Schema</p>
-                <button class="btn">Создать форму</button>
-            </div>
-
-            <div class="card">
-                <h3>📋 Таблица данных</h3>
-                <p>Интерактивная таблица с сортировкой и фильтрацией</p>
-                <button class="btn">Открыть таблицу</button>
-            </div>
-
-            <div class="card">
-                <h3>📅 Календарь событий</h3>
-                <p>Календарный интерфейс для планирования и отображения событий</p>
-                <button class="btn">Открыть календарь</button>
-            </div>
-
-            <div class="card">
-                <h3>💬 Чат интерфейс</h3>
-                <p>Встроенный чат для взаимодействия с агентами</p>
-                <button class="btn">Открыть чат</button>
-            </div>
-
-            <div class="card">
-                <h3>📁 Файловый менеджер</h3>
-                <p>Интерфейс для работы с файлами и папками</p>
-                <button class="btn">Открыть менеджер</button>
-            </div>
-        </div>
-    </div>
-</body>
-</html>`;
+        const galleryHTML = "<!DOCTYPE html>\n" +
+"<html lang=\"en\">\n" +
+"<head>\n" +
+"    <meta charset=\"UTF-8\">\n" +
+"    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n" +
+"    <title>MCP UI Gallery</title>\n" +
+"    <style>\n" +
+"        * { margin: 0; padding: 0; box-sizing: border-box; }\n" +
+"        body { \n" +
+"            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;\n" +
+"            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);\n" +
+"            min-height: 100vh;\n" +
+"            padding: 20px;\n" +
+"        }\n" +
+"        .container { \n" +
+"            max-width: 1200px; \n" +
+"            margin: 0 auto; \n" +
+"            background: white;\n" +
+"            border-radius: 12px;\n" +
+"            box-shadow: 0 20px 40px rgba(0,0,0,0.1);\n" +
+"            overflow: hidden;\n" +
+"        }\n" +
+"        .header {\n" +
+"            background: #4a5568;\n" +
+"            color: white;\n" +
+"            padding: 30px;\n" +
+"            text-align: center;\n" +
+"        }\n" +
+"        .header h1 { font-size: 2.5em; margin-bottom: 10px; }\n" +
+"        .header p { opacity: 0.9; font-size: 1.1em; }\n" +
+"        .gallery {\n" +
+"            display: grid;\n" +
+"            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));\n" +
+"            gap: 20px;\n" +
+"            padding: 30px;\n" +
+"        }\n" +
+"        .card {\n" +
+"            background: #f8f9fa;\n" +
+"            border-radius: 8px;\n" +
+"            padding: 20px;\n" +
+"            border: 2px solid #e9ecef;\n" +
+"            transition: all 0.3s ease;\n" +
+"            cursor: pointer;\n" +
+"        }\n" +
+"        .card:hover {\n" +
+"            transform: translateY(-5px);\n" +
+"            box-shadow: 0 10px 25px rgba(0,0,0,0.15);\n" +
+"            border-color: #667eea;\n" +
+"        }\n" +
+"        .card h3 {\n" +
+"            color: #2d3748;\n" +
+"            margin-bottom: 15px;\n" +
+"            font-size: 1.3em;\n" +
+"        }\n" +
+"        .card p {\n" +
+"            color: #4a5568;\n" +
+"            line-height: 1.6;\n" +
+"            margin-bottom: 15px;\n" +
+"        }\n" +
+"        .btn {\n" +
+"            background: #667eea;\n" +
+"            color: white;\n" +
+"            border: none;\n" +
+"            padding: 10px 20px;\n" +
+"            border-radius: 6px;\n" +
+"            cursor: pointer;\n" +
+"            font-size: 0.9em;\n" +
+"            transition: background 0.3s ease;\n" +
+"        }\n" +
+"        .btn:hover { background: #5a67d8; }\n" +
+"    </style>\n" +
+"</head>\n" +
+"<body>\n" +
+"    <div class=\"container\">\n" +
+"        <div class=\"header\">\n" +
+"            <h1>🎨 MCP UI Gallery</h1>\n" +
+"            <p>Интерактивные компоненты для Model Context Protocol</p>\n" +
+"        </div>\n" +
+"        \n" +
+"        <div class=\"gallery\">\n" +
+"            <div class=\"card\">\n" +
+"                <h3>📊 Аналитическая панель</h3>\n" +
+"                <p>Интерактивные графики и метрики для отображения данных</p>\n" +
+"                <button class=\"btn\">Открыть панель</button>\n" +
+"            </div>\n" +
+"\n" +
+"            <div class=\"card\">\n" +
+"                <h3>📝 Генератор форм</h3>\n" +
+"                <p>Динамическое создание форм на основе JSON Schema</p>\n" +
+"                <button class=\"btn\">Создать форму</button>\n" +
+"            </div>\n" +
+"\n" +
+"            <div class=\"card\">\n" +
+"                <h3>📋 Таблица данных</h3>\n" +
+"                <p>Интерактивная таблица с сортировкой и фильтрацией</p>\n" +
+"                <button class=\"btn\">Открыть таблицу</button>\n" +
+"            </div>\n" +
+"\n" +
+"            <div class=\"card\">\n" +
+"                <h3>📅 Календарь событий</h3>\n" +
+"                <p>Календарный интерфейс для планирования и отображения событий</p>\n" +
+"                <button class=\"btn\">Открыть календарь</button>\n" +
+"            </div>\n" +
+"\n" +
+"            <div class=\"card\">\n" +
+"                <h3>💬 Чат интерфейс</h3>\n" +
+"                <p>Встроенный чат для взаимодействия с агентами</p>\n" +
+"                <button class=\"btn\">Открыть чат</button>\n" +
+"            </div>\n" +
+"\n" +
+"            <div class=\"card\">\n" +
+"                <h3>📁 Файловый менеджер</h3>\n" +
+"                <p>Интерфейс для работы с файлами и папками</p>\n" +
+"                <button class=\"btn\">Открыть менеджер</button>\n" +
+"            </div>\n" +
+"        </div>\n" +
+"    </div>\n" +
+"</body>\n" +
+"</html>";
 
         // HTML контент для панели
-        const dashboardHTML = `
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Analytics Dashboard</title>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { 
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: #f8f9fa;
-            padding: 20px;
-        }
-        .dashboard {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 20px;
-        }
-        .widget {
-            background: white;
-            border-radius: 12px;
-            padding: 20px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-        }
-        .widget h3 {
-            color: #2d3748;
-            margin-bottom: 15px;
-            font-size: 1.2em;
-        }
-        .metric {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 12px 0;
-            border-bottom: 1px solid #e2e8f0;
-        }
-        .metric:last-child { border-bottom: none; }
-        .metric-value {
-            font-weight: bold;
-            font-size: 1.1em;
-            color: #667eea;
-        }
-        .chart-container {
-            position: relative;
-            height: 300px;
-            margin-top: 15px;
-        }
-    </style>
-</head>
-<body>
-    <div class="dashboard">
-        <div class="widget">
-            <h3>📊 Ключевые метрики</h3>
-            <div class="metric">
-                <span>Активные пользователи</span>
-                <span class="metric-value">1,234</span>
-            </div>
-            <div class="metric">
-                <span>Конверсия</span>
-                <span class="metric-value">12.5%</span>
-            </div>
-            <div class="metric">
-                <span>Доход (₽)</span>
-                <span class="metric-value">2,150,000</span>
-            </div>
-        </div>
-
-        <div class="widget">
-            <h3>📈 График продаж</h3>
-            <div class="chart-container">
-                <canvas id="salesChart"></canvas>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        const salesCtx = document.getElementById('salesChart').getContext('2d');
-        new Chart(salesCtx, {
-            type: 'line',
-            data: {
-                labels: ['Янв', 'Фев', 'Мар', 'Апр', 'Май', 'Июн', 'Июл'],
-                datasets: [{
-                    label: 'Продажи',
-                    data: [120, 190, 300, 500, 200, 300, 450],
-                    borderColor: '#667eea',
-                    backgroundColor: 'rgba(102, 126, 234, 0.1)',
-                    tension: 0.4,
-                    fill: true
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                scales: {
-                    y: { beginAtZero: true }
-                }
-            }
-        });
-    </script>
-</body>
-</html>`;
+        const dashboardHTML = "<!DOCTYPE html>\n" +
+"<html lang=\"en\">\n" +
+"<head>\n" +
+"    <meta charset=\"UTF-8\">\n" +
+"    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n" +
+"    <title>Analytics Dashboard</title>\n" +
+"    <script src=\"https://cdn.jsdelivr.net/npm/chart.js\"></script>\n" +
+"    <style>\n" +
+"        * { margin: 0; padding: 0; box-sizing: border-box; }\n" +
+"        body { \n" +
+"            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;\n" +
+"            background: #f8f9fa;\n" +
+"            padding: 20px;\n" +
+"        }\n" +
+"        .dashboard {\n" +
+"            max-width: 1200px;\n" +
+"            margin: 0 auto;\n" +
+"            display: grid;\n" +
+"            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));\n" +
+"            gap: 20px;\n" +
+"        }\n" +
+"        .widget {\n" +
+"            background: white;\n" +
+"            border-radius: 12px;\n" +
+"            padding: 20px;\n" +
+"            box-shadow: 0 4px 12px rgba(0,0,0,0.1);\n" +
+"        }\n" +
+"        .widget h3 {\n" +
+"            color: #2d3748;\n" +
+"            margin-bottom: 15px;\n" +
+"            font-size: 1.2em;\n" +
+"        }\n" +
+"        .metric {\n" +
+"            display: flex;\n" +
+"            justify-content: space-between;\n" +
+"            align-items: center;\n" +
+"            padding: 12px 0;\n" +
+"            border-bottom: 1px solid #e2e8f0;\n" +
+"        }\n" +
+"        .metric:last-child { border-bottom: none; }\n" +
+"        .metric-value {\n" +
+"            font-weight: bold;\n" +
+"            font-size: 1.1em;\n" +
+"            color: #667eea;\n" +
+"        }\n" +
+"        .chart-container {\n" +
+"            position: relative;\n" +
+"            height: 300px;\n" +
+"            margin-top: 15px;\n" +
+"        }\n" +
+"    </style>\n" +
+"</head>\n" +
+"<body>\n" +
+"    <div class=\"dashboard\">\n" +
+"        <div class=\"widget\">\n" +
+"            <h3>📊 Ключевые метрики</h3>\n" +
+"            <div class=\"metric\">\n" +
+"                <span>Активные пользователи</span>\n" +
+"                <span class=\"metric-value\">1,234</span>\n" +
+"            </div>\n" +
+"            <div class=\"metric\">\n" +
+"                <span>Конверсия</span>\n" +
+"                <span class=\"metric-value\">12.5%</span>\n" +
+"            </div>\n" +
+"            <div class=\"metric\">\n" +
+"                <span>Доход (₽)</span>\n" +
+"                <span class=\"metric-value\">2,150,000</span>\n" +
+"            </div>\n" +
+"        </div>\n" +
+"\n" +
+"        <div class=\"widget\">\n" +
+"            <h3>📈 График продаж</h3>\n" +
+"            <div class=\"chart-container\">\n" +
+"                <canvas id=\"salesChart\"></canvas>\n" +
+"            </div>\n" +
+"        </div>\n" +
+"    </div>\n" +
+"\n" +
+"    <script>\n" +
+"        const salesCtx = document.getElementById('salesChart').getContext('2d');\n" +
+"        new Chart(salesCtx, {\n" +
+"            type: 'line',\n" +
+"            data: {\n" +
+"                labels: ['Янв', 'Фев', 'Мар', 'Апр', 'Май', 'Июн', 'Июл'],\n" +
+"                datasets: [{\n" +
+"                    label: 'Продажи',\n" +
+"                    data: [120, 190, 300, 500, 200, 300, 450],\n" +
+"                    borderColor: '#667eea',\n" +
+"                    backgroundColor: 'rgba(102, 126, 234, 0.1)',\n" +
+"                    tension: 0.4,\n" +
+"                    fill: true\n" +
+"                }]\n" +
+"            },\n" +
+"            options: {\n" +
+"                responsive: true,\n" +
+"                maintainAspectRatio: false,\n" +
+"                scales: {\n" +
+"                    y: { beginAtZero: true }\n" +
+"                }\n" +
+"            }\n" +
+"        });\n" +
+"    </script>\n" +
+"</body>\n" +
+"</html>";
 
         // HTML контент для форм
-        const formsHTML = `
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dynamic Form Generator</title>
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { 
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            padding: 20px;
-        }
-        .form-container {
-            max-width: 600px;
-            margin: 0 auto;
-            background: white;
-            border-radius: 12px;
-            padding: 30px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
-        }
-        .form-header {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-        .form-header h1 {
-            color: #2d3748;
-            font-size: 2em;
-            margin-bottom: 10px;
-        }
-        .form-group {
-            margin-bottom: 20px;
-        }
-        .form-label {
-            display: block;
-            margin-bottom: 8px;
-            color: #2d3748;
-            font-weight: 500;
-        }
-        .form-input, .form-select, .form-textarea {
-            width: 100%;
-            padding: 12px;
-            border: 2px solid #e2e8f0;
-            border-radius: 8px;
-            font-size: 16px;
-            transition: border-color 0.3s ease;
-        }
-        .form-input:focus, .form-select:focus, .form-textarea:focus {
-            outline: none;
-            border-color: #667eea;
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-        }
-        .form-textarea {
-            min-height: 100px;
-            resize: vertical;
-        }
-        .btn {
-            background: #667eea;
-            color: white;
-            border: none;
-            padding: 12px 24px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 16px;
-            transition: all 0.3s ease;
-            margin: 10px 5px;
-        }
-        .btn:hover {
-            background: #5a67d8;
-            transform: translateY(-2px);
-        }
-    </style>
-</head>
-<body>
-    <div class="form-container">
-        <div class="form-header">
-            <h1>📝 Генератор форм</h1>
-            <p>Пример динамической формы</p>
-        </div>
-
-        <form>
-            <div class="form-group">
-                <label class="form-label">Имя *</label>
-                <input type="text" class="form-input" required>
-            </div>
-
-            <div class="form-group">
-                <label class="form-label">Email *</label>
-                <input type="email" class="form-input" required>
-            </div>
-
-            <div class="form-group">
-                <label class="form-label">Роль</label>
-                <select class="form-select">
-                    <option>Выберите роль</option>
-                    <option>Администратор</option>
-                    <option>Пользователь</option>
-                    <option>Гость</option>
-                </select>
-            </div>
-
-            <div class="form-group">
-                <label class="form-label">О себе</label>
-                <textarea class="form-textarea" placeholder="Расскажите немного о себе..."></textarea>
-            </div>
-
-            <button type="submit" class="btn">Сохранить</button>
-        </form>
-    </div>
-</body>
-</html>`;
+        const formsHTML = "<!DOCTYPE html>\n" +
+"<html lang=\"en\">\n" +
+"<head>\n" +
+"    <meta charset=\"UTF-8\">\n" +
+"    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n" +
+"    <title>Dynamic Form Generator</title>\n" +
+"    <style>\n" +
+"        * { margin: 0; padding: 0; box-sizing: border-box; }\n" +
+"        body { \n" +
+"            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;\n" +
+"            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);\n" +
+"            min-height: 100vh;\n" +
+"            padding: 20px;\n" +
+"        }\n" +
+"        .form-container {\n" +
+"            max-width: 600px;\n" +
+"            margin: 0 auto;\n" +
+"            background: white;\n" +
+"            border-radius: 12px;\n" +
+"            padding: 30px;\n" +
+"            box-shadow: 0 20px 40px rgba(0,0,0,0.1);\n" +
+"        }\n" +
+"        .form-header {\n" +
+"            text-align: center;\n" +
+"            margin-bottom: 30px;\n" +
+"        }\n" +
+"        .form-header h1 {\n" +
+"            color: #2d3748;\n" +
+"            font-size: 2em;\n" +
+"            margin-bottom: 10px;\n" +
+"        }\n" +
+"        .form-group {\n" +
+"            margin-bottom: 20px;\n" +
+"        }\n" +
+"        .form-label {\n" +
+"            display: block;\n" +
+"            margin-bottom: 8px;\n" +
+"            color: #2d3748;\n" +
+"            font-weight: 500;\n" +
+"        }\n" +
+"        .form-input, .form-select, .form-textarea {\n" +
+"            width: 100%;\n" +
+"            padding: 12px;\n" +
+"            border: 2px solid #e2e8f0;\n" +
+"            border-radius: 8px;\n" +
+"            font-size: 16px;\n" +
+"            transition: border-color 0.3s ease;\n" +
+"        }\n" +
+"        .form-input:focus, .form-select:focus, .form-textarea:focus {\n" +
+"            outline: none;\n" +
+"            border-color: #667eea;\n" +
+"            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);\n" +
+"        }\n" +
+"        .form-textarea {\n" +
+"            min-height: 100px;\n" +
+"            resize: vertical;\n" +
+"        }\n" +
+"        .btn {\n" +
+"            background: #667eea;\n" +
+"            color: white;\n" +
+"            border: none;\n" +
+"            padding: 12px 24px;\n" +
+"            border-radius: 8px;\n" +
+"            cursor: pointer;\n" +
+"            font-size: 16px;\n" +
+"            transition: all 0.3s ease;\n" +
+"            margin: 10px 5px;\n" +
+"        }\n" +
+"        .btn:hover {\n" +
+"            background: #5a67d8;\n" +
+"            transform: translateY(-2px);\n" +
+"        }\n" +
+"    </style>\n" +
+"</head>\n" +
+"<body>\n" +
+"    <div class=\"form-container\">\n" +
+"        <div class=\"form-header\">\n" +
+"            <h1>📝 Генератор форм</h1>\n" +
+"            <p>Пример динамической формы</p>\n" +
+"        </div>\n" +
+"\n" +
+"        <form>\n" +
+"            <div class=\"form-group\">\n" +
+"                <label class=\"form-label\">Имя *</label>\n" +
+"                <input type=\"text\" class=\"form-input\" required>\n" +
+"            </div>\n" +
+"\n" +
+"            <div class=\"form-group\">\n" +
+"                <label class=\"form-label\">Email *</label>\n" +
+"                <input type=\"email\" class=\"form-input\" required>\n" +
+"            </div>\n" +
+"\n" +
+"            <div class=\"form-group\">\n" +
+"                <label class=\"form-label\">Роль</label>\n" +
+"                <select class=\"form-select\">\n" +
+"                    <option>Выберите роль</option>\n" +
+"                    <option>Администратор</option>\n" +
+"                    <option>Пользователь</option>\n" +
+"                    <option>Гость</option>\n" +
+"                </select>\n" +
+"            </div>\n" +
+"\n" +
+"            <div class=\"form-group\">\n" +
+"                <label class=\"form-label\">О себе</label>\n" +
+"                <textarea class=\"form-textarea\" placeholder=\"Расскажите немного о себе...\"></textarea>\n" +
+"            </div>\n" +
+"\n" +
+"            <button type=\"submit\" class=\"btn\">Сохранить</button>\n" +
+"        </form>\n" +
+"    </div>\n" +
+"</body>\n" +
+"</html>";
 
         // Навигация между табами
         document.querySelectorAll('.nav-tab').forEach(tab => {
@@ -792,7 +789,7 @@ window.parent.postMessage({
                 document.querySelectorAll('.component-demo').forEach(demo => {
                     demo.classList.remove('active');
                 });
-                document.querySelector(\`[data-content="\${tabName}"]\`).classList.add('active');
+                document.querySelector('[data-content="' + tabName + '"]').classList.add('active');
                 
                 // Загрузка содержимого в iframe
                 if (tabName === 'gallery') {

@@ -18,8 +18,11 @@
     "dist"
   ],
   "dependencies": {
+    "@mcp-ui/shared": "workspace:*",
     "@modelcontextprotocol/sdk": "*",
-    "dompurify": "^3.2.6",
+    "dompurify": "^3.2.6"
+  },
+  "peerDependencies": {
     "react": "^18.2.0"
   },
   "devDependencies": {
