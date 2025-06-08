@@ -1,0 +1,309 @@
+/* 🎨 GLOBAL STYLES FOR MCP CHAT CLIENT */
+
+/* 📚 ОБРАЗОВАТЕЛЬНАЯ ЗАМЕТКА:
+ * Этот файл содержит базовые стили для всего приложения
+ * Используем подход "темная тема по умолчанию" с CSS custom properties
+ * для будущей поддержки переключения тем
+ */
+
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+
+/* 🎯 CSS CUSTOM PROPERTIES (CSS Variables) */
+/* Используем для будущей поддержки динамического переключения тем */
+:root {
+  /* 🌙 Dark theme colors (default) */
+  --color-bg-primary: #0f0f23;
+  --color-bg-secondary: #1a1a2e; 
+  --color-bg-tertiary: #16213e;
+  --color-bg-elevated: #1e293b;
+  --color-bg-hover: #374151;
+  
+  --color-text-primary: #f1f5f9;
+  --color-text-secondary: #94a3b8;
+  --color-text-muted: #64748b;
+  --color-text-inverse: #0f172a;
+  
+  --color-accent-primary: #3b82f6;
+  --color-accent-secondary: #8b5cf6;
+  --color-accent-success: #10b981;
+  --color-accent-warning: #f59e0b;
+  --color-accent-error: #ef4444;
+  --color-accent-info: #06b6d4;
+  
+  --color-border-primary: #334155;
+  --color-border-secondary: #475569;
+  --color-border-muted: #1e293b;
+  --color-border-focus: #3b82f6;
+  
+  /* 💬 Chat specific colors */
+  --color-chat-user: #1e40af;
+  --color-chat-assistant: #059669;
+  --color-chat-system: #7c3aed;
+  --color-chat-ui: #dc2626;
+  
+  /* 📏 Spacing and sizing */
+  --spacing-chat-padding: 1rem;
+  --spacing-message-gap: 0.75rem;
+  --radius-message: 1rem;
+  --radius-ui: 0.5rem;
+  
+  /* 🎭 Animations */
+  --transition-fast: 0.15s ease-out;
+  --transition-normal: 0.3s ease-out;
+  --transition-slow: 0.5s ease-out;
+}
+
+/* 🌞 Light theme (будет добавлено позже) */
+/* 
+.light {
+  --color-bg-primary: #ffffff;
+  --color-bg-secondary: #f8fafc;
+  // ... остальные цвета для светлой темы
+}
+*/
+
+/* 🎯 BASE STYLES */
+html {
+  /* 📱 Улучшенная читаемость на мобильных */
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  
+  /* 🎨 Сглаживание шрифтов */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  
+  /* 📏 Responsive font sizing */
+  font-size: 16px;
+}
+
+body {
+  /* 🌙 Применяем темную тему */
+  background-color: var(--color-bg-primary);
+  color: var(--color-text-primary);
+  
+  /* 🔤 Typography improvements */
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  line-height: 1.6;
+  
+  /* 🚫 Убираем стандартные отступы */
+  margin: 0;
+  padding: 0;
+  
+  /* 📱 Предотвращаем горизонтальную прокрутку */
+  overflow-x: hidden;
+  
+  /* 🎭 Плавные переходы */
+  transition: background-color var(--transition-normal), color var(--transition-normal);
+}
+
+/* 🎯 ACCESSIBILITY IMPROVEMENTS */
+
+/* 🔗 Focus styles */
+*:focus {
+  outline: 2px solid var(--color-border-focus);
+  outline-offset: 2px;
+  border-radius: var(--radius-ui);
+}
+
+/* ⚡ Remove focus outline for mouse users */
+.mouse-user *:focus {
+  outline: none;
+}
+
+/* 🎭 Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* 📱 RESPONSIVE UTILITIES */
+
+/* 🎯 Hide scrollbars but keep functionality */
+.hide-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* 🎨 Custom scrollbar for webkit browsers */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: var(--color-bg-secondary);
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: var(--color-border-primary);
+  border-radius: 3px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: var(--color-border-secondary);
+}
+
+/* 💬 CHAT-SPECIFIC STYLES */
+
+/* 📝 Message text selection */
+.message-content {
+  user-select: text;
+  -webkit-user-select: text;
+  -moz-user-select: text;
+  -ms-user-select: text;
+}
+
+/* 🎭 Message animations */
+.message-enter {
+  animation: slideUp var(--transition-normal);
+}
+
+.message-typing {
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+/* 🔤 Code block improvements */
+.code-block {
+  font-family: 'JetBrains Mono', 'Fira Code', 'SF Mono', Monaco, 'Cascadia Code', monospace;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  tab-size: 2;
+}
+
+/* 🖼️ Image optimization */
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* 🎯 COMPONENT OVERRIDES */
+
+/* 📋 Form elements */
+input[type="text"],
+input[type="email"],
+input[type="password"],
+textarea,
+select {
+  background-color: var(--color-bg-tertiary);
+  border: 1px solid var(--color-border-muted);
+  color: var(--color-text-primary);
+  transition: border-color var(--transition-fast), background-color var(--transition-fast);
+}
+
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="password"]:focus,
+textarea:focus,
+select:focus {
+  border-color: var(--color-border-focus);
+  background-color: var(--color-bg-secondary);
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: var(--color-text-muted);
+}
+
+/* 🎲 Button improvements */
+button {
+  transition: all var(--transition-fast);
+  cursor: pointer;
+}
+
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* 🎨 UTILITY CLASSES */
+
+/* 🌟 Glow effects */
+.glow-sm {
+  box-shadow: 0 0 10px currentColor;
+  opacity: 0.6;
+}
+
+.glow-md {
+  box-shadow: 0 0 20px currentColor;
+  opacity: 0.8;
+}
+
+.glow-lg {
+  box-shadow: 0 0 30px currentColor;
+  opacity: 1;
+}
+
+/* 🎭 Glass morphism */
+.glass-effect {
+  background: rgba(26, 26, 46, 0.8);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(51, 65, 85, 0.3);
+}
+
+/* 📱 Mobile-first responsive text */
+.text-responsive {
+  font-size: clamp(0.875rem, 2.5vw, 1rem);
+}
+
+.text-responsive-lg {
+  font-size: clamp(1.125rem, 3vw, 1.25rem);
+}
+
+/* 🎯 DEBUG UTILITIES (только для разработки) */
+.debug-grid {
+  background-image: 
+    linear-gradient(rgba(255, 0, 0, 0.1) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 0, 0, 0.1) 1px, transparent 1px);
+  background-size: 20px 20px;
+}
+
+/* 🔧 DEVELOPMENT HELPERS */
+/* TODO: Удалить в продакшене */
+.dev-outline {
+  outline: 1px solid red !important;
+}
+
+.dev-outline-blue {
+  outline: 1px solid blue !important;
+}
+
+.dev-outline-green {
+  outline: 1px solid green !important;
+}
+
+/* 📚 ОБРАЗОВАТЕЛЬНЫЕ КОММЕНТАРИИ:
+ * 
+ * 🎨 Цветовая система:
+ * - Используем CSS custom properties для гибкости
+ * - Темная тема как базовая для комфорта разработчиков
+ * - Семантические названия цветов (bg-, text-, accent-)
+ * 
+ * 🎭 Анимации:
+ * - Уважаем настройки пользователя (prefers-reduced-motion)
+ * - Быстрые переходы для отзывчивости UI
+ * - Плавные анимации для приятного UX
+ * 
+ * 📱 Адаптивность:
+ * - Mobile-first подход
+ * - Клампинг размеров шрифтов
+ * - Скрытие прокруток, но сохранение функциональности
+ * 
+ * ♿ Доступность:
+ * - Четкие focus styles
+ * - Поддержка клавиатурной навигации
+ * - Высокий контраст для читаемости
+ * - Семантические цвета для screen readers
+ */
