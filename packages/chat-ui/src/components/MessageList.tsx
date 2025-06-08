@@ -29,6 +29,80 @@ import {
   MessageFilters,
   DEFAULT_CHAT_CONFIG 
 } from '../types';
+import { UIComponentRenderer } from '@mcp/ui-renderer';
+import { isHtmlResourceBlock, UiActionEvent } from '@mcp/shared';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
+// HACK: We might need to consider XSS implications more deeply if markdown allows arbitrary HTML.
+// For now, react-markdown's default is to escape HTML.
+// TODO: Explore options for syntax highlighting in code blocks.
+// TODO: Consider adding other remark/rehype plugins for enhanced markdown features if needed.
+
+// + INFO: Debounce function to limit rapid calls.
++ const debounce = <F extends (...args: any[]) => any>(func: F, waitFor: number) => {
++   let timeoutId: ReturnType<typeof setTimeout> | null = null;
++   return (...args: Parameters<F>): void => {
++     if (timeoutId) {
++       clearTimeout(timeoutId);
++     }
++     timeoutId = setTimeout(() => func(...args), waitFor);
++   };
++ };
+
+// + HACK: Context menu positioning can be tricky; this is a basic implementation.
+// + TODO: Improve context menu accessibility (keyboard navigation).
+// + TODO: Consider a more robust context menu library for advanced features or if this becomes complex.
+// + TODO: Add support for long-press on touch devices to open context menu.
+
++ interface ContextMenuProps {
++   x: number;
++   y: number;
++   actions: Array<{ label: string; onClick: () => void; disabled?: boolean; className?: string }>;
++   onClose: () => void;
++ }
+
++ const ContextMenu: React.FC<ContextMenuProps> = ({ x, y, actions, onClose }) => {
++   const menuRef = useRef<HTMLDivElement>(null);
+
++   useEffect(() => {
++     const handleClickOutside = (event: MouseEvent) => {
++       if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
++         onClose();
++       }
++     };
++     document.addEventListener('mousedown', handleClickOutside);
++     return () => {
++       document.removeEventListener('mousedown', handleClickOutside);
++     };
++   }, [onClose]);
+
++   return (
++     <div
++       ref={menuRef}
++       className="absolute z-50 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-md shadow-lg py-1"
++       style={{ top: y, left: x }}
++     >
++       {actions.map((action, index) => (
++         <button
++           key={index}
++           onClick={() => {
++             action.onClick();
++             onClose();
++           }}
++           disabled={action.disabled}
++           className={clsx(
++             "block w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700",
++             "disabled:opacity-50 disabled:cursor-not-allowed",
++             action.className
++           )}
++         >
++           {action.label}
++         </button>
++       ))}
++     </div>
++   );
++ };
+
 
 // 📦 ПРОПСЫ КОМПОНЕНТА
 interface MessageListProps {
@@ -188,13 +262,20 @@ export const MessageList: React.FC<MessageListProps> = memo(({
   
   // 🔄 Автоматическая прокрутка к новым сообщениям
   const scrollToBottom = useCallback((force = false) => {
+    // INFO: This function now gets debounced when called automatically.
     if ((autoScroll && !isUserScrolling) || force) {
       messagesEndRef.current?.scrollIntoView({ 
-        behavior: 'smooth',
+        behavior: 'smooth', // Consider 'auto' if 'smooth' causes issues with debouncing perception
         block: 'end'
       });
     }
   }, [autoScroll, isUserScrolling]);
+
+  // INFO: Debounced version of scrollToBottom for automatic scrolling.
+  const debouncedScrollToBottom = useMemo(() => {
+    // TODO: Make debounce delay configurable if needed.
+    return debounce(scrollToBottom, 150); // 150ms delay
+  }, [scrollToBottom]);
   
   // 📊 Отслеживание изменения размера контейнера
   useEffect(() => {
@@ -212,13 +293,14 @@ export const MessageList: React.FC<MessageListProps> = memo(({
     return () => resizeObserver.disconnect();
   }, []);
   
-  // 🔄 Автоматическая прокрутка при новых сообщениях
+  // 🔄 Автоматическая прокрутка при новых сообщениях (с использованием debounce)
   useEffect(() => {
     if (filteredMessages.length > 0) {
-      const timeoutId = setTimeout(() => scrollToBottom(), 100);
-      return () => clearTimeout(timeoutId);
+      debouncedScrollToBottom();
     }
-  }, [filteredMessages.length, scrollToBottom]);
+    // No cleanup needed for this type of debounce if it manages its own timeout.
+    // If the debounce function returned a cancel, we'd call it here.
+  }, [filteredMessages.length, debouncedScrollToBottom]); // Dependency on debouncedScrollToBottom
   
   // ⌨️ Обработчик скролла
   const handleScroll = useCallback((event: React.UIEvent<HTMLDivElement>) => {
@@ -441,6 +523,67 @@ const DefaultMessageRenderer: React.FC<DefaultMessageRendererProps> = memo(({
   isFirstInGroup,
   isLastInGroup,
 }) => {
+  const [contextMenu, setContextMenu] = useState<{ x: number; y: number; messageId: string } | null>(null);
+  const messageRef = useRef<HTMLDivElement>(null); // Ref for the message bubble itself
+
+  const isUserOrAssistant = message.type === 'user' || message.type === 'assistant';
+  const contentIsString = typeof message.content === 'string';
+  // Enable markdown by default, allow disabling via config
+  // Corrected mergedConfig access, it's not directly available here, use config prop.
+  const allowMarkdown = config?.markdown?.enabled !== false;
+
+
+  const handleContextMenu = useCallback((event: React.MouseEvent) => {
+    event.preventDefault();
+    setContextMenu({ x: event.clientX, y: event.clientY, messageId: message.id });
+  }, [message.id]);
+
+  const closeContextMenu = useCallback(() => {
+    setContextMenu(null);
+  }, []);
+
+  const getMessageTextContent = (msg: Message): string => {
+    if (typeof msg.content === 'string') {
+      return msg.content;
+    }
+    if (isHtmlResourceBlock(msg.content) && msg.content.type === 'resource' && typeof msg.content.text === 'string') {
+        return msg.content.text;
+    }
+    return '';
+  };
+
+  const contextMenuActions = contextMenu && contextMenu.messageId === message.id ? [
+    {
+      label: 'Copy Text',
+      onClick: async () => {
+        const textToCopy = getMessageTextContent(message);
+        if (textToCopy && navigator.clipboard) {
+          try {
+            await navigator.clipboard.writeText(textToCopy);
+            if (onMessageEvent) {
+              onMessageEvent({ type: 'systemNotification', payload: { text: 'Copied to clipboard!', level: 'info' }, messageId: message.id });
+            }
+          } catch (err) {
+            console.error('Failed to copy text: ', err);
+            if (onMessageEvent) {
+              onMessageEvent({ type: 'systemNotification', payload: { text: 'Failed to copy text.', level: 'error' }, messageId: message.id });
+            }
+          }
+        }
+      },
+      disabled: !getMessageTextContent(message)
+    },
+    ...(message.type === 'user' ? [{
+      label: 'Delete Message',
+      onClick: () => {
+        if (onMessageEvent) {
+          onMessageEvent({ type: 'requestDeleteMessage', messageId: message.id });
+        }
+      },
+      className: "text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900"
+    }] : [])
+  ] : [];
+
   // 🎨 Стили сообщения
   const messageClasses = clsx(
     'px-4 py-2 break-words transition-all duration-200',
@@ -468,21 +611,59 @@ const DefaultMessageRenderer: React.FC<DefaultMessageRendererProps> = memo(({
   );
   
   return (
-    <div className={messageClasses}>
-      {/* 📄 Содержимое сообщения */}
-      {typeof message.content === 'string' ? (
-        <div className="whitespace-pre-wrap select-text">
+    <div
+      ref={messageRef}
+      className={messageClasses}
+      onContextMenu={handleContextMenu}
+    >
+      {/* Wrapper for content to ensure context menu target area is consistent */}
+      <div className="message-content-wrapper">
+        {/* 📄 Содержимое сообщения */}
+        {message.type === 'ui-component' ? (
+        isHtmlResourceBlock(message.content) ? (
+          <UIComponentRenderer
+            resource={message.content}
+            onEvent={(uiEvent: UiActionEvent) => {
+              if (onMessageEvent) {
+                onMessageEvent({ type: 'uiAction', payload: uiEvent, messageId: message.id });
+              }
+            }}
+            className="mt-1"
+          />
+        ) : (
+          <div className="p-2 text-red-500 border border-red-300 rounded mt-1">
+            <p>Error: Invalid UI component data for ui-component. Expected HtmlResourceBlock.</p>
+            <pre className="text-xs">{JSON.stringify(message.content, null, 2)}</pre>
+          </div>
+        )
+      ) : contentIsString && isUserOrAssistant && allowMarkdown ? (
+        // Apply Markdown rendering for user and assistant string messages
+        // Using 'markdown-content' as Tailwind Typography is not confirmed.
+        // Styling for 'markdown-content' class will need to be defined elsewhere in CSS.
+        <ReactMarkdown
+          className="markdown-content max-w-none"
+          remarkPlugins={[remarkGfm]}
+          // components={{ // Example for opening links in new tabs:
+          //   a: ({node, ...props}) => <a {...props} target="_blank" rel="noopener noreferrer" />
+          // }}
+        >
           {message.content}
-        </div>
+        </ReactMarkdown>
+      ) : contentIsString && isUserOrAssistant && !allowMarkdown ? (
+        // Fallback for user/assistant messages when markdown is explicitly disabled
+        <div className="whitespace-pre-wrap select-text">{message.content}</div>
+      ) : contentIsString ? (
+        // For other message types (e.g., 'system') with string content, render as plain text
+        <div className="whitespace-pre-wrap select-text">{message.content}</div>
       ) : (
-        // 🎨 UI компонент (placeholder)
+        // Fallback for non-string, non-ui-component content structures
         <div className="p-4 text-center text-text-muted">
-          <div className="text-2xl mb-2">🎨</div>
-          <div className="font-medium">UI Component</div>
-          <div className="text-sm opacity-75">{message.content.uri}</div>
-          {/* TODO: Здесь будет настоящий UIRenderer */}
+          <div className="text-2xl mb-2">❓</div>
+          <div className="font-medium">Unsupported message content structure</div>
+          <pre className="text-xs">{JSON.stringify(message.content, null, 2)}</pre>
         </div>
       )}
+      </div> {/* End of message-content-wrapper */}
       
       {/* 📊 Статус сообщения */}
       {message.status !== 'completed' && (
@@ -506,6 +687,15 @@ const DefaultMessageRenderer: React.FC<DefaultMessageRendererProps> = memo(({
         message={message}
         onMessageEvent={onMessageEvent}
       />
+
+      {contextMenu && contextMenu.messageId === message.id && (
+        <ContextMenu
+          x={contextMenu.x}
+          y={contextMenu.y}
+          actions={contextMenuActions}
+          onClose={closeContextMenu}
+        />
+      )}
     </div>
   );
 });
@@ -663,6 +853,7 @@ export type { MessageListProps };
 // TODO: Добавить поддержку infinite scroll для истории сообщений
 // TODO: Реализовать поиск и фильтрацию сообщений
 // TODO: Добавить возможность выделения и группового действия с сообщениями
-// TODO: Реализовать контекстное меню для сообщений
+// TODO: Реализовать контекстное меню для сообщений (INFO: Basic context menu added)
 // FIXME: Оптимизировать виртуализацию для переменной высоты сообщений
 // HACK: Временно используем простые эмодзи иконки, заменить на Lucide React
+// INFO: Debouncing for auto-scroll in MessageList has been implemented.

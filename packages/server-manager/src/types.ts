@@ -8,6 +8,27 @@
 
 import type { McpServer, McpServerConfig } from '@mcp-ui/mcp-connector';
 
+// 🆕 CORE SERVER CONFIGURATION TYPES (added for ServerRegistry and ServerManager)
+export type ServerTransportType = 'websocket' | 'localprocess' | 'sse'; // Add more if needed
+
+export interface ServerConfig {
+  id: string; // Unique identifier (e.g., UUID)
+  name: string; // User-friendly name
+  type: 'mcp'; // Could be expanded later, e.g., 'http'
+  transport: ServerTransportType;
+  url: string; // Connection URL (for websocket, sse) or path/command (for localprocess)
+  capabilities?: string[]; // Optional list of server capabilities
+  // Add other relevant fields like authentication details if planned soon
+}
+
+export interface ServerStatus {
+  id: string;
+  status: 'connected' | 'disconnected' | 'connecting' | 'error';
+  error?: string; // Error message if status is 'error'
+}
+// END OF ADDED CORE SERVER CONFIGURATION TYPES
+
+
 // 🛠️ SERVER MANAGER CONFIGURATION
 /**
  * ⚙️ Конфигурация менеджера серверов
