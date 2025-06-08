@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="ru" class="dark">
+<head>
+  <!-- 📱 Мета теги -->
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <!-- 🎯 SEO -->
+  <title>MCP Chat Client | Model Context Protocol Interface</title>
+  <meta name="description" content="Интерактивный чат-клиент для общения с MCP серверами. Современный интерфейс для Model Context Protocol с поддержкой инструментов и ресурсов." />
+  <meta name="keywords" content="MCP, Model Context Protocol, Chat, AI, Interface, Tools, Resources" />
+  <meta name="author" content="HOW2AI Agency" />
+  
+  <!-- 🌐 Open Graph -->
+  <meta property="og:title" content="MCP Chat Client" />
+  <meta property="og:description" content="Современный интерфейс для Model Context Protocol серверов" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://mcp-ui.how2ai.info" />
+  
+  <!-- 🐦 Twitter -->
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="MCP Chat Client" />
+  <meta name="twitter:description" content="Интерактивный чат-клиент для MCP серверов" />
+  
+  <!-- 🎨 Theme Color -->
+  <meta name="theme-color" content="#0f0f23" />
+  <meta name="color-scheme" content="dark light" />
+  
+  <!-- 📱 Mobile -->
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="MCP Chat" />
+  
+  <!-- 🔗 Favicon -->
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="icon" type="image/png" href="/favicon.png" />
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+  
+  <!-- 📝 Manifest -->
+  <link rel="manifest" href="/manifest.json" />
+  
+  <!-- 🎨 Preload критичных ресурсов -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  
+  <!-- 🌟 Inline критичные стили для предотвращения FOUC -->
+  <style>
+    /* 🎨 Критичные стили для loading состояния */
+    .loading-screen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: #0f0f23;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      z-index: 9999;
+      color: #f1f5f9;
+    }
+    
+    .loading-spinner {
+      width: 40px;
+      height: 40px;
+      border: 3px solid #1a1a2e;
+      border-top: 3px solid #3b82f6;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+    
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    
+    .loading-text {
+      margin-top: 16px;
+      font-family: system-ui, -apple-system, sans-serif;
+      font-size: 18px;
+      font-weight: 600;
+    }
+    
+    .loading-subtitle {
+      margin-top: 8px;
+      font-family: system-ui, -apple-system, sans-serif;
+      font-size: 14px;
+      color: #94a3b8;
+    }
+    
+    /* 🌙 Базовые dark theme стили */
+    html.dark {
+      background: #0f0f23;
+      color: #f1f5f9;
+    }
+    
+    /* 🎯 Скрытие loading screen когда React загрузится */
+    #root:not(:empty) + .loading-screen {
+      display: none;
+    }
+  </style>
+</head>
+
+<body class="bg-bg-primary text-text-primary antialiased">
+  <!-- 🎯 Основной контейнер React -->
+  <div id="root"></div>
+  
+  <!-- ⏳ Loading screen (показывается пока React не загрузится) -->
+  <div class="loading-screen">
+    <div class="loading-spinner"></div>
+    <div class="loading-text">MCP Chat Client</div>
+    <div class="loading-subtitle">Загрузка интерфейса...</div>
+  </div>
+  
+  <!-- 🚫 Fallback для браузеров без JavaScript -->
+  <noscript>
+    <div style="
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: #0f0f23;
+      color: #f1f5f9;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      text-align: center;
+      padding: 20px;
+      font-family: system-ui, -apple-system, sans-serif;
+    ">
+      <h1 style="font-size: 24px; margin-bottom: 16px;">⚠️ JavaScript Required</h1>
+      <p style="font-size: 16px; margin-bottom: 16px; color: #94a3b8; max-width: 400px;">
+        MCP Chat Client требует JavaScript для работы. 
+        Пожалуйста, включите JavaScript в настройках браузера и перезагрузите страницу.
+      </p>
+      <button 
+        onclick="window.location.reload()" 
+        style="
+          background: #3b82f6;
+          color: white;
+          border: none;
+          padding: 12px 24px;
+          border-radius: 8px;
+          font-size: 16px;
+          cursor: pointer;
+        "
+      >
+        🔄 Перезагрузить страницу
+      </button>
+    </div>
+  </noscript>
+  
+  <!-- 📊 Скрипт модуля -->
+  <script type="module" src="/src/main.tsx"></script>
+  
+  <!-- 🔧 Глобальные переменные для debugging в development -->
+  <script>
+    if (import.meta.env.DEV) {
+      window.__MCP_DEBUG__ = true;
+      console.log('🛠️ MCP Chat Client - Development Mode');
+      console.log('📊 Environment:', import.meta.env);
+    }
+  </script>
+</body>
+</html>
+
+<!-- 
+🎓 ОБРАЗОВАТЕЛЬНЫЕ ЗАМЕТКИ:
+
+💡 HTML BEST PRACTICES:
+- Semantic HTML5 structure
+- Meta tags для SEO и social sharing
+- Progressive enhancement с noscript fallback
+- Critical CSS inline для performance
+- Preload important resources
+
+📱 MOBILE OPTIMIZATION:
+- Viewport meta для responsive design
+- Apple-specific meta tags для iOS
+- Theme color для browser UI
+- Manifest для PWA capabilities
+
+⚡ PERFORMANCE:
+- Critical CSS inline
+- Preconnect для external resources
+- Loading screen для better UX
+- Minimal HTML для fast initial load
+
+🎨 UX CONSIDERATIONS:
+- Loading states с spinner
+- Error fallbacks для no-JS
+- Consistent branding
+- Accessibility friendly markup
+-->
