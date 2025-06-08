@@ -1,0 +1,292 @@
+name: 🤖 Auto Merge
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+  pull_request_review:
+    types: [submitted]
+  check_suite:
+    types: [completed]
+  status: {}
+
+permissions:
+  contents: write
+  pull-requests: write
+  checks: read
+
+jobs:
+  # ===========================
+  # Автоматическое слияние
+  # ===========================
+  auto-merge:
+    name: 🤖 Auto Merge PR
+    runs-on: ubuntu-latest
+    if: |
+      github.event_name == 'pull_request' ||
+      github.event_name == 'pull_request_review' ||
+      github.event_name == 'check_suite' ||
+      github.event_name == 'status'
+    
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: 🔍 Check PR eligibility
+        id: check
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { owner, repo } = context.repo;
+            
+            // Получаем информацию о PR
+            let prNumber;
+            if (context.eventName === 'pull_request') {
+              prNumber = context.payload.pull_request.number;
+            } else if (context.eventName === 'pull_request_review') {
+              prNumber = context.payload.pull_request.number;
+            } else if (context.eventName === 'check_suite') {
+              const prs = context.payload.check_suite.pull_requests;
+              if (prs.length === 0) return;
+              prNumber = prs[0].number;
+            } else {
+              // Для status events ищем связанные PR
+              const commits = await github.rest.repos.listPullRequestsAssociatedWithCommit({
+                owner,
+                repo,
+                commit_sha: context.payload.sha
+              });
+              if (commits.data.length === 0) return;
+              prNumber = commits.data[0].number;
+            }
+            
+            console.log(`Checking PR #${prNumber} for auto-merge eligibility`);
+            
+            // Получаем детали PR
+            const { data: pr } = await github.rest.pulls.get({
+              owner,
+              repo,
+              pull_number: prNumber
+            });
+            
+            // Проверяем базовые условия
+            const conditions = {
+              notDraft: !pr.draft,
+              notClosed: pr.state === 'open',
+              targetMain: pr.base.ref === 'main',
+              hasAutoMergeLabel: pr.labels.some(label => 
+                ['auto-merge', 'dependencies', 'automated'].includes(label.name)
+              ),
+              authorIsDependabot: pr.user.login === 'dependabot[bot]',
+              authorIsTrusted: ['ivan-meer', 'github-actions[bot]'].includes(pr.user.login)
+            };
+            
+            console.log('PR conditions:', conditions);
+            
+            // PR подходит для auto-merge если:
+            // 1. Это dependabot PR с меткой dependencies
+            // 2. Это PR от доверенного автора с меткой auto-merge
+            // 3. Это automated PR
+            const eligible = conditions.notDraft && 
+                           conditions.notClosed && 
+                           conditions.targetMain && 
+                           (
+                             (conditions.authorIsDependabot && conditions.hasAutoMergeLabel) ||
+                             (conditions.authorIsTrusted && conditions.hasAutoMergeLabel)
+                           );
+            
+            core.setOutput('eligible', eligible);
+            core.setOutput('pr_number', prNumber);
+            core.setOutput('pr_title', pr.title);
+            core.setOutput('pr_author', pr.user.login);
+            
+            if (eligible) {
+              console.log('✅ PR is eligible for auto-merge');
+            } else {
+              console.log('❌ PR is not eligible for auto-merge');
+            }
+
+      - name: 🔍 Check PR status
+        id: status
+        if: steps.check.outputs.eligible == 'true'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { owner, repo } = context.repo;
+            const prNumber = ${{ steps.check.outputs.pr_number }};
+            
+            // Получаем статус проверок
+            const { data: pr } = await github.rest.pulls.get({
+              owner,
+              repo,
+              pull_number: prNumber
+            });
+            
+            // Проверяем статус проверок
+            const { data: checks } = await github.rest.checks.listForRef({
+              owner,
+              repo,
+              ref: pr.head.sha,
+              status: 'completed'
+            });
+            
+            const { data: statuses } = await github.rest.repos.listCommitStatusesForRef({
+              owner,
+              repo,
+              ref: pr.head.sha
+            });
+            
+            // Анализируем результаты проверок
+            const failedChecks = checks.check_runs.filter(check => 
+              check.conclusion && check.conclusion !== 'success' && check.conclusion !== 'neutral'
+            );
+            
+            const failedStatuses = statuses.filter(status => 
+              status.state === 'failure' || status.state === 'error'
+            );
+            
+            const allChecksPassed = failedChecks.length === 0 && failedStatuses.length === 0;
+            const hasRequiredChecks = checks.check_runs.length > 0 || statuses.length > 0;
+            
+            console.log(`Checks status for PR #${prNumber}:`);
+            console.log(`- Total checks: ${checks.check_runs.length}`);
+            console.log(`- Failed checks: ${failedChecks.length}`);
+            console.log(`- Total statuses: ${statuses.length}`);
+            console.log(`- Failed statuses: ${failedStatuses.length}`);
+            console.log(`- All checks passed: ${allChecksPassed}`);
+            console.log(`- Has required checks: ${hasRequiredChecks}`);
+            
+            // Проверяем reviews
+            const { data: reviews } = await github.rest.pulls.listReviews({
+              owner,
+              repo,
+              pull_number: prNumber
+            });
+            
+            const approvedReviews = reviews.filter(review => review.state === 'APPROVED');
+            const requestedChanges = reviews.filter(review => review.state === 'CHANGES_REQUESTED');
+            
+            // Для dependabot PRs не требуем review, для остальных - требуем
+            const needsReview = pr.user.login !== 'dependabot[bot]';
+            const hasApproval = approvedReviews.length > 0 && requestedChanges.length === 0;
+            
+            console.log(`Reviews status:`);
+            console.log(`- Needs review: ${needsReview}`);
+            console.log(`- Approved reviews: ${approvedReviews.length}`);
+            console.log(`- Requested changes: ${requestedChanges.length}`);
+            console.log(`- Has approval: ${hasApproval}`);
+            
+            const canMerge = allChecksPassed && 
+                           hasRequiredChecks && 
+                           (!needsReview || hasApproval);
+            
+            core.setOutput('can_merge', canMerge);
+            core.setOutput('checks_passed', allChecksPassed);
+            core.setOutput('has_approval', hasApproval);
+            core.setOutput('needs_review', needsReview);
+
+      - name: 🚀 Auto merge PR
+        if: |
+          steps.check.outputs.eligible == 'true' && 
+          steps.status.outputs.can_merge == 'true'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { owner, repo } = context.repo;
+            const prNumber = ${{ steps.check.outputs.pr_number }};
+            const prTitle = '${{ steps.check.outputs.pr_title }}';
+            const prAuthor = '${{ steps.check.outputs.pr_author }}';
+            
+            try {
+              console.log(`🚀 Auto-merging PR #${prNumber}: ${prTitle}`);
+              
+              // Определяем метод слияния
+              let mergeMethod = 'squash'; // По умолчанию
+              
+              // Для dependabot используем squash
+              if (prAuthor === 'dependabot[bot]') {
+                mergeMethod = 'squash';
+              }
+              // Для других доверенных авторов можем использовать merge
+              else if (prTitle.startsWith('feat:') || prTitle.startsWith('fix:')) {
+                mergeMethod = 'squash';
+              }
+              
+              const result = await github.rest.pulls.merge({
+                owner,
+                repo,
+                pull_number: prNumber,
+                merge_method: mergeMethod,
+                commit_title: `${prTitle} (#${prNumber})`,
+                commit_message: `Automatically merged by GitHub Actions\n\nAuthor: ${prAuthor}\nMerge method: ${mergeMethod}`
+              });
+              
+              if (result.data.merged) {
+                console.log('✅ PR successfully merged');
+                
+                // Добавляем комментарий о successful merge
+                await github.rest.issues.createComment({
+                  owner,
+                  repo,
+                  issue_number: prNumber,
+                  body: `🤖 **Автоматическое слияние выполнено**
+                  
+✅ PR был автоматически объединен с main веткой после прохождения всех проверок.
+
+**Детали:**
+- Метод слияния: \`${mergeMethod}\`
+- Commit SHA: \`${result.data.sha}\`
+- Выполнено: GitHub Actions
+
+Спасибо за ваш вклад! 🙏`
+                });
+                
+              } else {
+                console.log('❌ Failed to merge PR');
+                core.setFailed('Failed to merge PR');
+              }
+              
+            } catch (error) {
+              console.log('❌ Error during auto-merge:', error.message);
+              
+              // Добавляем комментарий об ошибке
+              await github.rest.issues.createComment({
+                owner,
+                repo,
+                issue_number: prNumber,
+                body: `🤖 **Ошибка автоматического слияния**
+                
+❌ Не удалось автоматически объединить этот PR.
+
+**Ошибка:** ${error.message}
+
+**Что делать:**
+- Проверьте наличие конфликтов
+- Убедитесь что все проверки прошли
+- Попробуйте объединить вручную
+
+**Помощь:** Если проблема не решается, создайте issue с деталями.`
+              });
+              
+              core.setFailed(`Auto-merge failed: ${error.message}`);
+            }
+
+      - name: 📊 Log auto-merge attempt
+        if: always() && steps.check.outputs.eligible == 'true'
+        run: |
+          echo "## 🤖 Auto-Merge Attempt Report" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**PR Information:**" >> $GITHUB_STEP_SUMMARY
+          echo "- Number: #${{ steps.check.outputs.pr_number }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Title: ${{ steps.check.outputs.pr_title }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Author: ${{ steps.check.outputs.pr_author }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Status:**" >> $GITHUB_STEP_SUMMARY
+          echo "- Eligible: ${{ steps.check.outputs.eligible }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Checks passed: ${{ steps.status.outputs.checks_passed }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Has approval: ${{ steps.status.outputs.has_approval }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Needs review: ${{ steps.status.outputs.needs_review }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Can merge: ${{ steps.status.outputs.can_merge }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Timestamp: $(date -u '+%Y-%m-%d %H:%M:%S UTC')" >> $GITHUB_STEP_SUMMARY

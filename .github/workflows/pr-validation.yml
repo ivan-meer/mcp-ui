@@ -1,0 +1,370 @@
+name: 🔍 PR Validation
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+    branches: [main, develop]
+
+concurrency:
+  group: pr-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+env:
+  NODE_VERSION: '18'
+  PNPM_VERSION: '10'
+
+jobs:
+  # ===========================
+  # Базовая валидация PR
+  # ===========================
+  validate-pr:
+    name: 🔍 PR Basic Validation
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.draft == false
+    
+    steps:
+      - name: 📥 Checkout PR
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: 🏷️ Validate PR title
+        uses: amannn/action-semantic-pull-request@v5
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          types: |
+            feat
+            fix
+            docs
+            style
+            refactor
+            perf
+            test
+            build
+            ci
+            chore
+            revert
+          scopes: |
+            client
+            server
+            shared
+            examples
+            docs
+            deps
+            release
+          requireScope: false
+          disallowScopes: |
+            release
+          subjectPattern: ^(?![A-Z]).+$
+          subjectPatternError: |
+            The subject "{subject}" found in the pull request title "{title}"
+            didn't match the configured pattern. Please ensure that the subject
+            doesn't start with an uppercase character.
+
+      - name: 📊 Check PR size
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { data: files } = await github.rest.pulls.listFiles({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: context.issue.number,
+            });
+            
+            const totalChanges = files.reduce((sum, file) => sum + file.changes, 0);
+            const totalFiles = files.length;
+            
+            console.log(`📊 PR Statistics:`);
+            console.log(`- Files changed: ${totalFiles}`);
+            console.log(`- Total changes: ${totalChanges}`);
+            
+            // Предупреждение для больших PR
+            if (totalChanges > 1000) {
+              core.warning(`🚨 Large PR detected: ${totalChanges} changes across ${totalFiles} files. Consider splitting into smaller PRs for easier review.`);
+            }
+            
+            if (totalFiles > 50) {
+              core.warning(`🚨 Many files changed: ${totalFiles} files. Consider splitting into smaller PRs.`);
+            }
+
+      - name: 🔍 Check for breaking changes
+        run: |
+          echo "🔍 Checking for potential breaking changes..."
+          
+          # Проверяем изменения в API файлах
+          if git diff --name-only origin/main...HEAD | grep -E "(packages/.*/src/.*\.ts|packages/.*/index\.ts)" | head -5; then
+            echo "⚠️ API files changed - please ensure backwards compatibility"
+            echo "📝 Consider updating CHANGELOG.md if this includes breaking changes"
+          else
+            echo "✅ No API files changed"
+          fi
+
+  # ===========================
+  # Тестирование PR
+  # ===========================
+  test-pr:
+    name: 🧪 Test PR Changes
+    runs-on: ubuntu-latest
+    needs: validate-pr
+    
+    steps:
+      - name: 📥 Checkout PR
+        uses: actions/checkout@v4
+
+      - name: 📦 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: 📦 Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - name: 📦 Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: 🔍 ESLint check
+        run: pnpm lint
+
+      - name: 🎨 Format check
+        run: pnpm format --check
+
+      - name: 🔨 Build check
+        run: pnpm build
+
+      - name: 🧪 Run tests
+        run: pnpm test
+
+      - name: 📊 Generate coverage
+        run: pnpm coverage
+        continue-on-error: true
+
+      - name: 📊 Comment coverage report
+        uses: actions/github-script@v7
+        continue-on-error: true
+        with:
+          script: |
+            const fs = require('fs');
+            
+            try {
+              const coverage = JSON.parse(fs.readFileSync('./coverage/coverage-summary.json', 'utf8'));
+              const total = coverage.total;
+              
+              const comment = `## 📊 Coverage Report
+              
+              | Metric | Percentage | Covered/Total |
+              |--------|-----------|---------------|
+              | Lines | ${total.lines.pct}% | ${total.lines.covered}/${total.lines.total} |
+              | Functions | ${total.functions.pct}% | ${total.functions.covered}/${total.functions.total} |
+              | Branches | ${total.branches.pct}% | ${total.branches.covered}/${total.branches.total} |
+              | Statements | ${total.statements.pct}% | ${total.statements.covered}/${total.statements.total} |
+              
+              ${total.lines.pct >= 80 ? '✅' : '⚠️'} Overall coverage: **${total.lines.pct}%**
+              `;
+              
+              // Найти существующий комментарий или создать новый
+              const comments = await github.rest.issues.listComments({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+              });
+              
+              const botComment = comments.data.find(comment => 
+                comment.user.type === 'Bot' && comment.body.includes('📊 Coverage Report')
+              );
+              
+              if (botComment) {
+                await github.rest.issues.updateComment({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  comment_id: botComment.id,
+                  body: comment
+                });
+              } else {
+                await github.rest.issues.createComment({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: context.issue.number,
+                  body: comment
+                });
+              }
+            } catch (error) {
+              console.log('Coverage report not available:', error.message);
+            }
+
+  # ===========================
+  # Проверка примеров
+  # ===========================
+  test-examples-pr:
+    name: 🎯 Test Examples with PR Changes
+    runs-on: ubuntu-latest
+    needs: validate-pr
+    
+    steps:
+      - name: 📥 Checkout PR
+        uses: actions/checkout@v4
+
+      - name: 📦 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: 📦 Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - name: 📦 Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: 🔨 Build packages
+        run: pnpm build
+
+      - name: 🎯 Test demo script
+        run: |
+          chmod +x ./start-demo.sh
+          timeout 30s ./start-demo.sh --static --no-browser || [ $? -eq 124 ]
+
+      - name: 🎯 Test examples server build
+        run: |
+          cd examples/server
+          pnpm install --frozen-lockfile
+          pnpm typecheck || echo "⚠️ Typecheck issues found"
+          pnpm build || echo "⚠️ Build issues found"
+
+  # ===========================
+  # Проверка совместимости
+  # ===========================
+  compatibility-check:
+    name: 🔧 Compatibility Check
+    runs-on: ${{ matrix.os }}
+    needs: validate-pr
+    
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        node: ['18', '20']
+        
+    steps:
+      - name: 📥 Checkout PR
+        uses: actions/checkout@v4
+
+      - name: 📦 Setup Node.js ${{ matrix.node }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+
+      - name: 📦 Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - name: 📦 Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: 🔨 Build packages
+        run: pnpm build
+
+      - name: 🧪 Run tests
+        run: pnpm test
+
+  # ===========================
+  # Автоматические проверки
+  # ===========================
+  auto-checks:
+    name: 🤖 Automated Checks
+    runs-on: ubuntu-latest
+    needs: [test-pr, test-examples-pr]
+    
+    steps:
+      - name: 📥 Checkout PR
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: 🔍 Check for security issues
+        run: |
+          echo "🔒 Checking for potential security issues..."
+          
+          # Проверяем на наличие секретов в коде
+          if git diff --name-only origin/main...HEAD | xargs grep -l -i "password\|secret\|token\|key" || true; then
+            echo "⚠️ Files contain potential secrets - please review"
+          else
+            echo "✅ No obvious secrets found"
+          fi
+
+      - name: 📝 Check CHANGELOG update
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { data: files } = await github.rest.pulls.listFiles({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: context.issue.number,
+            });
+            
+            const hasFeatureChanges = files.some(file => 
+              file.filename.startsWith('packages/') && 
+              (file.status === 'added' || file.status === 'modified')
+            );
+            
+            const hasChangelogUpdate = files.some(file => 
+              file.filename === 'CHANGELOG.md'
+            );
+            
+            if (hasFeatureChanges && !hasChangelogUpdate) {
+              console.log('⚠️ Consider updating CHANGELOG.md for user-facing changes');
+            } else {
+              console.log('✅ CHANGELOG update check passed');
+            }
+
+  # ===========================
+  # Статус проверки
+  # ===========================
+  pr-status:
+    name: 📊 PR Status Summary
+    runs-on: ubuntu-latest
+    needs: [validate-pr, test-pr, test-examples-pr, compatibility-check, auto-checks]
+    if: always()
+    
+    steps:
+      - name: 📊 Generate status summary
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const jobs = [
+              { name: 'Validation', result: '${{ needs.validate-pr.result }}' },
+              { name: 'Tests', result: '${{ needs.test-pr.result }}' },
+              { name: 'Examples', result: '${{ needs.test-examples-pr.result }}' },
+              { name: 'Compatibility', result: '${{ needs.compatibility-check.result }}' },
+              { name: 'Auto Checks', result: '${{ needs.auto-checks.result }}' }
+            ];
+            
+            const passed = jobs.filter(job => job.result === 'success').length;
+            const total = jobs.length;
+            
+            const summary = jobs.map(job => {
+              const emoji = job.result === 'success' ? '✅' : job.result === 'failure' ? '❌' : '⚠️';
+              return `${emoji} ${job.name}`;
+            }).join('\n');
+            
+            const comment = `## 📊 PR Validation Summary
+            
+            **Status: ${passed}/${total} checks passed**
+            
+            ${summary}
+            
+            ${passed === total ? '🎉 All checks passed! This PR is ready for review.' : '⚠️ Some checks failed. Please review and fix issues.'}
+            `;
+            
+            console.log(comment);
+            
+            // Обновляем статус проверки
+            if (passed === total) {
+              core.notice('🎉 All PR validation checks passed!');
+            } else {
+              core.setFailed(`❌ ${total - passed} validation checks failed`);
+            }

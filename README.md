@@ -1,270 +1,198 @@
-## 📦 Model Context Protocol UI SDK
+<div align="center">
+
+# 🎨 MCP UI SDK
+
+
+---
+
+<div align="center">
+
+
+![MCP UI SDK](assets/img/mcp-panel.png)
+### Интерактивный TypeScript SDK для Model Context Protocol веб-компонентов
+
+![MCP Dev](https://badge.mcpx.dev?type=dev 'MCP Dev') [![License: Apache-2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0) [![TypeScript](https://img.shields.io/badge/TypeScript-5.3+-3178c6.svg)](https://www.typescriptlang.org/) [![React 18](https://img.shields.io/badge/React-18+-61dafb.svg)](https://reactjs.org/) [![Node.js](https://img.shields.io/badge/Node.js-18+-339933.svg)](https://nodejs.org/)
 
 <p align="center">
   <a href="https://www.npmjs.com/package/@mcp-ui/server"><img src="https://img.shields.io/npm/v/@mcp-ui/server?label=server&color=green" alt="Server Version"></a>
   <a href="https://www.npmjs.com/package/@mcp-ui/client"><img src="https://img.shields.io/npm/v/@mcp-ui/client?label=client&color=blue" alt="Client Version"></a>
+  <a href="https://github.com/ivan-meer/mcp-ui/releases"><img src="https://img.shields.io/github/v/release/ivan-meer/mcp-ui?color=brightgreen" alt="Latest Release"></a>
 </p>
 
 <p align="center">
-  <a href="#-what-is-mcp-ui">What's mcp-ui?</a> •
-  <a href="#-installation">Installation</a> •
-  <a href="#-quickstart">Quickstart</a> •
-  <a href="#-demo-prototype">Demo & Prototype</a> •
-  <a href="#-json-schema-generator">JSON Schema Generator</a> •
-  <a href="#-core-concepts">Core Concepts</a> •
-  <a href="#-examples">Examples</a> •
-  <a href="#-roadmap">Roadmap</a> •
-  <a href="#-contributing">Contributing</a> •
-  <a href="#-license">License</a>
+  <a href="https://github.com/ivan-meer/mcp-ui/actions"><img src="https://img.shields.io/github/actions/workflow/status/ivan-meer/mcp-ui/ci.yml?branch=main" alt="CI Status"></a>
+  <a href="https://github.com/ivan-meer/mcp-ui/issues"><img src="https://img.shields.io/github/issues/ivan-meer/mcp-ui" alt="GitHub Issues"></a>
+  <a href="https://github.com/ivan-meer/mcp-ui/stargazers"><img src="https://img.shields.io/github/stars/ivan-meer/mcp-ui?style=social" alt="GitHub Stars"></a>
 </p>
 
-----
+> 🚧 **ЭКСПЕРИМЕНТАЛЬНЫЙ ПРОЕКТ В РАЗРАБОТКЕ**
+> 
+> <p align="center">
+>  <strong>ФОРК ОТ</strong> <a href="https://github.com/idosal/mcp-ui">@IDOSAL/MCP-UI</a><br/>
+>  <strong>РАЗРАБОТАНО</strong><br/>
+>  <img src="assets/img/how2ai-text-banner.png" alt="banner HOW2AI" width="400"/><br/>
+>  <a href="https://how2ai.info"><strong>AGENCY</strong></a>
+> </p>
 
-**`mcp-ui`** brings interactive web components to the [Model Context Protocol](https://modelcontextprotocol.io/introduction) (MCP). Deliver rich, dynamic UI resources directly from your MCP server to be rendered by the client. Take AI interaction to the next level!
+📖 **[English Documentation](./docs/DOCUMENTATION.md)** | 🎯 **[Demo & Live Examples](./demo.html)**
 
-> *This project is an experimental playground for MCP UI ideas. Expect rapid iteration and community-driven enhancements!*
+</div>
 
-<video src="https://github.com/user-attachments/assets/51f7c712-8133-4d7c-86d3-fdca550b9767"></video>
+---
 
-## 💡 What's `mcp-ui`?
+## 🎯 Что такое MCP UI SDK?
 
-`mcp-ui` is a TypeScript SDK comprising two packages:
+**MCP UI SDK** — это TypeScript-библиотека для создания интерактивных веб-компонентов в рамках Model Context Protocol (MCP). Проект предоставляет готовые инструменты для разработки современных пользовательских интерфейсов, которые могут быть легко интегрированы в MCP-серверы и клиенты.
 
-* **`@mcp-ui/server`**: Utilities to generate `HtmlResourceBlock` objects on your MCP server.
-* **`@mcp-ui/client`**: UI components (e.g., `<HtmlResource />`) to render those blocks in the browser and handle their events.
+### ✨ Основные возможности
 
-Together, they let you define reusable UI resource blocks on the server side, seamlessly display them in the client, and react to their actions in the MCP host environment.
+<table>
+<tr>
+<td width="50%">
 
+**🔧 Серверная часть (`@mcp-ui/server`)**
+- Утилиты для создания `HtmlResourceBlock` объектов
+- Безопасная генерация HTML-ресурсов
+- Поддержка различных UI схем (`ui://`, `ui-app://`)
+- Встроенная валидация и типизация
 
-## ✨ Core Concepts
+</td>
+<td width="50%">
 
-### HtmlResource
+**🎨 Клиентская часть (`@mcp-ui/client`)**
+- React-компоненты для рендеринга HTML-ресурсов
+- Безопасная обработка iframe с DOMPurify
+- Система событий для взаимодействия с UI
+- Responsive дизайн и современные анимации
 
-The primary payload exchanged between the server and the client:
+</td>
+</tr>
+</table>
 
-```ts
-interface HtmlResourceBlock {
-  type: 'resource';
-  resource: {
-    uri: string;       // e.g. "ui://component/id" or "ui-app://app/instance"
-    mimeType: 'text/html';
-    text?: string;      // Inline HTML or external URL
-    blob?: string;      // Base64-encoded HTML or URL (for large payloads)
-  };
-}
-```
-
-* **`uri`**: Unique identifier for caching and routing
-  * `ui://…` — self-contained HTML (rendered via `<iframe srcDoc>`)
-  * `ui-app://…` — external app/site (rendered via `<iframe src>`)
-* **`mimeType`**: Always `text/html`
-* **`text` vs. `blob`**: Choose `text` for simple strings; use `blob` for larger or encoded content.
-
-It's rendered in the client with the `<HtmlResource>` React component.
-
-`HtmlResource` now supports an experimental `secure` render mode that sanitizes the HTML with DOMPurify instead of using an iframe. This avoids the security pitfalls of embedding untrusted sites. Future improvements may leverage React Server Components or Remote DOM for even better isolation.
-
-### UI Action
-
-UI blocks must be able to interact with the agent. In `mcp-ui`, this is done by hooking into events sent from the UI block and reacting to them in the host. For example, an HTML may trigger a tool call when a button is clicked by sending an event which will be caught handled by the client.
-
-## 🏗️ Installation
+### 🚀 Быстрый старт
 
 ```bash
-# using npm
-npm install @mcp-ui/server @mcp-ui/client
+# Установка зависимостей
+pnpm install
 
-# or pnpm
-pnpm add @mcp-ui/server @mcp-ui/client
-
-# or yarn
-yarn add @mcp-ui/server @mcp-ui/client
-```
-
-## 🎬 Quickstart
-
-1. **Server-side**: Build your resource blocks
-
-   ```ts
-   import { createHtmlResource } from '@mcp-ui/server';
-
-   // Inline HTML
-   const direct = createHtmlResource({
-     uri: 'ui://greeting/1',
-     content: { type: 'rawHtml', htmlString: '<p>Hello, MCP UI!</p>' },
-     delivery: 'text',
-   });
-
-   // External URL
-   const external = createHtmlResource({
-     uri: 'ui-app://widget/session-42',
-     content: { type: 'externalUrl', iframeUrl: 'https://example.com/widget' },
-     delivery: 'text',
-   });
-   ```
-
-2. **Client-side**: Render in your MCP host
-
-   ```tsx
-   import React from 'react';
-   import { HtmlResource } from '@mcp-ui/client';
-
-   function App({ mcpResource }) {
-     if (
-       mcpResource.type === 'resource' &&
-       mcpResource.resource.mimeType === 'text/html'
-     ) {
-       return (
-         <HtmlResource
-           resource={mcpResource.resource}
-           onUiAction={(tool, params) => {
-             console.log('Action:', tool, params);
-             return { status: 'ok' };
-           }}
-         />
-       );
-     }
-     return <p>Unsupported resource</p>;
-   }
-   ```
-
-3. **Enjoy** interactive MCP UIs — no extra configuration required.
-
-## 🎨 Demo & Prototype
-
-We've created a comprehensive prototype showcasing the full potential of MCP UI SDK! 
-
-### 🚀 Quick Demo
-
-**Option 1: Static Demo (Instant)**
-```bash
-# Open the demo file directly in your browser
-open demo.html
-# or
-firefox demo.html
-# or 
-google-chrome demo.html
-```
-
-**Option 2: Local Server**
-```bash
-# Start local HTTP server
+# Запуск демо-версии
 ./start-demo.sh
-# Opens http://localhost:8080/demo.html automatically
+
+# Разработка
+pnpm dev
+
+# Тестирование
+pnpm test
 ```
 
-### 🎯 What's in the Demo
+### 🎭 Демонстрационные компоненты
 
-The prototype includes **6 different UI component types**:
+Проект включает в себя **6 готовых UI-компонентов** для демонстрации возможностей:
 
-| Component | Description | Features |
-|-----------|-------------|----------|
-| 📊 **Analytics Dashboard** | Interactive charts and metrics | Chart.js integration, real-time data, system status |
-| 📝 **Form Generator** | Dynamic forms from JSON Schema | Validation, multiple input types, data handling |
-| 📋 **Data Tables** | Interactive data display | Sorting, filtering, pagination |
-| 📅 **Calendar** | Event scheduling interface | Monthly/weekly views, event management |
-| 💬 **Chat Interface** | Embedded chat component | Message handling, user interactions |
-| 📁 **File Manager** | File system browser | Directory navigation, file operations |
+<div align="center">
 
-### 🔧 MCP Tools Added
+| 🖼️ **Галерея** | 📊 **Аналитика** | 📝 **Формы** |
+|:---:|:---:|:---:|
+| Интерактивная галерея изображений | Дашборд с Chart.js | Динамические формы |
 
-The demo server includes these new MCP tools:
+| 📅 **Календарь** | 💬 **Чат** | 📁 **Файл-менеджер** |
+|:---:|:---:|:---:|
+| События и планирование | Интерфейс сообщений | Управление файлами |
+
+</div>
+
+### 🛠️ Архитектура проекта
+
+```
+mcp-ui/
+├── packages/
+│   ├── client/          # React компоненты
+│   ├── server/          # Серверные утилиты
+│   └── shared/          # Общие типы и утилиты
+├── examples/
+│   └── server/          # Пример MCP сервера
+├── docs/                # Документация
+├── demo.html           # Интерактивное демо
+└── start-demo.sh       # Скрипт автозапуска
+```
+
+### 🎯 Использование
+
+#### Серверная часть
 
 ```typescript
-// Gallery of all UI components
-server.tool('show_ui_gallery', ...)
+import { createHtmlResource } from '@mcp-ui/server';
 
-// Interactive analytics dashboard with Chart.js
-server.tool('show_dashboard', { type: z.string().optional() }, ...)
-
-// Dynamic form generator with validation
-server.tool('show_form_generator', { 
-  schema: z.string(), 
-  data: z.record(z.any()).optional() 
-}, ...)
+// Создание интерактивного компонента
+const dashboard = createHtmlResource({
+  uri: 'ui://dashboard/analytics',
+  content: `
+    <div class="dashboard">
+      <h2>Аналитика продаж</h2>
+      <canvas id="chart"></canvas>
+    </div>
+  `,
+  css: './styles/dashboard.css',
+  js: './scripts/chart-setup.js'
+});
 ```
 
-### ✨ Demo Features
-
-- **🎨 Modern Design**: Beautiful gradients, animations, hover effects
-- **📱 Responsive**: Works on desktop, tablet, and mobile
-- **⚡ Interactive**: All buttons and elements are fully functional
-- **🔒 Secure**: Safe HTML rendering with DOMPurify
-- **📊 Chart.js Integration**: Live, animated charts and graphs
-- **🎯 Event Handling**: Complete MCP tool integration
-
-### 📁 Demo Files Structure
-
-```
-/home/how2ai/mcp-ui/
-├── demo.html                    # Main prototype demo
-├── start-demo.sh               # Auto-launch script
-├── examples/server/src/index.ts # Enhanced MCP server
-└── docs/
-    ├── DEMO_GUIDE.md          # Detailed demo documentation
-    └── COMPONENTS.md          # Component reference
-```
-
-## 🧩 JSON Schema Generator
-
-Generate simple React forms from JSON Schema using the `generateUI` API.
+#### Клиентская часть
 
 ```tsx
-import { generateUI } from "@mcp-ui/generator";
+import { HtmlResource } from '@mcp-ui/client';
 
-const schema = {
-  type: "object",
-  properties: {
-    name: { type: "string" },
-    age: { type: "number" },
-    color: { type: "string", enum: ["red", "green"] },
-  },
-};
-
-export default function MyForm() {
-  return generateUI(schema);
+function App() {
+  return (
+    <HtmlResource
+      resource={{
+        uri: 'ui://dashboard/analytics',
+        mimeType: 'text/html',
+        text: htmlContent
+      }}
+      onEvent={(event) => console.log('UI Event:', event)}
+    />
+  );
 }
 ```
 
+### 🌐 Схемы URI
 
-## 🌍 Examples
+- **`ui://`** — Самостоятельный HTML контент (iframe с `srcDoc`)
+- **`ui-app://`** — Внешние приложения (iframe с `src`)
 
-**Client example**
-* [ui-inspector](https://github.com/idosal/ui-inspector) - inspect local `mcp-ui`-enabled servers. Check out the [hosted version](https://scira-mcp-chat-git-main-idosals-projects.vercel.app/)!
-* [MCP-UI Chat](https://github.com/idosal/scira-mcp-ui-chat) - interactive chat built with the `mcp-ui` client.
+### 🧪 Тестирование
 
-**Server example**
-Try out the hosted app -
-* **HTTP Streaming**: `https://remote-mcp-server-authless.idosalomon.workers.dev/mcp`
-* **SSE**: `https://remote-mcp-server-authless.idosalomon.workers.dev/sse`
+```bash
+# Запуск тестов
+pnpm test
 
-The app is deployed from `examples/server`.
+# Тесты в режиме наблюдения
+pnpm test:watch
 
-Drop those URLs into any MCP-compatible host to see `mcp-ui` in action.
+# Покрытие кода
+pnpm coverage
+```
 
+### 📚 Документация
 
-## 🛣️ Roadmap
+- 📖 **[Полная документация](./docs/DOCUMENTATION.md)** (English)
+- 🎯 **[Руководство по компонентам](./docs/COMPONENTS.md)**
+- 🚀 **[Демо и примеры](./docs/DEMO_GUIDE.md)**
+- 🔧 **[API справочник](./docs/API.md)**
 
-- [X] Add online playground
-- [ ] Support React Server Components
-- [ ] Support Remote-DOM
-- [ ] Support additional client-side libraries (e.g., Vue)
-- [ ] Expand UI Action API (beyond tool calls)
-- [ ] Do more with Resources and Sampling
+### 🤝 Вклад в развитие
 
-## 🌙 Документация на русском
+Мы приветствуем вклад в развитие проекта! Пожалуйста, ознакомьтесь с [руководством по участию](./CONTRIBUTING.md).
 
-- [План трансформации проекта](docs/src/ru/transformation-plan.md)
+### 📄 Лицензия
 
-## 🤝 Contributing
+Этот проект распространяется под лицензией [Apache 2.0](./LICENSE).
 
-Contributions, ideas, and bug reports are welcome! See the [contribution guidelines](https://github.com/idosal/mcp-ui/blob/main/.github/CONTRIBUTING.md) to get started.
+---
 
-
-## 📄 License
-
-Apache License 2.0 © [The MCP UI Authors](LICENSE)
-
-## Disclaimer
-
-This project is provided “as is”, without warranty of any kind. The `mcp-ui` authors and contributors shall not be held liable for any damages, losses, or issues arising from the use of this software. Use at your own risk.
+<div align="center">
+  <p><strong>FORKED FROM</strong> <a href="https://github.com/idosal/mcp-ui">@IDOSAL/MCP-UI</a></p>
+  <p><strong>DEVELOPED BY</strong></p>
+  <img src="assets/img/how2ai-text-banner.png" alt="HOW2AI Agency" width="300"/>
+  <p><a href="https://how2ai.info"><strong>HOW2AI AGENCY</strong></a></p>

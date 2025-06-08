@@ -1,0 +1,212 @@
+# GitHub Dependabot конфигурация для автоматического обновления зависимостей
+
+version: 2
+
+updates:
+  # ================================
+  # NPM зависимости в корне проекта
+  # ================================
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+      timezone: "Europe/Moscow"
+    open-pull-requests-limit: 10
+    assignees:
+      - "ivan-meer"
+    reviewers:
+      - "ivan-meer"
+    labels:
+      - "dependencies"
+      - "npm"
+      - "automated"
+    commit-message:
+      prefix: "deps"
+      prefix-development: "deps-dev"
+      include: "scope"
+    
+    # Группировка обновлений
+    groups:
+      # TypeScript и типы
+      typescript:
+        patterns:
+          - "typescript"
+          - "@types/*"
+          - "ts-*"
+        
+      # Инструменты сборки
+      build-tools:
+        patterns:
+          - "vite*"
+          - "@vitejs/*"
+          - "rollup*"
+          - "esbuild*"
+          - "swc*"
+          - "@swc/*"
+        
+      # Тестирование
+      testing:
+        patterns:
+          - "vitest*"
+          - "@testing-library/*"
+          - "jest*"
+          - "@jest/*"
+          - "jsdom"
+          - "c8"
+        
+      # Линтинг и форматирование
+      linting:
+        patterns:
+          - "eslint*"
+          - "@typescript-eslint/*"
+          - "prettier*"
+          - "@eslint/*"
+        
+      # React и UI
+      react:
+        patterns:
+          - "react*"
+          - "@types/react*"
+          - "react-dom*"
+        
+      # GitHub Actions
+      github-actions:
+        patterns:
+          - "@semantic-release/*"
+          - "semantic-release"
+          - "husky"
+
+  # ================================
+  # Client пакет
+  # ================================
+  - package-ecosystem: "npm"
+    directory: "/packages/client"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "10:00"
+      timezone: "Europe/Moscow"
+    open-pull-requests-limit: 5
+    assignees:
+      - "ivan-meer"
+    labels:
+      - "dependencies"
+      - "client"
+      - "automated"
+    commit-message:
+      prefix: "deps(client)"
+      include: "scope"
+
+  # ================================
+  # Server пакет
+  # ================================
+  - package-ecosystem: "npm"
+    directory: "/packages/server"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "10:30"
+      timezone: "Europe/Moscow"
+    open-pull-requests-limit: 5
+    assignees:
+      - "ivan-meer"
+    labels:
+      - "dependencies"
+      - "server"
+      - "automated"
+    commit-message:
+      prefix: "deps(server)"
+      include: "scope"
+
+  # ================================
+  # Shared пакет
+  # ================================
+  - package-ecosystem: "npm"
+    directory: "/packages/shared"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "11:00"
+      timezone: "Europe/Moscow"
+    open-pull-requests-limit: 5
+    assignees:
+      - "ivan-meer"
+    labels:
+      - "dependencies"
+      - "shared"
+      - "automated"
+    commit-message:
+      prefix: "deps(shared)"
+      include: "scope"
+
+  # ================================
+  # Examples Server
+  # ================================
+  - package-ecosystem: "npm"
+    directory: "/examples/server"
+    schedule:
+      interval: "weekly"
+      day: "tuesday"
+      time: "09:00"
+      timezone: "Europe/Moscow"
+    open-pull-requests-limit: 5
+    assignees:
+      - "ivan-meer"
+    labels:
+      - "dependencies"
+      - "examples"
+      - "automated"
+    commit-message:
+      prefix: "deps(examples)"
+      include: "scope"
+
+  # ================================
+  # Документация
+  # ================================
+  - package-ecosystem: "npm"
+    directory: "/docs"
+    schedule:
+      interval: "weekly"
+      day: "tuesday"
+      time: "10:00"
+      timezone: "Europe/Moscow"
+    open-pull-requests-limit: 5
+    assignees:
+      - "ivan-meer"
+    labels:
+      - "dependencies"
+      - "docs"
+      - "automated"
+    commit-message:
+      prefix: "deps(docs)"
+      include: "scope"
+
+  # ================================
+  # GitHub Actions
+  # ================================
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "wednesday"
+      time: "09:00"
+      timezone: "Europe/Moscow"
+    open-pull-requests-limit: 5
+    assignees:
+      - "ivan-meer"
+    labels:
+      - "dependencies"
+      - "github-actions"
+      - "automated"
+    commit-message:
+      prefix: "deps(actions)"
+      include: "scope"
+
+# Правила игнорирования (если нужно)
+# ignore:
+#   - dependency-name: "react"
+#     versions: ["17.x"]
+#   - dependency-name: "@types/node"
+#     update-types: ["version-update:semver-major"]
