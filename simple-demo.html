@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MCP UI - Простое демо</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+        .status {
+            background: #e8f5e8;
+            border: 1px solid #4caf50;
+            border-radius: 4px;
+            padding: 10px;
+            margin: 10px 0;
+        }
+        .demo-item {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .working {
+            border-color: #4caf50;
+            background: #f8fff8;
+        }
+        .broken {
+            border-color: #f44336;
+            background: #fff8f8;
+        }
+        button {
+            background: #2196f3;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #1976d2;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎨 MCP UI SDK</h1>
+            <p>Простая демонстрация проекта</p>
+        </div>
+
+        <div class="status">
+            ✅ <strong>Статус:</strong> Проект настроен и готов к работе
+        </div>
+
+        <div class="demo-item working">
+            <h3>📦 Основные пакеты</h3>
+            <p><strong>Работают:</strong></p>
+            <ul>
+                <li>@mcp-ui/shared - Общие типы (2.95 kB)</li>
+                <li>@mcp-ui/generator - React формы (78.63 kB)</li>
+                <li>@mcp-ui/client - HTML рендеринг (34.02 kB)</li>
+                <li>@mcp-ui/server - MCP утилиты (4.21 kB)</li>
+            </ul>
+        </div>
+
+        <div class="demo-item working">
+            <h3>💬 Chat Client Demo</h3>
+            <div style="border: 1px solid #ddd; height: 200px; padding: 10px; margin: 10px 0; overflow-y: auto;" id="chat">
+                <div style="margin: 5px 0;"><strong>Система:</strong> Добро пожаловать в MCP Chat!</div>
+            </div>
+            <input type="text" id="messageInput" placeholder="Введите сообщение..." style="width: 70%; padding: 8px;">
+            <button onclick="sendMessage()">Отправить</button>
+        </div>
+
+        <div class="demo-item working">
+            <h3>🔧 Команды для разработки</h3>
+            <p><strong>Собрать проект:</strong> <code>pnpm build</code></p>
+            <p><strong>Запустить тесты:</strong> <code>pnpm test</code></p>
+            <p><strong>Линтинг:</strong> <code>pnpm lint</code></p>
+        </div>
+
+        <div class="demo-item broken">
+            <h3>⚠️ В разработке</h3>
+            <p>Следующие компоненты требуют доработки:</p>
+            <ul>
+                <li>chat-ui - Расширенные чат компоненты</li>
+                <li>mcp-connector - MCP клиент</li>
+                <li>server-manager - Управление серверами</li>
+                <li>ui-renderer - Интерактивные UI</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        function sendMessage() {
+            const input = document.getElementById('messageInput');
+            const chat = document.getElementById('chat');
+            
+            if (input.value.trim()) {
+                const userMsg = document.createElement('div');
+                userMsg.style.margin = '5px 0';
+                userMsg.innerHTML = `<strong>Вы:</strong> ${input.value}`;
+                chat.appendChild(userMsg);
+                
+                setTimeout(() => {
+                    const botMsg = document.createElement('div');
+                    botMsg.style.margin = '5px 0';
+                    botMsg.innerHTML = `<strong>Бот:</strong> Получил ваше сообщение: "${input.value}"`;
+                    chat.appendChild(botMsg);
+                    chat.scrollTop = chat.scrollHeight;
+                }, 500);
+                
+                input.value = '';
+                chat.scrollTop = chat.scrollHeight;
+            }
+        }
+        
+        document.getElementById('messageInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+    </script>
+</body>
+</html>
