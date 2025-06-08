@@ -54,17 +54,17 @@ if (__DEV__ && import.meta.hot) {
   import.meta.hot.accept();
 }
 
-// 📊 Performance monitoring
-if (__DEV__) {
-  // 📈 Web Vitals для мониторинга производительности
-  import('web-vitals').then(({ onCLS, onFID, onFCP, onLCP, onTTFB }) => {
-    onCLS(console.log);
-    onFID(console.log);
-    onFCP(console.log);
-    onLCP(console.log);
-    onTTFB(console.log);
-  });
-}
+// 📊 Performance monitoring (disabled for now)
+// if (__DEV__) {
+//   // 📈 Web Vitals для мониторинга производительности
+//   import('web-vitals').then(({ onCLS, onFID, onFCP, onLCP, onTTFB }) => {
+//     onCLS(console.log);
+//     onFID(console.log);
+//     onFCP(console.log);
+//     onLCP(console.log);
+//     onTTFB(console.log);
+//   });
+// }
 
 // 🌐 Service Worker регистрация (для PWA в будущем)
 if ('serviceWorker' in navigator && __NODE_ENV__ === 'production') {
