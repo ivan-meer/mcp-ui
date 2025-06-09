@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="ru" class="dark">
+<html lang="ru">
 <head>
   <!-- 📱 Мета теги -->
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover" />
   
   <!-- 🎯 SEO -->
   <title>MCP Chat Client | Model Context Protocol Interface</title>
@@ -23,13 +23,13 @@
   <meta name="twitter:description" content="Интерактивный чат-клиент для MCP серверов" />
   
   <!-- 🎨 Theme Color -->
-  <meta name="theme-color" content="#0f0f23" />
-  <meta name="color-scheme" content="dark light" />
+  <meta name="theme-color" content="#0c0e23" />
+  <meta name="color-scheme" content="dark" />
   
   <!-- 📱 Mobile -->
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
   <meta name="apple-mobile-web-app-title" content="MCP Chat" />
   
   <!-- 🔗 Favicon -->
@@ -53,22 +53,38 @@
       left: 0;
       right: 0;
       bottom: 0;
-      background: #0f0f23;
+      background: linear-gradient(135deg, #0c0e23 0%, #000000 100%);
       display: flex;
       align-items: center;
       justify-content: center;
       flex-direction: column;
       z-index: 9999;
-      color: #f1f5f9;
+      color: rgba(248, 250, 252, 0.95);
+    }
+    
+    .loading-screen::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: 
+        radial-gradient(circle at 20% 80%, rgba(99, 102, 241, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(139, 92, 246, 0.1) 0%, transparent 50%);
+      pointer-events: none;
     }
     
     .loading-spinner {
-      width: 40px;
-      height: 40px;
-      border: 3px solid #1a1a2e;
-      border-top: 3px solid #3b82f6;
+      width: 48px;
+      height: 48px;
+      border: 3px solid rgba(148, 163, 184, 0.2);
+      border-top: 3px solid #6366f1;
       border-radius: 50%;
       animation: spin 1s linear infinite;
+      box-shadow: 0 0 20px rgba(99, 102, 241, 0.3);
+      position: relative;
+      z-index: 1;
     }
     
     @keyframes spin {
@@ -77,23 +93,25 @@
     }
     
     .loading-text {
-      margin-top: 16px;
-      font-family: system-ui, -apple-system, sans-serif;
-      font-size: 18px;
-      font-weight: 600;
+      margin-top: 24px;
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      font-size: 20px;
+      font-weight: 700;
+      background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      position: relative;
+      z-index: 1;
     }
     
     .loading-subtitle {
-      margin-top: 8px;
-      font-family: system-ui, -apple-system, sans-serif;
+      margin-top: 12px;
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
       font-size: 14px;
-      color: #94a3b8;
-    }
-    
-    /* 🌙 Базовые dark theme стили */
-    html.dark {
-      background: #0f0f23;
-      color: #f1f5f9;
+      color: rgba(203, 213, 225, 0.8);
+      position: relative;
+      z-index: 1;
     }
     
     /* 🎯 Скрытие loading screen когда React загрузится */
@@ -103,7 +121,7 @@
   </style>
 </head>
 
-<body class="bg-bg-primary text-text-primary antialiased">
+<body class="bg-base text-primary antialiased">
   <!-- 🎯 Основной контейнер React -->
   <div id="root"></div>
   

@@ -302,63 +302,158 @@ interface ServerDetailsProps {
 
 const ServerDetails: React.FC<ServerDetailsProps> = ({ server, registry }) => {
   return (
-    <div className="space-y-4">
+    <div className="space-y-6">
+      {/* Server Header */}
       <div>
-        <h4 className="font-medium mb-2">Информация о сервере</h4>
-        <div className="bg-gray-50 p-3 rounded text-sm space-y-1">
-          <p><span className="font-medium">Название:</span> {server.config.name}</p>
-          <p><span className="font-medium">Тип:</span> {server.config.type}</p>
-          {server.config.url && (
-            <p><span className="font-medium">URL:</span> {server.config.url}</p>
-          )}
+        <div className="flex items-center gap-3 mb-4">
+          <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${
+            server.status === 'connected' ? 'bg-emerald-100' :
+            server.status === 'connecting' ? 'bg-amber-100' :
+            server.status === 'error' ? 'bg-red-100' : 'bg-gray-100'
+          }`}>
+            <svg className={`w-6 h-6 ${
+              server.status === 'connected' ? 'text-emerald-600' :
+              server.status === 'connecting' ? 'text-amber-600' :
+              server.status === 'error' ? 'text-red-600' : 'text-gray-600'
+            }`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+            </svg>
+          </div>
+          <div>
+            <h3 className="text-xl font-bold text-primary">{server.config.name}</h3>
+            <p className="text-muted">{server.config.type} сервер</p>
+          </div>
+        </div>
+        
+        <div className="grid grid-cols-2 gap-4">
+          <div className="bg-muted p-3 rounded-lg">
+            <p className="text-xs text-muted uppercase tracking-wide">URL</p>
+            <p className="text-sm font-medium text-primary">{server.config.url || 'Не указан'}</p>
+          </div>
           {server.connectedAt && (
-            <p><span className="font-medium">Подключен:</span> {server.connectedAt.toLocaleString()}</p>
-          )}
-          {server.info && (
-            <>
-              <p><span className="font-medium">Версия:</span> {server.info.version}</p>
-              <p><span className="font-medium">Протокол:</span> {server.info.protocolVersion}</p>
-            </>
+            <div className="bg-muted p-3 rounded-lg">
+              <p className="text-xs text-muted uppercase tracking-wide">Подключен</p>
+              <p className="text-sm font-medium text-primary">{server.connectedAt.toLocaleString()}</p>
+            </div>
           )}
         </div>
       </div>
 
+      {/* Server Info */}
+      {server.info && (
+        <div>
+          <h4 className="font-semibold text-primary mb-3 flex items-center gap-2">
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            Информация о сервере
+          </h4>
+          <div className="grid grid-cols-2 gap-3">
+            <div className="bg-card border border-base p-3 rounded-lg">
+              <p className="text-xs text-muted">Версия</p>
+              <p className="font-medium text-primary">{server.info.version}</p>
+            </div>
+            <div className="bg-card border border-base p-3 rounded-lg">
+              <p className="text-xs text-muted">Протокол</p>
+              <p className="font-medium text-primary">{server.info.protocolVersion}</p>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Tools */}
       {server.tools && server.tools.length > 0 && (
         <div>
-          <h4 className="font-medium mb-2">Инструменты ({server.tools.length})</h4>
-          <div className="bg-gray-50 p-3 rounded text-sm max-h-32 overflow-y-auto">
+          <h4 className="font-semibold text-primary mb-3 flex items-center gap-2">
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+            </svg>
+            Инструменты
+            <span className="badge badge-primary">{server.tools.length}</span>
+          </h4>
+          <div className="space-y-2 max-h-48 overflow-y-auto scrollbar-thin">
             {server.tools.map(tool => (
-              <div key={tool.name} className="mb-2 last:mb-0">
-                <p className="font-medium">{tool.name}</p>
-                <p className="text-gray-600 text-xs">{tool.description}</p>
+              <div key={tool.name} className="bg-card border border-base p-3 rounded-lg">
+                <div className="flex items-start justify-between">
+                  <div className="flex-1">
+                    <p className="font-medium text-primary">{tool.name}</p>
+                    <p className="text-xs text-muted mt-1">{tool.description}</p>
+                  </div>
+                  <svg className="w-4 h-4 text-muted mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
+                </div>
               </div>
             ))}
           </div>
         </div>
       )}
 
+      {/* Resources */}
       {server.resources && server.resources.length > 0 && (
         <div>
-          <h4 className="font-medium mb-2">Ресурсы ({server.resources.length})</h4>
-          <div className="bg-gray-50 p-3 rounded text-sm max-h-32 overflow-y-auto">
+          <h4 className="font-semibold text-primary mb-3 flex items-center gap-2">
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            </svg>
+            Ресурсы
+            <span className="badge badge-primary">{server.resources.length}</span>
+          </h4>
+          <div className="space-y-2 max-h-48 overflow-y-auto scrollbar-thin">
             {server.resources.map(resource => (
-              <div key={resource.uri} className="mb-2 last:mb-0">
-                <p className="font-medium">{resource.name}</p>
-                <p className="text-gray-600 text-xs">{resource.uri}</p>
+              <div key={resource.uri} className="bg-card border border-base p-3 rounded-lg">
+                <div className="flex items-start justify-between">
+                  <div className="flex-1">
+                    <p className="font-medium text-primary">{resource.name}</p>
+                    <p className="text-xs text-muted mt-1">{resource.uri}</p>
+                    {resource.mimeType && (
+                      <span className="inline-block mt-2 px-2 py-1 bg-muted text-xs rounded">
+                        {resource.mimeType}
+                      </span>
+                    )}
+                  </div>
+                  <svg className="w-4 h-4 text-muted mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
+                </div>
               </div>
             ))}
           </div>
         </div>
       )}
 
+      {/* Prompts */}
       {server.prompts && server.prompts.length > 0 && (
         <div>
-          <h4 className="font-medium mb-2">Промпты ({server.prompts.length})</h4>
-          <div className="bg-gray-50 p-3 rounded text-sm max-h-32 overflow-y-auto">
+          <h4 className="font-semibold text-primary mb-3 flex items-center gap-2">
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+            </svg>
+            Промпты
+            <span className="badge badge-primary">{server.prompts.length}</span>
+          </h4>
+          <div className="space-y-2 max-h-48 overflow-y-auto scrollbar-thin">
             {server.prompts.map(prompt => (
-              <div key={prompt.name} className="mb-2 last:mb-0">
-                <p className="font-medium">{prompt.name}</p>
-                <p className="text-gray-600 text-xs">{prompt.description}</p>
+              <div key={prompt.name} className="bg-card border border-base p-3 rounded-lg">
+                <div className="flex items-start justify-between">
+                  <div className="flex-1">
+                    <p className="font-medium text-primary">{prompt.name}</p>
+                    <p className="text-xs text-muted mt-1">{prompt.description}</p>
+                    {prompt.arguments && prompt.arguments.length > 0 && (
+                      <div className="mt-2 flex flex-wrap gap-1">
+                        {prompt.arguments.map(arg => (
+                          <span key={arg.name} className="inline-block px-2 py-1 bg-muted text-xs rounded">
+                            {arg.name}{arg.required && '*'}
+                          </span>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                  <svg className="w-4 h-4 text-muted mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
+                </div>
               </div>
             ))}
           </div>
@@ -410,83 +505,110 @@ const AddServerForm: React.FC<AddServerFormProps> = ({ registry, onClose }) => {
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-lg p-6 w-96 max-w-full mx-4">
-        <h3 className="text-lg font-semibold mb-4">Добавить MCP сервер</h3>
+    <div className="fixed inset-0 bg-overlay flex items-center justify-center z-50 p-4">
+      <div className="bg-card rounded-2xl shadow-xl w-full max-w-md animate-slide-in">
+        <div className="p-6 border-b border-base">
+          <div className="flex items-center justify-between">
+            <div>
+              <h3 className="text-xl font-bold text-primary">Новый MCP сервер</h3>
+              <p className="text-muted mt-1">Добавьте подключение к серверу MCP</p>
+            </div>
+            <button
+              onClick={onClose}
+              className="btn btn-ghost p-2 rounded-lg"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+        </div>
         
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="p-6 space-y-6">
           <div>
-            <label className="block text-sm font-medium mb-1">Название *</label>
+            <label className="block text-sm font-semibold text-primary mb-2">Название сервера *</label>
             <input
               type="text"
               value={config.name || ''}
               onChange={(e) => setConfig(prev => ({ ...prev, name: e.target.value }))}
-              className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="Мой MCP сервер"
+              className="input"
+              placeholder="Demo Server"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium mb-1">Тип подключения *</label>
+            <label className="block text-sm font-semibold text-primary mb-2">Тип подключения *</label>
             <select
               value={config.type || 'websocket'}
               onChange={(e) => setConfig(prev => ({ ...prev, type: e.target.value as any }))}
-              className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="input"
             >
               <option value="websocket">WebSocket</option>
               <option value="sse">Server-Sent Events</option>
-              <option value="local" disabled>Локальный процесс (скоро)</option>
+              <option value="local" disabled>Локальный процесс (в разработке)</option>
             </select>
           </div>
 
           {config.type !== 'local' && (
             <div>
-              <label className="block text-sm font-medium mb-1">URL *</label>
+              <label className="block text-sm font-semibold text-primary mb-2">URL подключения *</label>
               <input
-                type="url"
+                type="text"
                 value={config.url || ''}
                 onChange={(e) => setConfig(prev => ({ ...prev, url: e.target.value }))}
-                className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="ws://localhost:8080 или http://localhost:8080/events"
+                className="input"
+                placeholder="ws://localhost:8081"
               />
+              <p className="text-xs text-muted mt-1">
+                {config.type === 'websocket' 
+                  ? 'Пример: ws://localhost:8081' 
+                  : 'Пример: http://localhost:8081/events'
+                }
+              </p>
             </div>
           )}
 
-          <div className="flex items-center space-x-4">
-            <label className="flex items-center">
+          <div className="grid grid-cols-2 gap-4">
+            <label className="flex items-center gap-3 p-3 border border-base rounded-lg cursor-pointer hover:bg-muted transition-colors">
               <input
                 type="checkbox"
                 checked={config.enabled ?? true}
                 onChange={(e) => setConfig(prev => ({ ...prev, enabled: e.target.checked }))}
-                className="mr-2"
+                className="w-4 h-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
               />
-              <span className="text-sm">Включен</span>
+              <div>
+                <span className="text-sm font-medium text-primary">Включен</span>
+                <p className="text-xs text-muted">Сервер будет доступен</p>
+              </div>
             </label>
 
-            <label className="flex items-center">
+            <label className="flex items-center gap-3 p-3 border border-base rounded-lg cursor-pointer hover:bg-muted transition-colors">
               <input
                 type="checkbox"
                 checked={config.autoStart ?? false}
                 onChange={(e) => setConfig(prev => ({ ...prev, autoStart: e.target.checked }))}
-                className="mr-2"
+                className="w-4 h-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
               />
-              <span className="text-sm">Автозапуск</span>
+              <div>
+                <span className="text-sm font-medium text-primary">Автозапуск</span>
+                <p className="text-xs text-muted">Подключать при старте</p>
+              </div>
             </label>
           </div>
 
-          <div className="flex justify-end space-x-2 pt-4">
+          <div className="flex gap-3 pt-4">
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 text-gray-600 hover:text-gray-800"
+              className="btn btn-secondary flex-1"
             >
               Отмена
             </button>
             <button
               type="submit"
-              className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+              className="btn btn-primary flex-1"
             >
-              Добавить
+              Добавить сервер
             </button>
           </div>
         </form>

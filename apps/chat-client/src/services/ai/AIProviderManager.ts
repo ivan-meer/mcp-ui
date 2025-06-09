@@ -2,6 +2,7 @@ import { AIProvider, AIProviderConfig, AIProviderType, ProviderStatus, AIMessage
 import { OpenAIProvider } from './providers/OpenAIProvider';
 import { AnthropicProvider } from './providers/AnthropicProvider';
 import { OllamaProvider } from './providers/OllamaProvider';
+import { secureStorageService } from '../storage/SecureStorageService';
 
 export class AIProviderManager {
   private providers = new Map<AIProviderType, AIProvider>();
@@ -12,6 +13,9 @@ export class AIProviderManager {
     this.registerProvider('openai', new OpenAIProvider());
     this.registerProvider('anthropic', new AnthropicProvider());
     this.registerProvider('ollama', new OllamaProvider());
+    
+    // Initialize secure storage
+    secureStorageService.initialize().catch(console.error);
   }
 
   private registerProvider(type: AIProviderType, provider: AIProvider): void {
@@ -28,8 +32,16 @@ export class AIProviderManager {
       await provider.initialize(config);
       this.configs.set(type, config);
       
-      // Save to localStorage for persistence
-      localStorage.setItem(`ai_config_${type}`, JSON.stringify(config));
+      // Store API key securely if provided
+      if (config.apiKey) {
+        await secureStorageService.storeApiKey(type, config.apiKey, `${provider.name} API Key`);
+        console.log(`🔐 API key stored securely for ${type}`);
+      }
+      
+      // Save config (without API key) to secure storage
+      const configToStore = { ...config };
+      delete configToStore.apiKey; // Remove API key from stored config
+      await secureStorageService.storeSetting(`ai_config_${type}`, configToStore);
     } catch (error: any) {
       throw new Error(`Failed to configure ${type}: ${error.message}`);
     }
@@ -46,7 +58,7 @@ export class AIProviderManager {
     }
 
     this.activeProvider = provider;
-    localStorage.setItem('active_ai_provider', type);
+    await secureStorageService.storeSetting('active_ai_provider', type);
   }
 
   getActiveProvider(): AIProvider | null {
@@ -96,37 +108,68 @@ export class AIProviderManager {
     return statuses;
   }
 
-  loadPersistedConfigs(): void {
-    // Load configs from localStorage
-    for (const type of ['openai', 'anthropic', 'ollama'] as AIProviderType[]) {
-      const saved = localStorage.getItem(`ai_config_${type}`);
-      if (saved) {
+  async loadPersistedConfigs(): Promise<void> {
+    try {
+      // Load configs from secure storage
+      for (const type of ['openai', 'anthropic', 'ollama'] as AIProviderType[]) {
         try {
-          const config = JSON.parse(saved);
-          this.configureProvider(type, config).catch(console.error);
+          const config = await secureStorageService.getSetting(`ai_config_${type}`);
+          const apiKey = await secureStorageService.getApiKey(type);
+          
+          if (config) {
+            // Reconstruct full config with API key
+            const fullConfig = { ...config };
+            if (apiKey) {
+              fullConfig.apiKey = apiKey;
+            }
+            
+            await this.configureProvider(type, fullConfig);
+            console.log(`✅ Loaded persisted config for ${type}`);
+          }
         } catch (error) {
           console.error(`Failed to load config for ${type}:`, error);
         }
       }
-    }
 
-    // Load active provider
-    const activeType = localStorage.getItem('active_ai_provider') as AIProviderType;
-    if (activeType && this.providers.has(activeType)) {
-      const provider = this.providers.get(activeType);
-      if (provider?.isConfigured()) {
-        this.activeProvider = provider;
+      // Load active provider
+      const activeType = await secureStorageService.getSetting('active_ai_provider') as AIProviderType;
+      if (activeType && this.providers.has(activeType)) {
+        const provider = this.providers.get(activeType);
+        if (provider?.isConfigured()) {
+          this.activeProvider = provider;
+          console.log(`✅ Set active provider: ${activeType}`);
+        }
       }
+    } catch (error) {
+      console.error('Failed to load persisted configs:', error);
     }
   }
 
-  clearConfig(type: AIProviderType): void {
+  async clearConfig(type: AIProviderType): Promise<void> {
     this.configs.delete(type);
-    localStorage.removeItem(`ai_config_${type}`);
+    
+    // Remove API keys from secure storage
+    try {
+      const keys = await secureStorageService.listApiKeys();
+      const providerKeys = keys.filter(k => k.provider === type);
+      
+      for (const key of providerKeys) {
+        await secureStorageService.deleteApiKey(key.id);
+      }
+      
+      // Remove config from secure storage
+      await secureStorageService.storeSetting(`ai_config_${type}`, null);
+    } catch (error) {
+      console.error(`Failed to clear secure storage for ${type}:`, error);
+    }
     
     if (this.activeProvider === this.providers.get(type)) {
       this.activeProvider = null;
-      localStorage.removeItem('active_ai_provider');
+      try {
+        await secureStorageService.storeSetting('active_ai_provider', null);
+      } catch (error) {
+        console.error('Failed to clear active provider setting:', error);
+      }
     }
   }
 
