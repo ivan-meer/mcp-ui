@@ -86,46 +86,40 @@ export const AIProviderConfigPanel: React.FC<Props> = ({ manager, onConfigUpdate
 
   if (!isVisible) {
     return (
-      <div className="h-full bg-card backdrop-blur-xl border-l border-base lg:border-l-0">
-        <div className="p-4 sm:p-6 border-b border-base">
-          <h3 className="text-base sm:text-lg font-semibold text-primary">AI Настройки</h3>
-          <p className="text-xs sm:text-sm text-muted mt-1">Конфигурация AI провайдеров</p>
+      <div className="h-full bg-card">
+        <div className="p-4 border-b border-base">
+          <h3 className="font-semibold text-primary">AI Настройки</h3>
+          <p className="text-sm text-muted mt-1">Конфигурация провайдеров</p>
         </div>
         
-        <div className="p-4 sm:p-6">
+        <div className="p-4">
           <button
             onClick={() => setIsVisible(true)}
-            className="btn btn-primary w-full justify-center touch-target"
+            className="btn btn-primary w-full"
           >
-            <svg className="w-4 h-4 sm:w-5 sm:h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.50a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-            </svg>
-            <span className="text-sm sm:text-base">Настроить AI</span>
+            ⚙️ Настроить AI
           </button>
           
-          {/* Current Provider Status */}
-          <div className="mt-4 sm:mt-6 space-y-3">
+          {/* Текущий статус */}
+          <div className="mt-4 space-y-2">
             {providers.filter(p => p.isConfigured).map(provider => (
-              <div key={provider.type} className="bg-surface rounded-lg p-3 sm:p-4 border border-base">
+              <div key={provider.type} className="card p-3">
                 <div className="flex items-center justify-between">
                   <div>
-                    <h4 className="font-medium text-primary text-sm sm:text-base">{provider.name}</h4>
+                    <h4 className="font-medium text-primary text-sm">{provider.name}</h4>
                     <p className="text-xs text-muted">{provider.models?.[0]}</p>
                   </div>
-                  <div className="badge badge-success text-xs">Активен</div>
+                  <span className="badge badge-success text-xs">✓ Активен</span>
                 </div>
               </div>
             ))}
             
             {providers.filter(p => p.isConfigured).length === 0 && (
-              <div className="text-center py-6 sm:py-8">
-                <div className="w-12 h-12 sm:w-16 sm:h-16 bg-surface rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4">
-                  <svg className="w-6 h-6 sm:w-8 sm:h-8 text-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
-                  </svg>
+              <div className="text-center py-6">
+                <div className="w-12 h-12 bg-surface rounded-full flex items-center justify-center mx-auto mb-3">
+                  💡
                 </div>
-                <p className="text-muted text-xs sm:text-sm">AI провайдер не настроен</p>
+                <p className="text-muted text-sm">Провайдер не настроен</p>
               </div>
             )}
           </div>
