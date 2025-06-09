@@ -276,6 +276,35 @@ class SecureStorageService {
   }
 
   /**
+   * Store a general setting
+   */
+  async storeSetting(key: string, value: any): Promise<void> {
+    await this.ensureInitialized();
+    
+    try {
+      await indexedDBService.storeSetting(key, value);
+      console.log(`🔧 Setting stored: ${key}`);
+    } catch (error) {
+      console.error(`❌ Failed to store setting ${key}:`, error);
+      throw error;
+    }
+  }
+
+  /**
+   * Get a general setting
+   */
+  async getSetting(key: string): Promise<any> {
+    await this.ensureInitialized();
+    
+    try {
+      return await indexedDBService.getSetting(key);
+    } catch (error) {
+      console.error(`❌ Failed to get setting ${key}:`, error);
+      return null;
+    }
+  }
+
+  /**
    * Clear all stored data
    */
   async clearAllData(): Promise<void> {

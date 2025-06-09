@@ -64,10 +64,6 @@ export default defineConfig({
         manualChunks: {
           // 🔧 Vendor чанк для внешних библиотек
           vendor: ['react', 'react-dom'],
-          // 📡 MCP чанк для MCP связанных модулей
-          mcp: ['@mcp-ui/mcp-connector', '@mcp-ui/server-manager'],
-          // 🎨 UI чанк для UI компонентов
-          ui: ['@mcp-ui/chat-ui', '@mcp-ui/ui-renderer'],
         },
       },
     },
@@ -121,13 +117,7 @@ export default defineConfig({
     ],
     
     // ❌ Исключения из оптимизации
-    exclude: [
-      // 🔧 Локальные workspace пакеты
-      '@mcp-ui/chat-ui',
-      '@mcp-ui/mcp-connector', 
-      '@mcp-ui/server-manager',
-      '@mcp-ui/shared',
-    ],
+    exclude: [],
   },
 
   // 📝 TypeScript настройки

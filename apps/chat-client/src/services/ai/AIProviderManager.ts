@@ -40,7 +40,7 @@ export class AIProviderManager {
       
       // Save config (without API key) to secure storage
       const configToStore = { ...config };
-      delete configToStore.apiKey; // Remove API key from stored config
+      delete (configToStore as any).apiKey; // Remove API key from stored config
       await secureStorageService.storeSetting(`ai_config_${type}`, configToStore);
     } catch (error: any) {
       throw new Error(`Failed to configure ${type}: ${error.message}`);
