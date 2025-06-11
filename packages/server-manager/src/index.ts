@@ -14,6 +14,10 @@
  */
 
 // 📦 CORE EXPORTS
+import { ServerManager } from './manager/ServerManager';
+import { ServerRegistry } from './registry/ServerRegistry';
+import ServerConfigForm from './ui/ServerConfigForm';
+
 export { ServerManager } from './manager/ServerManager';
 export { ServerRegistry } from './registry/ServerRegistry';
 export { default as ServerConfigForm } from './ui/ServerConfigForm'; // Added export
