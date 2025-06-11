@@ -16,8 +16,6 @@
 // 📦 CORE EXPORTS
 export { ServerManager } from './manager/ServerManager';
 export { ServerRegistry } from './registry/ServerRegistry';
-export { ServerDiscovery } from './discovery/ServerDiscovery';
-export { ServerMonitor } from './monitor/ServerMonitor';
 export { default as ServerConfigForm } from './ui/ServerConfigForm'; // Added export
 
 // 🎯 TYPE EXPORTS
@@ -26,17 +24,8 @@ export { default as ServerConfigForm } from './ui/ServerConfigForm'; // Added ex
 export * from './types';
 
 // 🛠️ UTILITY EXPORTS
-export { createServerManager } from './utils/factory';
-export { validateServerConfig } from './utils/validation';
-export { ServerManagerError } from './utils/errors';
 
 // 🎨 CONSTANT EXPORTS
-export {
-  DEFAULT_MANAGER_CONFIG,
-  SERVER_DISCOVERY_METHODS,
-  HEALTH_CHECK_INTERVALS,
-  CONNECTION_POOL_LIMITS,
-} from './constants';
 
 /**
  * 🎓 ОБРАЗОВАТЕЛЬНАЯ ЗАМЕТКА - SERVER MANAGEMENT:
@@ -64,7 +53,5 @@ export {
 export default {
   ServerManager,
   ServerRegistry,
-  ServerDiscovery,
-  ServerMonitor,
-  createServerManager,
+  ServerConfigForm,
 };

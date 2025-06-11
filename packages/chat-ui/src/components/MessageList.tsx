@@ -29,8 +29,8 @@ import {
   MessageFilters,
   DEFAULT_CHAT_CONFIG 
 } from '../types';
-import { UIComponentRenderer } from '@mcp/ui-renderer';
-import { isHtmlResourceBlock, UiActionEvent } from '@mcp/shared';
+import { UIComponentRenderer } from '@mcp-ui/ui-renderer';
+import { isHtmlResourceBlock, UiActionEvent } from '@mcp-ui/shared';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 // HACK: We might need to consider XSS implications more deeply if markdown allows arbitrary HTML.
