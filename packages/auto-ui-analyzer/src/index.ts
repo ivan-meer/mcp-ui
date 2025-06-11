@@ -63,3 +63,6 @@ export interface DataAnalysisEngine {
   findRelationships(data: unknown): Promise<RelationshipMap> | RelationshipMap;
   suggestVisualizations(analysis: DataStructureAnalysis): Promise<VisualizationSuggestion[]> | VisualizationSuggestion[];
 }
+
+// Simple rule-based engine provided as a basic implementation
+export { SimpleDataAnalysisEngine } from './SimpleDataAnalysisEngine';
