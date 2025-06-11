@@ -1,5 +1,5 @@
 // packages/ui-renderer/src/types.ts
-import { HtmlResourceBlock, UiActionEvent } from '@mcp/shared'; // Assuming shared types
+import { HtmlResourceBlock, UiActionEvent } from '@mcp-ui/shared'; // Assuming shared types
 
 export interface UIComponentRendererProps {
   resource: HtmlResourceBlock;

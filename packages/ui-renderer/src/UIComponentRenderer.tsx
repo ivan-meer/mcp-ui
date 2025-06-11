@@ -1,6 +1,6 @@
 // packages/ui-renderer/src/UIComponentRenderer.tsx
 import React, { useEffect, useRef } from 'react';
-import { HtmlResourceBlock, ResourceContentPayload, UiActionEvent, DEFAULTS as SHARED_DEFAULTS } from '@mcp/shared';
+import { HtmlResourceBlock, ResourceContentPayload, UiActionEvent, DEFAULTS as SHARED_DEFAULTS } from '@mcp-ui/shared';
 import { UIComponentRendererProps } from './types';
 
 const UIComponentRenderer: React.FC<UIComponentRendererProps> = ({
