@@ -278,6 +278,86 @@ importers:
         specifier: ^4.15.1
         version: 4.19.1(@cloudflare/workers-types@4.20250607.0)
 
+  packages/auto-ui-analyzer:
+    devDependencies:
+      typescript:
+        specifier: ^5.0.0
+        version: 5.8.3
+      vite:
+        specifier: ^5.0.0
+        version: 5.4.19(@types/node@22.15.18)(lightningcss@1.30.1)
+      vite-plugin-dts:
+        specifier: ^3.6.0
+        version: 3.9.1(@types/node@22.15.18)(rollup@4.40.2)(typescript@5.8.3)(vite@5.4.19(@types/node@22.15.18)(lightningcss@1.30.1))
+      vitest:
+        specifier: ^1.0.0
+        version: 1.6.1(@types/node@22.15.18)(jsdom@23.2.0)(lightningcss@1.30.1)
+
+  packages/auto-ui-components:
+    dependencies:
+      '@auto-ui/core':
+        specifier: workspace:*
+        version: link:../auto-ui-core
+      react:
+        specifier: ^18.0.0
+        version: 18.3.1
+    devDependencies:
+      '@vitejs/plugin-react-swc':
+        specifier: ^3.9.0
+        version: 3.9.0(vite@5.4.19(@types/node@22.15.18)(lightningcss@1.30.1))
+      typescript:
+        specifier: ^5.0.0
+        version: 5.8.3
+      vite:
+        specifier: ^5.0.0
+        version: 5.4.19(@types/node@22.15.18)(lightningcss@1.30.1)
+      vite-plugin-dts:
+        specifier: ^3.6.0
+        version: 3.9.1(@types/node@22.15.18)(rollup@4.40.2)(typescript@5.8.3)(vite@5.4.19(@types/node@22.15.18)(lightningcss@1.30.1))
+      vitest:
+        specifier: ^1.0.0
+        version: 1.6.1(@types/node@22.15.18)(jsdom@23.2.0)(lightningcss@1.30.1)
+
+  packages/auto-ui-core:
+    devDependencies:
+      typescript:
+        specifier: ^5.0.0
+        version: 5.8.3
+      vite:
+        specifier: ^5.0.0
+        version: 5.4.19(@types/node@22.15.18)(lightningcss@1.30.1)
+      vite-plugin-dts:
+        specifier: ^3.6.0
+        version: 3.9.1(@types/node@22.15.18)(rollup@4.40.2)(typescript@5.8.3)(vite@5.4.19(@types/node@22.15.18)(lightningcss@1.30.1))
+      vitest:
+        specifier: ^1.0.0
+        version: 1.6.1(@types/node@22.15.18)(jsdom@23.2.0)(lightningcss@1.30.1)
+
+  packages/auto-ui-server:
+    dependencies:
+      '@auto-ui/analyzer':
+        specifier: workspace:*
+        version: link:../auto-ui-analyzer
+      '@auto-ui/core':
+        specifier: workspace:*
+        version: link:../auto-ui-core
+      '@mcp-ui/server':
+        specifier: workspace:*
+        version: link:../server
+    devDependencies:
+      typescript:
+        specifier: ^5.0.0
+        version: 5.8.3
+      vite:
+        specifier: ^5.0.0
+        version: 5.4.19(@types/node@22.15.18)(lightningcss@1.30.1)
+      vite-plugin-dts:
+        specifier: ^3.6.0
+        version: 3.9.1(@types/node@22.15.18)(rollup@4.40.2)(typescript@5.8.3)(vite@5.4.19(@types/node@22.15.18)(lightningcss@1.30.1))
+      vitest:
+        specifier: ^1.0.0
+        version: 1.6.1(@types/node@22.15.18)(jsdom@23.2.0)(lightningcss@1.30.1)
+
   packages/chat-ui:
     dependencies:
       '@mcp-ui/shared':

@@ -1,0 +1,28 @@
+{
+  "name": "@auto-ui/core",
+  "version": "0.1.0",
+  "description": "Core types and schema generation utilities for Auto UI",
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "files": ["dist"],
+  "scripts": {
+    "build": "tsc && vite build",
+    "dev": "vite build --watch",
+    "lint": "eslint . --ext ts,tsx",
+    "test": "vitest"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.0",
+    "vite": "^5.0.0",
+    "vite-plugin-dts": "^3.6.0",
+    "vitest": "^1.0.0"
+  }
+}
