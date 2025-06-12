@@ -197,3 +197,5 @@ __pycache__/
 .claude/
 *.secret
 *.token
+# Ignore timestamped Vite config backups
+vite.config.ts.timestamp-*.mjs
