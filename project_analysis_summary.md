@@ -59,3 +59,63 @@ The missing components significantly hinder the chat client's functionality and 
 ## 6. Conclusion
 
 The MCP Chat Client `v3.0.0-alpha` has a functional core for chat messaging over WebSockets (`chat-ui`, `mcp-connector`, `shared` packages working together). However, it suffers from major gaps in crucial areas like server management and UI rendering, with several packages (`server-manager`, `ui-renderer`) existing only as stubs. Many application-specific UI components for the `chat-client` app also appear to be missing. While the existing components are generally well-implemented and feature-rich, the project is far from realizing the full vision outlined in `CHAT_CLIENT_PLAN.md`. Addressing these missing modules and components should be a top priority for future development.
+
+## 7. Test Execution Attempts and Issues
+
+During the automated analysis process, attempts were made to execute the project's test suite using the `pnpm test` command. However, these attempts were unsuccessful due to persistent timeout issues within the testing environment.
+
+- **Problem**: Vitest (the testing framework) would consistently time out, even when attempting to run a single, simple test file.
+- **Troubleshooting**: Various troubleshooting steps were taken, including:
+    - Running tests for individual packages.
+    - Running specific test files.
+    - Disabling test coverage.
+    - Using minimal Vitest configurations.
+- **Conclusion**: The root cause of the timeouts could not be definitively identified but is suspected to be related to an obscure issue with Vitest/Node.js in the specific execution environment or a fundamental problem with the environment itself. As a result, no tests could be successfully run, and no new tests could be written or verified.
+
+## 8. Demo Application Launch Attempts and Issues
+
+Attempts were made to launch the full demo application (chat-client and demo server) using the `./scripts/start-with-demo.sh` script, as well as manually trying to run its core components. These attempts were also unsuccessful.
+
+- **Problem**: The execution environment encountered persistent timeouts when trying to run the necessary long-lived background server processes for the chat client and the demo server.
+- **Troubleshooting**:
+    - Direct execution of `./scripts/start-with-demo.sh` timed out due to its interactive nature and foreground processes.
+    - Manual attempts to run server components in the background using standard shell techniques (`&`, subshells, `disown`) also resulted in timeouts.
+    - Modifications to the startup script to non-interactively background processes were hindered by tool limitations and inconsistencies.
+- **Conclusion**: The available tools and execution environment appear to have limitations regarding the management of background processes, preventing the successful launch of the demo application.
+
+## 9. Instructions for Running the Demo Application (Standard Environment)
+
+In a standard development environment (without the specific limitations encountered during this automated analysis), the demo application can be launched as follows:
+
+1.  **Prerequisites**:
+    *   Node.js (version specified in project, e.g., 18+)
+    *   pnpm (version specified in `package.json`, e.g., `pnpm@10.11.0`)
+
+2.  **Installation**:
+    *   Clone the repository.
+    *   Navigate to the project root directory.
+    *   Install the correct pnpm version if necessary (e.g., `npm install -g pnpm@10.11.0`).
+    *   Run `pnpm install` to install all dependencies.
+
+3.  **Running the Demo**:
+    *   From the project root directory, execute the script: `./scripts/start-with-demo.sh`
+    *   This script should:
+        *   Start the `mcp-demo-server.js` (typically on `ws://localhost:8081`).
+        *   Start the `chat-client` development server (typically on `http://localhost:5173`).
+        *   Open the chat client in your default web browser.
+
+4.  **Manual Verification Steps (if the script doesn't open the browser or if you need to verify components individually)**:
+    *   **Demo Server**:
+        *   Navigate to `scripts/demo/`.
+        *   Run `pnpm start` or `node mcp-demo-server.js`.
+        *   Observe console output for "MCP Demo Server запущен на ws://localhost:8081".
+    *   **Chat Client**:
+        *   Navigate to `apps/chat-client/`.
+        *   Run `pnpm dev`.
+        *   Observe console output for the local server address (e.g., `http://localhost:5173`).
+        *   Open this address in a web browser.
+    *   **Interaction**:
+        *   In the chat client:
+            *   Configure an AI provider if needed.
+            *   Connect to the MCP server (e.g., `ws://localhost:8081`).
+            *   Verify that demo tools and resources from the server are listed and can be interacted with.
