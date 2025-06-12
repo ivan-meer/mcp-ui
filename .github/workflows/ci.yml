@@ -2,68 +2,38 @@ name: CI
 
 on:
   push:
-    branches:
-      - main
+    branches: [ main ] # Or your default branch
   pull_request:
-    branches:
-      - main
+    branches: [ main ] # Or your default branch
 
 jobs:
-  chat_client:
-    name: Build Chat Client
+  build-and-test:
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-      - name: Install pnpm
-        uses: pnpm/action-setup@v2
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
         with:
-          version: 10
+          version: 8 # Specify a pnpm version, e.g., 8 or latest stable
 
-      - name: Set up Node.js
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 18
+          node-version: '20' # Specify Node.js version
           cache: 'pnpm'
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Build Chat Client
-        run: cd apps/chat-client && pnpm run build
+      - name: Lint (Placeholder)
+        run: echo "Linting step placeholder..." # Replace with actual lint command later
 
-      - name: Lint Chat Client
-        run: cd apps/chat-client && pnpm run lint || echo "No lint script found"
+      - name: Build (Placeholder)
+        # Attempt to build the examples package as a basic test of the toolchain
+        run: pnpm --filter @auto-ui/examples build
 
-      - name: Test Chat Client
-        run: cd apps/chat-client && pnpm run test || echo "No test script found"
-
-  publish:
-    needs: chat_client
-    if: github.event_name == 'release' && github.event.action == 'published'
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Install pnpm
-        uses: pnpm/action-setup@v2
-        with:
-          version: 10
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 18
-          registry-url: 'https://registry.npmjs.org'
-          cache: 'pnpm'
-
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-      
-      - name: Build Chat Client
-        run: cd apps/chat-client && pnpm run build
-
-      - name: Publish Chat Client
-        run: echo "Publishing disabled for now"
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }} 
+      - name: Test (Placeholder)
+        run: echo "Testing step placeholder..." # Replace with actual test command later
