@@ -278,121 +278,86 @@ importers:
         specifier: ^4.15.1
         version: 4.19.1(@cloudflare/workers-types@4.20250607.0)
 
-  packages/@auto-ui/analyzer:
-    dependencies:
-      '@tensorflow/tfjs-node':
-        specifier: ^4.22.0
-        version: 4.22.0(seedrandom@3.0.5)
-      ioredis:
-        specifier: ^5.6.1
-        version: 5.6.1
-      openai:
-        specifier: ^5.3.0
-        version: 5.3.0(ws@8.18.2)(zod@3.24.4)
+  packages/auto-ui-analyzer:
     devDependencies:
-      '@types/jest':
-        specifier: ^29.5.14
-        version: 29.5.14
-      dotenv:
-        specifier: ^16.5.0
-        version: 16.5.0
-      jest:
-        specifier: ^30.0.0
-        version: 30.0.0(@types/node@22.15.18)(ts-node@10.9.2(@swc/core@1.11.24)(@types/node@22.15.18)(typescript@5.8.3))
-      ts-jest:
-        specifier: ^29.3.3
-        version: 29.3.3(@babel/core@7.27.4)(@jest/transform@29.7.0)(@jest/types@29.6.3)(babel-jest@29.7.0(@babel/core@7.27.4))(jest@30.0.0(@types/node@22.15.18)(ts-node@10.9.2(@swc/core@1.11.24)(@types/node@22.15.18)(typescript@5.8.3)))(typescript@5.8.3)
+      typescript:
+        specifier: ^5.0.0
+        version: 5.8.3
+      vite:
+        specifier: ^5.0.0
+        version: 5.4.19(@types/node@22.15.18)(lightningcss@1.30.1)
+      vite-plugin-dts:
+        specifier: ^3.6.0
+        version: 3.9.1(@types/node@22.15.18)(rollup@4.40.2)(typescript@5.8.3)(vite@5.4.19(@types/node@22.15.18)(lightningcss@1.30.1))
+      vitest:
+        specifier: ^1.0.0
+        version: 1.6.1(@types/node@22.15.18)(jsdom@23.2.0)(lightningcss@1.30.1)
 
-  packages/@auto-ui/components:
-    devDependencies:
-      '@testing-library/jest-dom':
-        specifier: ^6.6.3
-        version: 6.6.3
-      '@testing-library/react':
-        specifier: ^16.3.0
-        version: 16.3.0(@testing-library/dom@9.3.4)(@types/react-dom@19.1.6(@types/react@19.1.8))(@types/react@19.1.8)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
-      '@types/jest':
-        specifier: ^29.5.14
-        version: 29.5.14
-      '@types/react':
-        specifier: ^19.1.8
-        version: 19.1.8
-      '@types/react-dom':
-        specifier: ^19.1.6
-        version: 19.1.6(@types/react@19.1.8)
-      autoprefixer:
-        specifier: ^10.4.21
-        version: 10.4.21(postcss@8.5.5)
-      jest:
-        specifier: ^30.0.0
-        version: 30.0.0(@types/node@22.15.18)(ts-node@10.9.2(@swc/core@1.11.24)(@types/node@22.15.18)(typescript@5.8.3))
-      jest-environment-jsdom:
-        specifier: ^30.0.0
-        version: 30.0.0
-      postcss:
-        specifier: ^8.5.5
-        version: 8.5.5
-      react:
-        specifier: ^19.1.0
-        version: 19.1.0
-      react-dom:
-        specifier: ^19.1.0
-        version: 19.1.0(react@19.1.0)
-      tailwindcss:
-        specifier: ^3.4.17
-        version: 3.4.17(ts-node@10.9.2(@swc/core@1.11.24)(@types/node@22.15.18)(typescript@5.8.3))
-      ts-jest:
-        specifier: ^29.3.3
-        version: 29.3.3(@babel/core@7.27.4)(@jest/transform@29.7.0)(@jest/types@29.6.3)(babel-jest@29.7.0(@babel/core@7.27.4))(jest@30.0.0(@types/node@22.15.18)(ts-node@10.9.2(@swc/core@1.11.24)(@types/node@22.15.18)(typescript@5.8.3)))(typescript@5.8.3)
-
-  packages/@auto-ui/examples:
+  packages/auto-ui-components:
     dependencies:
+      '@auto-ui/core':
+        specifier: workspace:*
+        version: link:../auto-ui-core
       react:
-        specifier: ^19.1.0
-        version: 19.1.0
-      react-dom:
-        specifier: ^19.1.0
-        version: 19.1.0(react@19.1.0)
+        specifier: ^18.0.0
+        version: 18.3.1
     devDependencies:
       '@vitejs/plugin-react-swc':
         specifier: ^3.9.0
-        version: 3.9.0(vite@6.3.5(@types/node@22.15.18)(jiti@2.4.2)(lightningcss@1.30.1)(yaml@2.8.0))
-      autoprefixer:
-        specifier: ^10.4.21
-        version: 10.4.21(postcss@8.5.5)
-      postcss:
-        specifier: ^8.5.5
-        version: 8.5.5
-      tailwindcss:
-        specifier: ^3.4.17
-        version: 3.4.17(ts-node@10.9.2(@swc/core@1.11.24)(@types/node@22.15.18)(typescript@5.8.3))
+        version: 3.9.0(vite@5.4.19(@types/node@22.15.18)(lightningcss@1.30.1))
+      typescript:
+        specifier: ^5.0.0
+        version: 5.8.3
       vite:
-        specifier: ^6.3.5
-        version: 6.3.5(@types/node@22.15.18)(jiti@2.4.2)(lightningcss@1.30.1)(yaml@2.8.0)
+        specifier: ^5.0.0
+        version: 5.4.19(@types/node@22.15.18)(lightningcss@1.30.1)
+      vite-plugin-dts:
+        specifier: ^3.6.0
+        version: 3.9.1(@types/node@22.15.18)(rollup@4.40.2)(typescript@5.8.3)(vite@5.4.19(@types/node@22.15.18)(lightningcss@1.30.1))
+      vitest:
+        specifier: ^1.0.0
+        version: 1.6.1(@types/node@22.15.18)(jsdom@23.2.0)(lightningcss@1.30.1)
 
-  packages/@auto-ui/generators:
+  packages/auto-ui-core:
     devDependencies:
-      '@types/jest':
-        specifier: ^29.5.14
-        version: 29.5.14
-      jest:
-        specifier: ^30.0.0
-        version: 30.0.0(@types/node@22.15.18)(ts-node@10.9.2(@swc/core@1.11.24)(@types/node@22.15.18)(typescript@5.8.3))
-      ts-jest:
-        specifier: ^29.3.3
-        version: 29.3.3(@babel/core@7.27.4)(@jest/transform@29.7.0)(@jest/types@29.6.3)(babel-jest@29.7.0(@babel/core@7.27.4))(jest@30.0.0(@types/node@22.15.18)(ts-node@10.9.2(@swc/core@1.11.24)(@types/node@22.15.18)(typescript@5.8.3)))(typescript@5.8.3)
+      typescript:
+        specifier: ^5.0.0
+        version: 5.8.3
+      vite:
+        specifier: ^5.0.0
+        version: 5.4.19(@types/node@22.15.18)(lightningcss@1.30.1)
+      vite-plugin-dts:
+        specifier: ^3.6.0
+        version: 3.9.1(@types/node@22.15.18)(rollup@4.40.2)(typescript@5.8.3)(vite@5.4.19(@types/node@22.15.18)(lightningcss@1.30.1))
+      vitest:
+        specifier: ^1.0.0
+        version: 1.6.1(@types/node@22.15.18)(jsdom@23.2.0)(lightningcss@1.30.1)
 
-  packages/@auto-ui/server:
+  packages/auto-ui-server:
+    dependencies:
+      '@auto-ui/analyzer':
+        specifier: workspace:*
+        version: link:../auto-ui-analyzer
+      '@auto-ui/core':
+        specifier: workspace:*
+        version: link:../auto-ui-core
+      '@mcp-ui/server':
+        specifier: workspace:*
+        version: link:../server
     devDependencies:
-      '@types/jest':
-        specifier: ^29.5.14
-        version: 29.5.14
-      jest:
-        specifier: ^30.0.0
-        version: 30.0.0(@types/node@22.15.18)(ts-node@10.9.2(@swc/core@1.11.24)(@types/node@22.15.18)(typescript@5.8.3))
-      ts-jest:
-        specifier: ^29.3.3
-        version: 29.3.3(@babel/core@7.27.4)(@jest/transform@29.7.0)(@jest/types@29.6.3)(babel-jest@29.7.0(@babel/core@7.27.4))(jest@30.0.0(@types/node@22.15.18)(ts-node@10.9.2(@swc/core@1.11.24)(@types/node@22.15.18)(typescript@5.8.3)))(typescript@5.8.3)
+      typescript:
+        specifier: ^5.0.0
+        version: 5.8.3
+      vite:
+        specifier: ^5.0.0
+        version: 5.4.19(@types/node@22.15.18)(lightningcss@1.30.1)
+      vite-plugin-dts:
+        specifier: ^3.6.0
+        version: 3.9.1(@types/node@22.15.18)(rollup@4.40.2)(typescript@5.8.3)(vite@5.4.19(@types/node@22.15.18)(lightningcss@1.30.1))
+      vitest:
+        specifier: ^1.0.0
+        version: 1.6.1(@types/node@22.15.18)(jsdom@23.2.0)(lightningcss@1.30.1)
+
 
   packages/chat-ui:
     dependencies:
