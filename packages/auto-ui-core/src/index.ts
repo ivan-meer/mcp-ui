@@ -149,3 +149,5 @@ export class SimpleLayoutEngine implements LayoutEngine {
     return { ...schema };
   }
 }
+
+export { SimpleUISchemaGenerator } from './SimpleUISchemaGenerator';
