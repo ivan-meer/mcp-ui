@@ -1,10 +1,3 @@
 packages:
-  - apps/*
-  - packages/*
-  - examples/*
-ignoredBuiltDependencies:
-  - '@swc/core'
-  - '@tailwindcss/oxide'
-  - esbuild
-  - sharp
-  - workerd
+  - 'packages/*'
+  - 'examples/*'
